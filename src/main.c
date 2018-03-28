@@ -1,3 +1,4 @@
+#define _POSIX_C_SOURCE 200809L
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,8 +22,6 @@ struct wb_output {
 	struct wlr_output *wlr_output;
 	struct wb_server *server;
 	struct timespec last_frame;
-	float color[4];
-	int dec;
 
 	struct wl_listener destroy;
 	struct wl_listener frame;
@@ -39,14 +38,14 @@ static void output_frame_notify(struct wl_listener *listener, void *data) {
 	wlr_output_make_current(wlr_output, NULL);
 	wlr_renderer_begin(renderer, wlr_output);
 
-	float color[4] = {1.0, 0, 0, 1.0}; // Color red
-	wlr_renderer_clear(renderer, &output->color);
+	float color[4] = {1.0, 0, 0, 1.0};
+	wlr_renderer_clear(renderer, &color);
 
 	wlr_output_swap_buffers(wlr_output, NULL, NULL);
 	wlr_renderer_end(renderer);
 }
 
-static void output_remove_notify(struct wl_listener *listener, void *data) {
+static void output_destroy_notify(struct wl_listener *listener, void *data) {
 	struct wb_output *output = wl_container_of(listener, output, destroy);
 	wl_list_remove(&output->link);
 	wl_list_remove(&output->destroy.link);
@@ -58,6 +57,7 @@ static void new_output_notify(struct wl_listener *listener, void *data) {
 	struct wb_server *server = wl_container_of(
 			listener, server, new_output
 			);
+	struct wlr_output *wlr_output = data;
 
 	if (!wl_list_empty(&wlr_output->modes)) {
 		struct wlr_output_mode *mode =
