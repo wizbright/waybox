@@ -10,3 +10,4 @@ continue to improve it.
 
 ### Contact
 I can be found as wiz on Rizon and WizBright on Freenode. 
+Join #waybox on irc.freenode.net for discussion
