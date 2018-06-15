@@ -6,8 +6,8 @@ The main goal of this project is to provide a similar feel to openbox but on way
 
 ### Dependencies
 
-*-wlroots
-*-wayland
+*- wlroots
+*- wayland
 
 ### Build instructions
 
