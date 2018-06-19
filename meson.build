@@ -1,4 +1,4 @@
-# SirCmpwn is a god. (from mcwayface)
+# SirCmpwn is a god. (from mcwayface and bspwc)
 
 project(
   'waybox',
@@ -25,6 +25,9 @@ endif
 # Hiding depreciation warnings
 add_project_arguments('-DWL_HIDE_DEPRECATED', language: 'c')
 
+# Adding include directory
+inc_dir = include_directories('include')
+
 pixman = dependency('pixman-1')
 wlroots = dependency('wlroots')
 wayland_server = dependency('wayland-server')
@@ -32,17 +35,4 @@ wayland_client = dependency('wayland-client')
 wayland_protos  = dependency('wayland-protocols', version: '>=1.12')
 
 subdir('protocol')
-
-executable(
-  'waybox',
-  [
-    'src/main.c'
-  ],
-  dependencies: [
-    pixman,
-    wlroots,
-    wayland_server,
-    wayland_protos,
-    wayland_client
-  ]
-)
+subdir('src')
