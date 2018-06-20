@@ -30,7 +30,8 @@ void output_frame_notify(struct wl_listener *listener, void *data) {
 		float matrix[16];
         wlr_matrix_project_box(matrix, &render_box, surface->current->transform,
 			    0, wlr_output->transform_matrix);
-	    wlr_render_texture_with_matrix(renderer, surface->texture, matrix, 1.0f);
+		struct wlr_texture *texture = wlr_surface_get_texture(surface);
+	    wlr_render_texture_with_matrix(renderer, texture, matrix, 1.0f);
 	    wlr_surface_send_frame_done(surface, &now);
 	}
 
