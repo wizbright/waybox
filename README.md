@@ -6,6 +6,7 @@ The main goal of this project is to provide a similar feel to openbox but on way
 
 ### Dependencies
 
+* meson
 * wlroots
 * wayland
 

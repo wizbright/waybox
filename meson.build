@@ -35,4 +35,4 @@ wayland_client = dependency('wayland-client')
 wayland_protos  = dependency('wayland-protocols', version: '>=1.12')
 
 subdir('protocol')
-subdir('src')
+subdir('waybox')
