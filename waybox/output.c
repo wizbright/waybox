@@ -24,11 +24,11 @@ void output_frame_notify(struct wl_listener *listener, void *data) {
 		}
 		struct wlr_box render_box = {
 			.x = 20, .y = 20,
-			.width = surface->current->width,
-			.height = surface->current->height
+			.width = surface->current.width,
+			.height = surface->current.height
 		};
 		float matrix[16];
-        wlr_matrix_project_box(matrix, &render_box, surface->current->transform,
+        wlr_matrix_project_box(matrix, &render_box, surface->current.transform,
 			    0, wlr_output->transform_matrix);
 		struct wlr_texture *texture = wlr_surface_get_texture(surface);
 	    wlr_render_texture_with_matrix(renderer, texture, matrix, 1.0f);
