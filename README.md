@@ -4,6 +4,11 @@ An openbox clone on Wayland (WIP)
 ### Goals
 The main goal of this project is to provide a similar feel to openbox but on wayland
 
+### Contributing
+
+[Details on
+contributing.](https://github.com/wizbright/waybox/blob/master/CONTRIBUTING.md)
+
 ### Dependencies
 
 * meson
