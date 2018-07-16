@@ -1,0 +1,24 @@
+image: archlinux
+packages:
+  - meson
+  - wayland
+  - wayland-protocols
+  - xorg-server-xwayland
+  - xcb-util-image
+  - libinput
+  - libxkbcommon
+sources:
+  - https://github.com/wizbright/waybox
+  - https://github.com/swaywm/wlroots
+tasks:
+  - wlroots: |
+      cd wlroots
+      meson --prefix=/usr build
+      ninja -C build
+      sudo ninja -C build install
+  - setup: |
+      cd waybox
+      meson build
+  - build: |
+      cd waybox
+      ninja -C build
