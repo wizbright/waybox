@@ -2,13 +2,13 @@
 
 Contributing just involves sending a pull request. You will probably be more
 successful with your contribution if you visit
-[#sway-devel](https://webchat.freenode.net/?channels=waybox) on
+[#waybox](https://webchat.freenode.net/?channels=waybox) on
 irc.freenode.net upfront and discuss your plans.
 
 Note: rules are made to be broken. Adjust or ignore any/all of these as you see
 fit, but be prepared to justify it to your peers.
 
-##### This was amended from wlroots for the most part
+This was amended from [wlroots](https://github.com/swaywm/wlroots) for the most part
 
 ## Pull Requests
 
@@ -166,35 +166,3 @@ zeroed value and exit cleanly; this simplifies error handling a lot.
 
 For functions not returning a value, they should return a (stdbool.h) bool to
 indicated if they succeeded or not.
-
-## Wayland protocol implementation
-
-Each protocol generally lives in a file with the same name, usually containing
-at least one struct for each interface in the protocol. For instance,
-`xdg_shell` lives in `types/wlr_xdg_shell.h` and has a `wlr_xdg_surface` struct.
-
-### Globals
-
-Global interfaces generally have public constructors and destructors. Their
-struct has a field holding the `wl_global` itself, a list of resources clients
-created by binding to the global, a destroy signal and a `wl_display` destroy
-listener. Example:
-
-```c
-struct wb_compositor {
-	struct wl_global *global;
-	struct wl_list resources;
-	…
-
-	struct wl_listener display_destroy;
-
-	struct {
-		struct wl_signal new_surface;
-		struct wl_signal destroy;
-	} events;
-};
-```
-
-When the destructor is called, it should emit the destroy signal, remove the
-display destroy listener, destroy the `wl_global`, destroy all bound resources
-and then destroy the struct.
