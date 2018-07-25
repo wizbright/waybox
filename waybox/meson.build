@@ -2,6 +2,8 @@ wb_src = files(
   'main.c',
   'output.c',
   'server.c',
+	'desktop.c',
+	'cursor.c',
   )
 
 wb_dep = [
