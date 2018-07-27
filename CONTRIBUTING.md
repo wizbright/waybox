@@ -16,8 +16,8 @@ If you already have your own pull request habits, feel free to use them. If you
 don't, however, allow me to make a suggestion: feature branches pulled from
 upstream. Try this:
 
-1. Fork wlroots
-2. `git clone https://github.com/username/waybox && cd wlroots`
+1. Fork waybox
+2. `git clone https://github.com/username/waybox && cd waybox`
 3. `git remote add upstream https://github.com/wizbright/waybox`
 
 You only need to do this once. You're never going to use your fork's master
@@ -86,7 +86,7 @@ process is:
 
 ## Style Reference
 
-wlroots is written in C with a style similar to the [kernel
+waybox is written in C with a style similar to the [kernel
 style](https://www.kernel.org/doc/Documentation/process/coding-style.rst), but
 with a few notable differences.
 
