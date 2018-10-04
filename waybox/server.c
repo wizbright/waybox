@@ -1,5 +1,17 @@
 #include "waybox/server.h"
 
+static void new_input_notify(struct wl_listener *listener, void *data) {
+	struct wlr_input_device *device = data;
+	struct wb_server *server = wl_container_of(listener, server, new_input);
+	switch (device->type) {
+		case WLR_INPUT_DEVICE_POINTER:
+			wlr_cursor_attach_input_device(server->cursor->cursor, device);
+			break;
+		default:
+			break;
+	}
+}
+
 bool init_wb(struct wb_server* server) {
 
     // create display
@@ -21,6 +33,10 @@ bool init_wb(struct wb_server* server) {
         return false;
     }
 
+	server->layout = wlr_output_layout_create();
+	server->cursor = wb_cursor_create();
+	wlr_cursor_attach_output_layout(server->cursor->cursor, server->layout);
+
     return true;
 }
 
@@ -29,6 +45,9 @@ bool start_wb(struct wb_server* server) {
 
 	server->new_output.notify = new_output_notify;
 	wl_signal_add(&server->backend->events.new_output, &server->new_output);
+
+	server->new_input.notify = new_input_notify;
+	wl_signal_add(&server->backend->events.new_input, &server->new_input);
 
 	const char *socket = wl_display_add_socket_auto(server->wl_display);
 	assert(socket);
@@ -57,6 +76,9 @@ bool terminate_wb(struct wb_server* server) {
     wl_display_destroy(server->wl_display);
 
     printf("Display destroyed.\n");
+
+	wb_cursor_destroy(server->cursor);
+	wlr_output_layout_destroy(server->layout);
 
     return true;
 }
