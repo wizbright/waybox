@@ -14,6 +14,7 @@ project(
 )
 
 add_project_arguments('-Wno-unused-parameter', language: 'c')
+add_project_arguments('-DWLR_USE_UNSTABLE', language: 'c')
 
 cc = meson.get_compiler('c')
 
