@@ -25,6 +25,7 @@ endif
 
 # Hiding depreciation warnings
 add_project_arguments('-DWL_HIDE_DEPRECATED', language: 'c')
+add_project_arguments('-DWLR_USE_UNSTABLE', language: 'c')
 
 # Adding include directory
 inc_dir = include_directories('include')
