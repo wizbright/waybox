@@ -42,6 +42,7 @@ void output_frame_notify(struct wl_listener *listener, void *data) {
 
 void output_destroy_notify(struct wl_listener *listener, void *data) {
 	struct wb_output *output = wl_container_of(listener, output, destroy);
+	wlr_output_layout_remove(output->server->layout, output->wlr_output);
 	wl_list_remove(&output->link);
 	wl_list_remove(&output->destroy.link);
 	wl_list_remove(&output->frame.link);
@@ -72,4 +73,8 @@ void new_output_notify(struct wl_listener *listener, void *data) {
 	wl_signal_add(&wlr_output->events.destroy, &output->destroy);
 	output->frame.notify = output_frame_notify;
 	wl_signal_add(&wlr_output->events.frame, &output->frame);
+
+	wlr_output_layout_add_auto(server->layout, output->wlr_output);
+	wlr_xcursor_manager_load(server->cursor->xcursor_manager, output->wlr_output->scale);
+	wlr_xcursor_manager_set_cursor_image(server->cursor->xcursor_manager, "left_ptr", server->cursor->cursor);
 }

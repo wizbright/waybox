@@ -1,4 +1,5 @@
 wb_src = files(
+  'cursor.c',
   'main.c',
   'output.c',
   'server.c',
