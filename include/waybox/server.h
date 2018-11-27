@@ -18,7 +18,7 @@
 #include <wlr/types/wlr_screenshooter.h>
 #include <wlr/types/wlr_matrix.h>
 #include <wlr/types/wlr_gamma_control.h>
-#include <wlr/types/wlr_primary_selection.h>
+#include <wlr/types/wlr_gtk_primary_selection.h>
 #include <wlr/types/wlr_output_layout.h>
 
 #include "waybox/output.h"
