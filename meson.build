@@ -30,7 +30,7 @@ add_project_arguments('-DWL_HIDE_DEPRECATED', language: 'c')
 inc_dir = include_directories('include')
 
 pixman = dependency('pixman-1')
-wlroots = dependency('wlroots')
+wlroots = dependency('wlroots', version: '>=0.6.0')
 wayland_server = dependency('wayland-server')
 wayland_client = dependency('wayland-client')
 wayland_protos  = dependency('wayland-protocols', version: '>=1.12')
