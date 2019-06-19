@@ -17,7 +17,7 @@
 #include <wlr/types/wlr_idle.h>
 #include <wlr/types/wlr_screencopy_v1.h>
 #include <wlr/types/wlr_matrix.h>
-#include <wlr/types/wlr_gamma_control.h>
+#include <wlr/types/wlr_gamma_control_v1.h>
 #include <wlr/types/wlr_gtk_primary_selection.h>
 #include <wlr/types/wlr_output_layout.h>
 
