@@ -28,7 +28,7 @@ protocols = [
 	'gamma-control.xml',
 	'gtk-primary-selection.xml',
 	'idle.xml',
-	'screenshooter.xml',
+	'wlr-screencopy-unstable-v1.xml',
 	'server-decoration.xml',
 	'wlr-layer-shell-unstable-v1.xml',
 ]
@@ -38,7 +38,7 @@ client_protocols = [
 	[wl_protocol_dir, 'stable/xdg-shell/xdg-shell.xml'],
 	[wl_protocol_dir, 'unstable/idle-inhibit/idle-inhibit-unstable-v1.xml'],
 	'idle.xml',
-	'screenshooter.xml',
+	'wlr-screencopy-unstable-v1.xml',
 	'wlr-layer-shell-unstable-v1.xml',
 ]
 
