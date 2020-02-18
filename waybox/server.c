@@ -199,13 +199,12 @@ bool start_wb(struct wb_server* server) {
 }
 
 bool terminate_wb(struct wb_server* server) {
-    wl_display_destroy(server->wl_display);
-
-    printf("Display destroyed.\n");
-
 	wb_cursor_destroy(server->cursor);
 	wb_seat_destroy(server->seat);
 	wlr_output_layout_destroy(server->layout);
+    wl_display_destroy(server->wl_display);
+
+    printf("Display destroyed.\n");
 
     return true;
 }
