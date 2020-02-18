@@ -20,6 +20,7 @@
 #include <wlr/types/wlr_gamma_control_v1.h>
 #include <wlr/types/wlr_gtk_primary_selection.h>
 #include <wlr/types/wlr_output_layout.h>
+#include <wlr/types/wlr_xdg_shell.h>
 
 #include "waybox/output.h"
 #include "waybox/cursor.h"
