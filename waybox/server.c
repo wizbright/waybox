@@ -191,7 +191,7 @@ bool start_wb(struct wb_server* server) {
 
 	server->compositor = wlr_compositor_create(server->wl_display,
 			wlr_backend_get_renderer(server->backend));
-
+	wlr_data_device_manager_create(server->wl_display);
 	wlr_xdg_shell_create(server->wl_display);
     //wlr_idle_create(server->wl_display);
 

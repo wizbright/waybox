@@ -14,6 +14,7 @@
 #include <wlr/render/wlr_renderer.h>
 #include <wlr/render/wlr_texture.h>
 #include <wlr/types/wlr_compositor.h>
+#include <wlr/types/wlr_data_device.h>
 #include <wlr/types/wlr_idle.h>
 #include <wlr/types/wlr_screencopy_v1.h>
 #include <wlr/types/wlr_matrix.h>
