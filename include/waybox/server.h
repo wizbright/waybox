@@ -24,6 +24,7 @@
 
 #include "waybox/output.h"
 #include "waybox/cursor.h"
+#include "waybox/seat.h"
 
 struct wb_server {
 	struct wl_display *wl_display;
@@ -34,6 +35,7 @@ struct wb_server {
 
 	struct wlr_output_layout *layout;
 	struct wb_cursor *cursor;
+	struct wb_seat * seat;
 
 	struct wl_listener new_output;
 	struct wl_listener new_input;

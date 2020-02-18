@@ -2,6 +2,7 @@ wb_src = files(
   'cursor.c',
   'main.c',
   'output.c',
+  'seat.c',
   'server.c',
   )
 

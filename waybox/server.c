@@ -36,6 +36,7 @@ bool init_wb(struct wb_server* server) {
 	server->layout = wlr_output_layout_create();
 	server->cursor = wb_cursor_create();
 	wlr_cursor_attach_output_layout(server->cursor->cursor, server->layout);
+	server->seat = wb_seat_create(server);
 
     return true;
 }
@@ -81,6 +82,7 @@ bool terminate_wb(struct wb_server* server) {
     printf("Display destroyed.\n");
 
 	wb_cursor_destroy(server->cursor);
+	wb_seat_destroy(server->seat);
 	wlr_output_layout_destroy(server->layout);
 
     return true;
