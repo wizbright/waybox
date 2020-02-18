@@ -10,6 +10,7 @@ wb_dep = [
   wayland_server,
   wlroots,
   pixman,
+  xkbcommon,
   ]
 
 executable(
