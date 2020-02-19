@@ -28,6 +28,20 @@ struct wb_output {
 	struct wl_list link;
 };
 
+struct wb_view {
+	struct wl_list link;
+	struct wb_server *server;
+	struct wlr_xdg_surface *xdg_surface;
+
+	struct wl_listener map;
+	struct wl_listener unmap;
+	struct wl_listener destroy;
+	struct wl_listener request_move;
+	struct wl_listener request_resize;
+	bool mapped;
+	int x, y;
+};
+
 void output_frame_notify(struct wl_listener* listener, void *data);
 void output_destroy_notify(struct wl_listener* listener, void *data);
 void new_output_notify(struct wl_listener* listener, void *data);

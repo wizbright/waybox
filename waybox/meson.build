@@ -4,6 +4,7 @@ wb_src = files(
   'output.c',
   'seat.c',
   'server.c',
+  'xdg_shell.c',
   )
 
 wb_dep = [

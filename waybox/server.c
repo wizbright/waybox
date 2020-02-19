@@ -1,5 +1,6 @@
-#include "waybox/server.h"
 #include "waybox/seat.h"
+#include "waybox/xdg_shell.h"
+
 
 bool init_wb(struct wb_server* server) {
 
@@ -59,7 +60,8 @@ bool start_wb(struct wb_server* server) {
 	server->compositor = wlr_compositor_create(server->wl_display,
 			wlr_backend_get_renderer(server->backend));
 	wlr_data_device_manager_create(server->wl_display);
-	wlr_xdg_shell_create(server->wl_display);
+	wl_list_init(&server->views);
+	init_xdg_shell(server);
     //wlr_idle_create(server->wl_display);
 
     return true;

@@ -1,11 +1,6 @@
 # waybox
 An openbox clone on Wayland (WIP)
 
-This is the basic-apps branch, in which I'm working to get simple apps to work.
-Currently, I'm targeting wlroots 0.6.0, but after I get the basic functionality
-worked out, I want to get it to compile with wlroots 0.10.0.  Right now, a
-weston-terminal window will show, but it won't receive keyboard input.
-
 ### Goals
 The main goal of this project is to provide a similar feel to openbox but on wayland
 
