@@ -10,7 +10,6 @@ struct wb_seat {
 	struct wlr_seat * seat;
 
 	struct wl_list keyboards;
-	struct wl_listener new_input;
 };
 
 struct wb_keyboard {
