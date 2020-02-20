@@ -48,6 +48,11 @@ static void xdg_surface_unmap(struct wl_listener *listener, void *data) {
 	/* Called when the surface is unmapped, and should no longer be shown. */
 	struct wb_view *view = wl_container_of(listener, view, unmap);
 	view->mapped = false;
+
+	/* Focus previous view's surface, if any */
+	if (view->server->views.prev) {
+		focus_view((struct wb_view *) view->server->views.prev, ((struct wb_view *) view->server->views.prev)->xdg_surface->surface);
+	}
 }
 
 static void xdg_surface_destroy(struct wl_listener *listener, void *data) {
