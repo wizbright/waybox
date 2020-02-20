@@ -99,9 +99,14 @@ static void server_new_keyboard(struct wb_server *server,
 	keyboard->server = server;
 	keyboard->device = device;
 
-	/* We need to prepare an XKB keymap and assign it to the keyboard. This
-	 * assumes the defaults (e.g. layout = "us"). */
-	struct xkb_rule_names rules = { 0 };
+	/* We need to prepare an XKB keymap and assign it to the keyboard. */
+	struct xkb_rule_names rules = {
+		.rules = getenv("XKB_DEFAULT_RULES"),
+		.model = getenv("XKB_DEFAULT_MODEL"),
+		.layout = getenv("XKB_DEFAULT_LAYOUT"),
+		.variant = getenv("XKB_DEFAULT_VARIANT"),
+		.options = getenv("XKB_DEFAULT_OPTIONS"),
+	};
 	struct xkb_context *context = xkb_context_new(XKB_CONTEXT_NO_FLAGS);
 	struct xkb_keymap *keymap = xkb_map_new_from_names(context, &rules,
 		XKB_KEYMAP_COMPILE_NO_FLAGS);
