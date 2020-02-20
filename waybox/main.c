@@ -6,13 +6,13 @@
 
 #include "waybox/server.h"
 
-struct wl_display* display = NULL;
+//struct wl_display* display = NULL;
 
 int main(int argc, char **argv){
 	struct wb_server server = {0};
 
 	// Global display
-	display = server.wl_display;
+	//display = server.wl_display;
 
 	if (init_wb(&server) == false) {
 		printf("Failed to create backend\n");

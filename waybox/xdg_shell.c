@@ -1,6 +1,6 @@
 #include "waybox/xdg_shell.h"
 
-static void focus_view(struct wb_view *view, struct wlr_surface *surface) {
+void focus_view(struct wb_view *view, struct wlr_surface *surface) {
 	/* Note: this function only deals with keyboard focus. */
 	if (view == NULL) {
 		return;

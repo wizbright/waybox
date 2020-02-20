@@ -1,9 +1,8 @@
-#include <stdlib.h>
-
 #include "waybox/seat.h"
+#include "waybox/xdg_shell.h"
 
 /* Stolen from wltiny.  Customizations will come later. */
-static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym) {
+static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32_t modifiers) {
 	/*
 	 * Here we handle compositor keybindings. This is when the compositor is
 	 * processing keys, rather than passing them on to the client for its own
@@ -11,29 +10,25 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym) {
 	 *
 	 * This function assumes Alt is held down.
 	 */
-	switch (sym) {
-	case XKB_KEY_Escape:
+
+	if (modifiers & WLR_MODIFIER_CTRL && sym == XKB_KEY_Escape) {
 		wl_display_terminate(server->wl_display);
-		break;
-	case XKB_KEY_F1:
-#if 0
+	}
+	else if (modifiers & WLR_MODIFIER_ALT && sym == XKB_KEY_Tab) {
 		/* Cycle to the next view */
 		if (wl_list_length(&server->views) < 2) {
-			break;
+			return false;
 		}
-		struct tinywl_view *current_view = wl_container_of(
+		struct wb_view *current_view = wl_container_of(
 			server->views.next, current_view, link);
-		struct tinywl_view *next_view = wl_container_of(
+		struct wb_view *next_view = wl_container_of(
 			current_view->link.next, next_view, link);
 		focus_view(next_view, next_view->xdg_surface->surface);
 		/* Move the previous view to the end of the list */
 		wl_list_remove(&current_view->link);
 		wl_list_insert(server->views.prev, &current_view->link);
-#endif
-		break;
-	default:
-		return false;
 	}
+	else return false;
 	return true;
 }
 
@@ -73,11 +68,11 @@ static void keyboard_handle_key(
 
 	bool handled = false;
 	uint32_t modifiers = wlr_keyboard_get_modifiers(keyboard->device->keyboard);
-	if ((modifiers & WLR_MODIFIER_ALT) && event->state == WLR_KEY_PRESSED) {
+	if (event->state == WLR_KEY_PRESSED) {
 		/* If alt is held down and this button was _pressed_, we attempt to
 		 * process it as a compositor keybinding. */
 		for (int i = 0; i < nsyms; i++) {
-			handled = handle_keybinding(server, syms[i]);
+			handled = handle_keybinding(server, syms[i], modifiers);
 		}
 	}
 
@@ -133,6 +128,12 @@ static void new_input_notify(struct wl_listener *listener, void *data) {
 		default:
 			break;
 	}
+
+	uint32_t caps = WL_SEAT_CAPABILITY_POINTER;
+	if (!wl_list_empty(&server->seat->keyboards)) {
+		caps |= WL_SEAT_CAPABILITY_KEYBOARD;
+	}
+	wlr_seat_set_capabilities(server->seat->seat, caps);
 }
 
 struct wb_seat * wb_seat_create(struct wb_server * server) {
@@ -142,7 +143,6 @@ struct wb_seat * wb_seat_create(struct wb_server * server) {
 	server->new_input.notify = new_input_notify;
 	wl_signal_add(&server->backend->events.new_input, &server->new_input);
 	seat->seat = wlr_seat_create(server->wl_display, "seat0");
-	wlr_seat_set_capabilities(seat->seat, WL_SEAT_CAPABILITY_POINTER | WL_SEAT_CAPABILITY_KEYBOARD);
 
 	return seat;
 }
