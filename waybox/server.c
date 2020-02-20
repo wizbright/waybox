@@ -1,3 +1,4 @@
+#define _POSIX_C_SOURCE 200112L
 #include "waybox/seat.h"
 #include "waybox/xdg_shell.h"
 
@@ -49,8 +50,8 @@ bool start_wb(struct wb_server* server) {
 		return false;
 	}
 
-    //printf("Running Wayland compositor on Wayland display '%s'\n", socket);
-    //setenv("WAYLAND_DISPLAY", socket, true);
+    printf("Running Wayland compositor on Wayland display '%s'\n", socket);
+    setenv("WAYLAND_DISPLAY", socket, true);
 
     wlr_gamma_control_manager_v1_create(server->wl_display);
 	wlr_screencopy_manager_v1_create(server->wl_display);

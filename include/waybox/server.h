@@ -1,9 +1,9 @@
 #ifndef SERVER_H
 #define SERVER_H
 
-#ifndef _POSIX_C_SOURCE
-#define _POSIX_C_SOURCE 200809L
-#endif
+//#ifndef _POSIX_C_SOURCE
+//#define _POSIX_C_SOURCE 200809L
+//#endif
 
 #include <assert.h>
 #include <stdio.h>
