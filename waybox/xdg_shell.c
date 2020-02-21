@@ -148,6 +148,50 @@ static void server_new_xdg_surface(struct wl_listener *listener, void *data) {
 	wl_list_insert(&server->views, &view->link);
 }
 
+bool view_at(struct wb_view *view,
+		double lx, double ly, struct wlr_surface **surface,
+		double *sx, double *sy) {
+	/*
+	 * XDG toplevels may have nested surfaces, such as popup windows for context
+	 * menus or tooltips. This function tests if any of those are underneath the
+	 * coordinates lx and ly (in output Layout Coordinates). If so, it sets the
+	 * surface pointer to that wlr_surface and the sx and sy coordinates to the
+	 * coordinates relative to that surface's top-left corner.
+	 */
+	double view_sx = lx - view->x;
+	double view_sy = ly - view->y;
+
+	//struct wlr_surface_state *state = &view->xdg_surface->surface->current;
+
+	double _sx, _sy;
+	struct wlr_surface *_surface = NULL;
+	_surface = wlr_xdg_surface_surface_at(
+			view->xdg_surface, view_sx, view_sy, &_sx, &_sy);
+
+	if (_surface != NULL) {
+		*sx = _sx;
+		*sy = _sy;
+		*surface = _surface;
+		return true;
+	}
+
+	return false;
+}
+
+struct wb_view *desktop_view_at(
+		struct wb_server *server, double lx, double ly,
+		struct wlr_surface **surface, double *sx, double *sy) {
+	/* This iterates over all of our surfaces and attempts to find one under the
+	 * cursor. This relies on server->views being ordered from top-to-bottom. */
+	struct wb_view *view;
+	wl_list_for_each(view, &server->views, link) {
+		if (view_at(view, lx, ly, surface, sx, sy)) {
+			return view;
+		}
+	}
+	return NULL;
+}
+
 void init_xdg_shell(struct wb_server *server) {
 	server->xdg_shell = wlr_xdg_shell_create(server->wl_display);
 	server->new_xdg_surface.notify = server_new_xdg_surface;

@@ -26,6 +26,7 @@ bool init_wb(struct wb_server* server) {
 
 	server->layout = wlr_output_layout_create();
 	server->cursor = wb_cursor_create();
+	server->cursor->server = server;
 	wlr_cursor_attach_output_layout(server->cursor->cursor, server->layout);
 	server->seat = wb_seat_create(server);
 
