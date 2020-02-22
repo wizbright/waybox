@@ -3,14 +3,11 @@
 #include "waybox/seat.h"
 #include "waybox/xdg_shell.h"
 
-/* Stolen from wltiny.  Customizations will come later. */
 static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32_t modifiers) {
 	/*
 	 * Here we handle compositor keybindings. This is when the compositor is
 	 * processing keys, rather than passing them on to the client for its own
 	 * processing.
-	 *
-	 * This function assumes Alt is held down.
 	 */
 
 	if (modifiers & WLR_MODIFIER_CTRL && sym == XKB_KEY_Escape) {
@@ -92,7 +89,7 @@ static void keyboard_handle_key(
 	}
 }
 
-static void server_new_keyboard(struct wb_server *server,
+static void handle_new_keyboard(struct wb_server *server,
 		struct wlr_input_device *device) {
 	struct wb_keyboard *keyboard =
 		calloc(1, sizeof(struct wb_keyboard));
@@ -133,7 +130,7 @@ static void new_input_notify(struct wl_listener *listener, void *data) {
 	struct wb_server *server = wl_container_of(listener, server, new_input);
 	switch (device->type) {
 		case WLR_INPUT_DEVICE_KEYBOARD:
-			server_new_keyboard(server, device);
+			handle_new_keyboard(server, device);
 			break;
 		case WLR_INPUT_DEVICE_POINTER:
 			wlr_cursor_attach_input_device(server->cursor->cursor, device);
@@ -149,8 +146,8 @@ static void new_input_notify(struct wl_listener *listener, void *data) {
 	wlr_seat_set_capabilities(server->seat->seat, caps);
 }
 
-struct wb_seat * wb_seat_create(struct wb_server * server) {
-	struct wb_seat * seat = malloc(sizeof(struct wb_seat));
+struct wb_seat *wb_seat_create(struct wb_server *server) {
+	struct wb_seat *seat = malloc(sizeof(struct wb_seat));
 
 	wl_list_init(&seat->keyboards);
 	server->new_input.notify = new_input_notify;
@@ -160,7 +157,7 @@ struct wb_seat * wb_seat_create(struct wb_server * server) {
 	return seat;
 }
 
-void wb_seat_destroy(struct wb_seat * seat) {
+void wb_seat_destroy(struct wb_seat *seat) {
 	wlr_seat_destroy(seat->seat);
 	free(seat);
 }

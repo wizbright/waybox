@@ -9,16 +9,6 @@ static void process_cursor_move(struct wb_server *server, uint32_t time) {
 }
 
 static void process_cursor_resize(struct wb_server *server, uint32_t time) {
-	/*
-	 * Resizing the grabbed view can be a little bit complicated, because we
-	 * could be resizing from any corner or edge. This not only resizes the view
-	 * on one or two axes, but can also move the view if you resize from the top
-	 * or left edges (or top-left corner).
-	 *
-	 * Note that I took some shortcuts here. In a more fleshed-out compositor,
-	 * you'd wait for the client to prepare a buffer at the new size, then
-	 * commit any movement that was prepared.
-	 */
 	struct wb_view *view = server->grabbed_view;
 	double dx = server->cursor->cursor->x - server->grab_x;
 	double dy = server->cursor->cursor->y - server->grab_y;
@@ -51,10 +41,10 @@ static void process_cursor_resize(struct wb_server *server, uint32_t time) {
 
 static void process_cursor_motion(struct wb_server *server, uint32_t time) {
 	/* If the mode is non-passthrough, delegate to those functions. */
-	if (server->cursor_mode == WB_CURSOR_MOVE) {
+	if (server->cursor->cursor_mode == WB_CURSOR_MOVE) {
 		process_cursor_move(server, time);
 		return;
-	} else if (server->cursor_mode == WB_CURSOR_RESIZE) {
+	} else if (server->cursor->cursor_mode == WB_CURSOR_RESIZE) {
 		process_cursor_resize(server, time);
 		return;
 	}
@@ -77,10 +67,6 @@ static void process_cursor_motion(struct wb_server *server, uint32_t time) {
 		/*
 		 * "Enter" the surface if necessary. This lets the client know that the
 		 * cursor has entered one of its surfaces.
-		 *
-		 * Note that this gives the surface "pointer focus", which is distinct
-		 * from keyboard focus. You get pointer focus by moving the pointer over
-		 * a window.
 		 */
 		wlr_seat_pointer_notify_enter(seat, surface, sx, sy);
 		if (!focus_changed) {
@@ -124,7 +110,7 @@ static void handle_cursor_button(struct wl_listener *listener, void *data) {
 			cursor->server->cursor->cursor->x, cursor->server->cursor->cursor->y, &surface, &sx, &sy);
 	if (event->state == WLR_BUTTON_RELEASED) {
 		/* If you released any buttons, we exit interactive move/resize mode. */
-		cursor->server->cursor_mode = WB_CURSOR_PASSTHROUGH;
+		cursor->cursor_mode = WB_CURSOR_PASSTHROUGH;
 	} else {
 		/* Focus that client if the button was _pressed_ */
 		focus_view(view, surface);
@@ -158,6 +144,7 @@ struct wb_cursor *wb_cursor_create() {
 	struct wb_cursor *cursor = malloc(sizeof(struct wb_cursor));
 	cursor->cursor = wlr_cursor_create();
 	cursor->xcursor_manager = wlr_xcursor_manager_create("default", 24);
+	wlr_xcursor_manager_load(cursor->xcursor_manager, 1);
 
 	cursor->cursor_motion.notify = handle_cursor_motion;
 	wl_signal_add(&cursor->cursor->events.motion, &cursor->cursor_motion);

@@ -1,17 +1,12 @@
-//#define _POSIX_C_SOURCE 200809L
 #include <stdio.h>
-//#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <wayland-server.h>
-#include <wlr/backend.h>
 
 #include "waybox/server.h"
 
-//struct wl_display* display = NULL;
-
 int main(int argc, char **argv){
-	char *startup_cmd;
+	char *startup_cmd = NULL;
 	if (argc > 0) {
 		int i;
 		for (i = 0; i < argc; i++)
@@ -35,9 +30,6 @@ int main(int argc, char **argv){
 
 	struct wb_server server = {0};
 
-	// Global display
-	//display = server.wl_display;
-
 	if (init_wb(&server) == false) {
 		printf("Failed to create backend\n");
 		exit(EXIT_FAILURE);
@@ -50,7 +42,7 @@ int main(int argc, char **argv){
 	}
 
 	if (startup_cmd) {
-		if (fork() == 0){
+		if (fork() == 0) {
 			execl("/bin/sh", "/bin/sh", "-c", startup_cmd, NULL);
 		}
 	}

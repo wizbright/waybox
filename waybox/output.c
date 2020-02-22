@@ -1,4 +1,4 @@
-#include <waybox/output.h>
+#include "waybox/output.h"
 
 struct render_data {
 	struct wlr_output *output;
@@ -33,7 +33,7 @@ static void render_surface(struct wlr_surface *surface, int sx, int sy, void *da
 	ox += view->x + sx, oy += view->y + sy;
 
 	/* We also have to apply the scale factor for HiDPI outputs. This is only
-	 * part of the puzzle, TinyWL does not fully support HiDPI. */
+	 * part of the puzzle, Waybox does not fully support HiDPI. */
 	struct wlr_box box = {
 		.x = ox * output->scale,
 		.y = oy * output->scale,
@@ -42,7 +42,7 @@ static void render_surface(struct wlr_surface *surface, int sx, int sy, void *da
 	};
 
 	/*
-	 * Those familiar with OpenGL are also familiar with the role of matricies
+	 * Those familiar with OpenGL are also familiar with the role of matrices
 	 * in graphics programming. We need to prepare a matrix to render the view
 	 * with. wlr_matrix_project_box is a helper which takes a box with a desired
 	 * x, y coordinates, width and height, and an output geometry, then
@@ -67,11 +67,8 @@ static void render_surface(struct wlr_surface *surface, int sx, int sy, void *da
 	wlr_surface_send_frame_done(surface, rdata->when);
 }
 
-
-
 void output_frame_notify(struct wl_listener *listener, void *data) {
 	struct wb_output *output = wl_container_of(listener, output, frame);
-//	struct wlr_backend *backend = output->server->backend;
 	struct wlr_output *wlr_output = data;
 	struct wlr_renderer *renderer = wlr_backend_get_renderer(
 								wlr_output->backend);
@@ -106,25 +103,6 @@ void output_frame_notify(struct wl_listener *listener, void *data) {
 		wlr_xdg_surface_for_each_surface(view->xdg_surface, render_surface, &rdata);
 	}
 
-	/*struct wl_resource *_surface;
-	wl_resource_for_each(_surface, &output->server->compositor->surface_resources) {
-		struct wlr_surface *surface = wlr_surface_from_resource(_surface);
-		if (!wlr_surface_has_buffer(surface)) {
-			continue;
-		}
-		struct wlr_box render_box = {
-			.x = 20, .y = 20,
-			.width = surface->current.width,
-			.height = surface->current.height
-		};
-		float matrix[16];
-        wlr_matrix_project_box(matrix, &render_box, surface->current.transform,
-			    0, wlr_output->transform_matrix);
-		struct wlr_texture *texture = wlr_surface_get_texture(surface);
-	    wlr_render_texture_with_matrix(renderer, texture, matrix, 1.0f);
-	    wlr_surface_send_frame_done(surface, &now);
-	}*/
-
 	wlr_renderer_end(renderer);
 	wlr_output_commit(wlr_output);
 	output->last_frame = now;
@@ -153,7 +131,6 @@ void new_output_notify(struct wl_listener *listener, void *data) {
 		if (!wlr_output_commit(wlr_output)) {
 			return;
 		}
-		//wlr_output_create_global(wlr_output);
 	}
 
 	struct wb_output *output = calloc(1, sizeof(struct wb_output));
@@ -169,6 +146,4 @@ void new_output_notify(struct wl_listener *listener, void *data) {
 
 	wlr_output_layout_add_auto(server->layout, wlr_output);
 	wlr_output_create_global(wlr_output);
-	wlr_xcursor_manager_load(server->cursor->xcursor_manager, output->wlr_output->scale);
-	wlr_xcursor_manager_set_cursor_image(server->cursor->xcursor_manager, "left_ptr", server->cursor->cursor);
 }

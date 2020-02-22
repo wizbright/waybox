@@ -65,7 +65,7 @@ static void xdg_surface_destroy(struct wl_listener *listener, void *data) {
 static void begin_interactive(struct wb_view *view,
 		enum wb_cursor_mode mode, uint32_t edges) {
 	/* This function sets up an interactive move or resize operation, where the
-	 * compositor stops propegating pointer events to clients and instead
+	 * compositor stops propagating pointer events to clients and instead
 	 * consumes them itself, to move or resize windows. */
 	struct wb_server *server = view->server;
 	struct wlr_surface *focused_surface =
@@ -75,7 +75,7 @@ static void begin_interactive(struct wb_view *view,
 		return;
 	}
 	server->grabbed_view = view;
-	server->cursor_mode = mode;
+	server->cursor->cursor_mode = mode;
 	struct wlr_box geo_box;
 	wlr_xdg_surface_get_geometry(view->xdg_surface, &geo_box);
 	if (mode == WB_CURSOR_MOVE) {
@@ -94,9 +94,7 @@ static void xdg_toplevel_request_move(
 		struct wl_listener *listener, void *data) {
 	/* This event is raised when a client would like to begin an interactive
 	 * move, typically because the user clicked on their client-side
-	 * decorations. Note that a more sophisticated compositor should check the
-	 * provied serial against a list of button press serials sent to this
-	 * client, to prevent the client from requesting this whenever they want. */
+	 * decorations. */
 	struct wb_view *view = wl_container_of(listener, view, request_move);
 	begin_interactive(view, WB_CURSOR_MOVE, 0);
 }
@@ -105,15 +103,13 @@ static void xdg_toplevel_request_resize(
 		struct wl_listener *listener, void *data) {
 	/* This event is raised when a client would like to begin an interactive
 	 * resize, typically because the user clicked on their client-side
-	 * decorations. Note that a more sophisticated compositor should check the
-	 * provied serial against a list of button press serials sent to this
-	 * client, to prevent the client from requesting this whenever they want. */
+	 * decorations. */
 	struct wlr_xdg_toplevel_resize_event *event = data;
 	struct wb_view *view = wl_container_of(listener, view, request_resize);
 	begin_interactive(view, WB_CURSOR_RESIZE, event->edges);
 }
 
-static void server_new_xdg_surface(struct wl_listener *listener, void *data) {
+static void handle_new_xdg_surface(struct wl_listener *listener, void *data) {
 	/* This event is raised when wlr_xdg_shell receives a new xdg surface from a
 	 * client, either a toplevel (application window) or popup. */
 	struct wb_server *server =
@@ -123,7 +119,7 @@ static void server_new_xdg_surface(struct wl_listener *listener, void *data) {
 		return;
 	}
 
-	/* Allocate a tinywl_view for this surface */
+	/* Allocate a wb_view for this surface */
 	struct wb_view *view =
 		calloc(1, sizeof(struct wb_view));
 	view->server = server;
@@ -137,7 +133,6 @@ static void server_new_xdg_surface(struct wl_listener *listener, void *data) {
 	view->destroy.notify = xdg_surface_destroy;
 	wl_signal_add(&xdg_surface->events.destroy, &view->destroy);
 
-	/* cotd */
 	struct wlr_xdg_toplevel *toplevel = xdg_surface->toplevel;
 	view->request_move.notify = xdg_toplevel_request_move;
 	wl_signal_add(&toplevel->events.request_move, &view->request_move);
@@ -160,8 +155,6 @@ bool view_at(struct wb_view *view,
 	 */
 	double view_sx = lx - view->x;
 	double view_sy = ly - view->y;
-
-	//struct wlr_surface_state *state = &view->xdg_surface->surface->current;
 
 	double _sx, _sy;
 	struct wlr_surface *_surface = NULL;
@@ -194,6 +187,6 @@ struct wb_view *desktop_view_at(
 
 void init_xdg_shell(struct wb_server *server) {
 	server->xdg_shell = wlr_xdg_shell_create(server->wl_display);
-	server->new_xdg_surface.notify = server_new_xdg_surface;
+	server->new_xdg_surface.notify = handle_new_xdg_surface;
 	wl_signal_add(&server->xdg_shell->events.new_surface, &server->new_xdg_surface);
 }

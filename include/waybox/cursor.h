@@ -6,12 +6,19 @@
 
 #include "waybox/server.h"
 
+enum wb_cursor_mode {
+	WB_CURSOR_PASSTHROUGH,
+	WB_CURSOR_MOVE,
+	WB_CURSOR_RESIZE,
+};
+
 struct wb_cursor {
 	struct wlr_cursor *cursor;
 	struct wlr_xcursor_manager *xcursor_manager;
 
 	struct wb_server *server;
 
+	enum wb_cursor_mode cursor_mode;
 	struct wl_listener cursor_motion;
 	struct wl_listener cursor_motion_absolute;
 
