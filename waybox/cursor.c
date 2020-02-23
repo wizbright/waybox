@@ -140,9 +140,30 @@ static void handle_cursor_frame(struct wl_listener *listener, void *data) {
 	wlr_seat_pointer_notify_frame(cursor->server->seat->seat);
 }
 
-struct wb_cursor *wb_cursor_create() {
+static void handle_cursor_request(struct wl_listener *listener, void *data) {
+	struct wb_cursor *cursor = wl_container_of(
+			listener, cursor, request_cursor);
+	/* This event is rasied by the seat when a client provides a cursor image */
+	struct wlr_seat_pointer_request_set_cursor_event *event = data;
+	struct wlr_seat_client *focused_client =
+		cursor->server->seat->seat->pointer_state.focused_client;
+	/* This can be sent by any client, so we check to make sure this one is
+	 * actually has pointer focus first. */
+	if (focused_client == event->seat_client) {
+		/* Once we've vetted the client, we can tell the cursor to use the
+		 * provided surface as the cursor image. It will set the hardware cursor
+		 * on the output that it's currently on and continue to do so as the
+		 * cursor moves between outputs. */
+		wlr_cursor_set_surface(cursor->cursor, event->surface,
+				event->hotspot_x, event->hotspot_y);
+	}
+}
+
+struct wb_cursor *wb_cursor_create(struct wb_server *server) {
 	struct wb_cursor *cursor = malloc(sizeof(struct wb_cursor));
 	cursor->cursor = wlr_cursor_create();
+	cursor->server = server;
+
 	cursor->xcursor_manager = wlr_xcursor_manager_create("default", 24);
 	wlr_xcursor_manager_load(cursor->xcursor_manager, 1);
 
@@ -160,6 +181,12 @@ struct wb_cursor *wb_cursor_create() {
 
 	cursor->cursor_frame.notify = handle_cursor_frame;
 	wl_signal_add(&cursor->cursor->events.frame, &cursor->cursor_frame);
+
+	cursor->request_cursor.notify = handle_cursor_request;
+	wl_signal_add(&server->seat->seat->events.request_set_cursor,
+			&cursor->request_cursor);
+
+	wlr_cursor_attach_output_layout(cursor->cursor, server->layout);
 
 	return cursor;
 }

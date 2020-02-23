@@ -6,7 +6,6 @@
 #endif
 #define _POSIX_C_SOURCE 200112L
 
-#include <assert.h>
 #include <stdio.h>
 
 #include <wlr/backend.h>
@@ -28,7 +27,6 @@
 
 struct wb_server {
 	struct wl_display *wl_display;
-	struct wl_event_loop *wl_event_loop;
 
 	struct wlr_backend *backend;
 	struct wlr_compositor *compositor;

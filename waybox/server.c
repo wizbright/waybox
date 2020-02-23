@@ -5,15 +5,13 @@ bool init_wb(struct wb_server* server) {
 
 	// create display
 	server->wl_display = wl_display_create();
-	assert(server->wl_display);
-
-	// event loop stuff
-	server->wl_event_loop = wl_display_get_event_loop(server->wl_display);
-	assert(server->wl_event_loop);
+	if (server->wl_display == NULL) {
+		fprintf(stderr, "Failed to connect to a Wayland display\n");
+		return false;
+	}
 
 	// create backend
 	server->backend = wlr_backend_autocreate(server->wl_display, NULL);
-	assert(server->backend);
 	if (server->backend == NULL) {
 		printf("Failed to create backend\n");
 		return false;
@@ -23,10 +21,8 @@ bool init_wb(struct wb_server* server) {
 	wlr_renderer_init_wl_display(server->renderer, server->wl_display);
 
 	server->layout = wlr_output_layout_create();
-	server->cursor = wb_cursor_create();
-	server->cursor->server = server;
-	wlr_cursor_attach_output_layout(server->cursor->cursor, server->layout);
 	server->seat = wb_seat_create(server);
+	server->cursor = wb_cursor_create(server);
 
 	return true;
 }
@@ -38,10 +34,15 @@ bool start_wb(struct wb_server* server) {
 	wl_signal_add(&server->backend->events.new_output, &server->new_output);
 
 	const char *socket = wl_display_add_socket_auto(server->wl_display);
-	assert(socket);
+	if (!socket)
+	{
+		wlr_backend_destroy(server->backend);
+		return false;
+	}
 
 	if (!wlr_backend_start(server->backend)) {
 		fprintf(stderr, "Failed to start backend\n");
+		wlr_backend_destroy(server->backend);
 		wl_display_destroy(server->wl_display);
 		return false;
 	}
@@ -64,6 +65,7 @@ bool start_wb(struct wb_server* server) {
 }
 
 bool terminate_wb(struct wb_server* server) {
+	wl_display_destroy_clients(server->wl_display);
 	wb_cursor_destroy(server->cursor);
 	wb_seat_destroy(server->seat);
 	wlr_output_layout_destroy(server->layout);

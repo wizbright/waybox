@@ -20,7 +20,6 @@
 struct wb_output {
 	struct wlr_output *wlr_output;
 	struct wb_server *server;
-	struct timespec last_frame;
 
 	struct wl_listener destroy;
 	struct wl_listener frame;

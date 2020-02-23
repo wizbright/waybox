@@ -105,7 +105,6 @@ void output_frame_notify(struct wl_listener *listener, void *data) {
 
 	wlr_renderer_end(renderer);
 	wlr_output_commit(wlr_output);
-	output->last_frame = now;
 }
 
 void output_destroy_notify(struct wl_listener *listener, void *data) {
@@ -134,7 +133,6 @@ void new_output_notify(struct wl_listener *listener, void *data) {
 	}
 
 	struct wb_output *output = calloc(1, sizeof(struct wb_output));
-	clock_gettime(CLOCK_MONOTONIC, &output->last_frame);
 	output->server = server;
 	output->wlr_output = wlr_output;
 	wl_list_insert(&server->outputs, &output->link);
