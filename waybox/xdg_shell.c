@@ -49,9 +49,16 @@ static void xdg_surface_unmap(struct wl_listener *listener, void *data) {
 	struct wb_view *view = wl_container_of(listener, view, unmap);
 	view->mapped = false;
 
-	/* Focus previous view's surface, if any */
-	if (view->server->views.prev) {
-		focus_view((struct wb_view *) view->server->views.prev, ((struct wb_view *) view->server->views.prev)->xdg_surface->surface);
+	struct wb_view *current_view = (struct wb_view *) view->server->views.next;
+	struct wb_view *next_view = (struct wb_view *) current_view->link.next;
+
+	/* If the current view is mapped, focus it. */
+	if (current_view->mapped) {
+		focus_view(current_view, current_view->xdg_surface->surface);
+	}
+	/* Otherwise, focus the next view, if any. */
+	else if (next_view->xdg_surface->surface) {
+		focus_view(next_view, next_view->xdg_surface->surface);
 	}
 }
 
