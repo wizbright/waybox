@@ -69,14 +69,12 @@ static void render_surface(struct wlr_surface *surface, int sx, int sy, void *da
 
 void output_frame_notify(struct wl_listener *listener, void *data) {
 	struct wb_output *output = wl_container_of(listener, output, frame);
-	struct wlr_output *wlr_output = data;
-	struct wlr_renderer *renderer = wlr_backend_get_renderer(
-								wlr_output->backend);
+	struct wlr_renderer *renderer = output->server->renderer;
 
 	struct timespec now;
 	clock_gettime(CLOCK_MONOTONIC, &now);
 
-	if (!wlr_output_attach_render(wlr_output, NULL)) {
+	if (!wlr_output_attach_render(output->wlr_output, NULL)) {
 		return;
 	}
 	int width, height;
@@ -103,8 +101,9 @@ void output_frame_notify(struct wl_listener *listener, void *data) {
 		wlr_xdg_surface_for_each_surface(view->xdg_surface, render_surface, &rdata);
 	}
 
+	wlr_output_render_software_cursors(output->wlr_output, NULL);
 	wlr_renderer_end(renderer);
-	wlr_output_commit(wlr_output);
+	wlr_output_commit(output->wlr_output);
 }
 
 void output_destroy_notify(struct wl_listener *listener, void *data) {
