@@ -20,6 +20,8 @@ bool init_wb(struct wb_server* server) {
 	server->renderer = wlr_backend_get_renderer(server->backend);
 	wlr_renderer_init_wl_display(server->renderer, server->wl_display);
 
+	server->compositor = wlr_compositor_create(server->wl_display,
+			server->renderer);
 	server->layout = wlr_output_layout_create();
 	server->seat = wb_seat_create(server);
 	server->cursor = wb_cursor_create(server);
@@ -55,8 +57,6 @@ bool start_wb(struct wb_server* server) {
 	wlr_gtk_primary_selection_device_manager_create(server->wl_display);
 	wlr_idle_create(server->wl_display);
 
-	server->compositor = wlr_compositor_create(server->wl_display,
-			server->renderer);
 	wlr_data_device_manager_create(server->wl_display);
 	wl_list_init(&server->views);
 	init_xdg_shell(server);
