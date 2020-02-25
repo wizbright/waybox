@@ -73,5 +73,5 @@ bool terminate_wb(struct wb_server* server) {
 
 	printf("Display destroyed.\n");
 
-    return true;
+	return true;
 }
