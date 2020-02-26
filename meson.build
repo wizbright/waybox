@@ -3,7 +3,7 @@
 project(
   'waybox',
   'c',
-  version: '0.0.1',
+  version: '0.0.2',
   license: 'MIT',
   meson_version: '>=0.43.0',
   default_options: [
