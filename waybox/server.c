@@ -2,7 +2,6 @@
 #include "waybox/xdg_shell.h"
 
 bool init_wb(struct wb_server* server) {
-
 	// create display
 	server->wl_display = wl_display_create();
 	if (server->wl_display == NULL) {
