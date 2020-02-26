@@ -2,13 +2,16 @@ wb_src = files(
   'cursor.c',
   'main.c',
   'output.c',
+  'seat.c',
   'server.c',
+  'xdg_shell.c',
   )
 
 wb_dep = [
   wayland_server,
   wlroots,
   pixman,
+  xkbcommon,
   ]
 
 executable(
