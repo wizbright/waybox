@@ -12,8 +12,7 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 
 	if (modifiers & WLR_MODIFIER_CTRL && sym == XKB_KEY_Escape) {
 		wl_display_terminate(server->wl_display);
-	}
-	else if (modifiers & WLR_MODIFIER_ALT && sym == XKB_KEY_Tab) {
+	} else if (modifiers & WLR_MODIFIER_ALT && sym == XKB_KEY_Tab) {
 		/* Cycle to the next view */
 		if (wl_list_length(&server->views) < 2) {
 			return false;
@@ -26,14 +25,13 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 		/* Move the previous view to the end of the list */
 		wl_list_remove(&current_view->link);
 		wl_list_insert(server->views.prev, &current_view->link);
-	}
-	else if (modifiers & WLR_MODIFIER_ALT && sym == XKB_KEY_F2)
-	{
+	} else if (modifiers & WLR_MODIFIER_ALT && sym == XKB_KEY_F2) {
 		if (fork() == 0) {
 			execl("/bin/sh", "/bin/sh", "-c", "(obrun || bemenu-run || synapse || gmrun || gnome-do || dmenu_run) 2>/dev/null", NULL);
 		}
+	} else {
+		return false;
 	}
-	else return false;
 	return true;
 }
 
