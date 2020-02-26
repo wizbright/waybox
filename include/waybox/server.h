@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include <wlr/version.h>
 #include <wlr/backend.h>
 #include <wlr/render/wlr_renderer.h>
 #include <wlr/render/wlr_texture.h>
@@ -18,7 +19,12 @@
 #include <wlr/types/wlr_screencopy_v1.h>
 #include <wlr/types/wlr_matrix.h>
 #include <wlr/types/wlr_gamma_control_v1.h>
+#if WLR_VERSION_NUM > 1
+//wlroots 0.2+
 #include <wlr/types/wlr_gtk_primary_selection.h>
+#else
+#include <wlr/types/wlr_primary_selection.h>
+#endif
 #include <wlr/types/wlr_output_layout.h>
 #include <wlr/types/wlr_xdg_shell.h>
 

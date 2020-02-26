@@ -10,7 +10,12 @@ void output_frame_notify(struct wl_listener *listener, void *data) {
 	struct timespec now;
 	clock_gettime(CLOCK_MONOTONIC, &now);
 
+#if WLR_VERSION_NUM > 1280
+	// wlroots 0.6.0+
 	wlr_output_attach_render(wlr_output, NULL);
+#else
+	wlr_output_make_current(wlr_output, NULL);
+#endif
 	wlr_renderer_begin(renderer, wlr_output->width, wlr_output->height);
 
 	float color[4] = {0.4f, 0.4f, 0.4f, 1.0f};
@@ -35,7 +40,12 @@ void output_frame_notify(struct wl_listener *listener, void *data) {
 	    wlr_surface_send_frame_done(surface, &now);
 	}
 
+#if WLR_VERSION_NUM > 1280
+	// wlroots 0.6.0+
 	wlr_output_commit(wlr_output);
+#else
+	wlr_output_swap_buffers(wlr_output, NULL, NULL);
+#endif
 	wlr_renderer_end(renderer);
 	output->last_frame = now;
 }
