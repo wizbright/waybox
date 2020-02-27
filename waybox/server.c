@@ -35,8 +35,7 @@ bool start_wb(struct wb_server* server) {
 	wl_signal_add(&server->backend->events.new_output, &server->new_output);
 
 	const char *socket = wl_display_add_socket_auto(server->wl_display);
-	if (!socket)
-	{
+	if (!socket) {
 		wlr_backend_destroy(server->backend);
 		return false;
 	}

@@ -87,8 +87,7 @@ void output_frame_notify(struct wl_listener *listener, void *data) {
 	wlr_renderer_clear(renderer, color);
 
 	struct wb_view *view;
-	wl_list_for_each_reverse(view, &output->server->views, link)
-	{
+	wl_list_for_each_reverse(view, &output->server->views, link) {
 		if (!view->mapped)
 			/* An unmapped view should not be rendered */
 			continue;
