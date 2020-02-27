@@ -1,5 +1,3 @@
-#include <wlr/version.h>
-
 #include "waybox/output.h"
 
 struct render_data {
@@ -127,12 +125,9 @@ void new_output_notify(struct wl_listener *listener, void *data) {
 		wlr_output_set_mode(wlr_output, mode);
 		wlr_output_enable(wlr_output, true);
 
-#if WLR_VERSION_NUM > 2049
-		// wlroots 0.9.0+
 		if (!wlr_output_commit(wlr_output)) {
 			return;
 		}
-#endif
 	}
 
 	struct wb_output *output = calloc(1, sizeof(struct wb_output));
