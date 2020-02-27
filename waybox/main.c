@@ -39,7 +39,7 @@ int main(int argc, char **argv) {
 
 	if (startup_cmd) {
 		if (fork() == 0) {
-			execl("/bin/sh", "/bin/sh", "-c", startup_cmd, NULL);
+			execl("/bin/sh", "/bin/sh", "-c", startup_cmd, (char *) NULL);
 		}
 	}
 

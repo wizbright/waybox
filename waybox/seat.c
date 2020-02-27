@@ -27,7 +27,7 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 		wl_list_insert(server->views.prev, &current_view->link);
 	} else if (modifiers & WLR_MODIFIER_ALT && sym == XKB_KEY_F2) {
 		if (fork() == 0) {
-			execl("/bin/sh", "/bin/sh", "-c", "(obrun || bemenu-run || synapse || gmrun || gnome-do || dmenu_run) 2>/dev/null", NULL);
+			execl("/bin/sh", "/bin/sh", "-c", "(obrun || bemenu-run || synapse || gmrun || gnome-do || dmenu_run) 2>/dev/null", (char *) NULL);
 		}
 	} else {
 		return false;
