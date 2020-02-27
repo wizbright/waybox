@@ -165,7 +165,7 @@ struct wb_cursor *wb_cursor_create(struct wb_server *server) {
 	cursor->server = server;
 
 	const char *xcursor_size = getenv("XCURSOR_SIZE");
-	cursor->xcursor_manager = wlr_xcursor_manager_create(getenv("XCURSOR_THEME"), xcursor_size ? atoi(xcursor_size) : 24);
+	cursor->xcursor_manager = wlr_xcursor_manager_create(getenv("XCURSOR_THEME"), xcursor_size ? strtoul(xcursor_size, (char **) NULL, 10) : 24);
 	wlr_xcursor_manager_load(cursor->xcursor_manager, 1);
 
 	cursor->cursor_motion.notify = handle_cursor_motion;
