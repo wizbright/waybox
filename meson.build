@@ -26,7 +26,7 @@ pixman = dependency('pixman-1')
 wlroots = dependency('wlroots', version: '>=0.9.0')
 wayland_server = dependency('wayland-server')
 wayland_client = dependency('wayland-client')
-wayland_protos  = dependency('wayland-protocols', version: '>=1.12')
+wayland_protos  = dependency('wayland-protocols', version: '>=1.17')
 xkbcommon  = dependency('xkbcommon')
 
 subdir('protocol')

@@ -52,7 +52,7 @@ bool start_wb(struct wb_server* server) {
 
 	wlr_gamma_control_manager_v1_create(server->wl_display);
 	wlr_screencopy_manager_v1_create(server->wl_display);
-	wlr_gtk_primary_selection_device_manager_create(server->wl_display);
+	wlr_primary_selection_v1_device_manager_create(server->wl_display);
 	wlr_idle_create(server->wl_display);
 
 	wlr_data_device_manager_create(server->wl_display);
