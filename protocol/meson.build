@@ -11,7 +11,7 @@ wayland_scanner_server = generator(
 wayland_scanner_code = generator(
 	wayland_scanner,
 	output: '@BASENAME@-protocol.c',
-	arguments: ['code', '@INPUT@', '@OUTPUT@'],
+	arguments: ['private-code', '@INPUT@', '@OUTPUT@'],
 )
 
 wayland_scanner_client = generator(
