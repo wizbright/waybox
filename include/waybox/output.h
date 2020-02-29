@@ -2,18 +2,15 @@
 #define OUTPUT_H
 
 #ifndef _POSIX_C_SOURCE
-#define _POSIX_C_SOURCE 200809L
+#define _POSIX_C_SOURCE 200112L
 #endif
 
-#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
-#include <wlr/backend.h>
 #include <wlr/render/wlr_renderer.h>
 #include <wlr/render/wlr_texture.h>
-#include <wlr/types/wlr_compositor.h>
 
 #include "waybox/server.h"
 

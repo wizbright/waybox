@@ -35,8 +35,7 @@ bool start_wb(struct wb_server* server) {
 	wl_signal_add(&server->backend->events.new_output, &server->new_output);
 
 	const char *socket = wl_display_add_socket_auto(server->wl_display);
-	if (!socket)
-	{
+	if (!socket) {
 		wlr_backend_destroy(server->backend);
 		return false;
 	}
@@ -53,7 +52,7 @@ bool start_wb(struct wb_server* server) {
 
 	wlr_gamma_control_manager_v1_create(server->wl_display);
 	wlr_screencopy_manager_v1_create(server->wl_display);
-	wlr_gtk_primary_selection_device_manager_create(server->wl_display);
+	wlr_primary_selection_v1_device_manager_create(server->wl_display);
 	wlr_idle_create(server->wl_display);
 
 	wlr_data_device_manager_create(server->wl_display);

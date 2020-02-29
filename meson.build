@@ -1,5 +1,3 @@
-# SirCmpwn is a god. (from mcwayface and bspwc)
-
 project(
   'waybox',
   'c',
@@ -13,28 +11,22 @@ project(
   ],
 )
 
-add_project_arguments('-Wno-unused-parameter', language: 'c')
-add_project_arguments('-DWLR_USE_UNSTABLE', language: 'c')
-add_project_arguments('-DVERSION="' + meson.project_version() + '"', language: 'c')
+add_project_arguments(
+  '-Wno-unused-parameter',
+  '-DWLR_USE_UNSTABLE',
+  '-DVERSION="' + meson.project_version() + '"',
+  language: 'c')
 
 cc = meson.get_compiler('c')
-
-if cc.get_id() == 'clang'
-  add_project_arguments('-Wno-missing-field-initializers', language: 'c')
-  add_project_arguments('-Wno-missing-braces', language: 'c')
-endif
-
-# Hide deprecated API
-add_project_arguments('-DWL_HIDE_DEPRECATED', language: 'c')
 
 # Adding include directory
 inc_dir = include_directories('include')
 
 pixman = dependency('pixman-1')
-wlroots = dependency('wlroots', version: '>=0.6.0')
+wlroots = dependency('wlroots', version: '>=0.9.0')
 wayland_server = dependency('wayland-server')
 wayland_client = dependency('wayland-client')
-wayland_protos  = dependency('wayland-protocols', version: '>=1.12')
+wayland_protos  = dependency('wayland-protocols', version: '>=1.17')
 xkbcommon  = dependency('xkbcommon')
 
 subdir('protocol')
