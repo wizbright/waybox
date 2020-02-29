@@ -55,7 +55,7 @@ foreach p : client_protocols
 endforeach
 
 lib_wl_protos = static_library('wl_protos', wl_protos_src + wl_protos_headers,
-  dependencies: [wayland_client]) # for the include directory
+  dependencies: [wayland_server]) # for the include directory
 
 wlr_protos = declare_dependency(
   link_with: lib_wl_protos,

@@ -10,7 +10,6 @@ wb_src = files(
 wb_dep = [
   wayland_server,
   wlroots,
-  pixman,
   xkbcommon,
   ]
 
