@@ -26,14 +26,14 @@ int main(int argc, char **argv) {
 
 	struct wb_server server = {0};
 
-	if (init_wb(&server) == false) {
+	if (!wb_create_backend(&server)) {
 		printf("Failed to create backend\n");
 		exit(EXIT_FAILURE);
 	}
 
-	if (!start_wb(&server)) {
+	if (!wb_start_server(&server)) {
 		printf("Failed to start server\n");
-		terminate_wb(&server);
+		wb_terminate(&server);
 		exit(EXIT_FAILURE);
 	}
 
@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
 
 	wl_display_run(server.wl_display);
 
-	terminate_wb(&server);
+	wb_terminate(&server);
 
 	return 0;
 }
