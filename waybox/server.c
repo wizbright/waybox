@@ -12,7 +12,6 @@ bool init_wb(struct wb_server* server) {
 	// create backend
 	server->backend = wlr_backend_autocreate(server->wl_display, NULL);
 	if (server->backend == NULL) {
-		printf("Failed to create backend\n");
 		return false;
 	}
 
