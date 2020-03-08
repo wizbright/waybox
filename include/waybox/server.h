@@ -49,8 +49,8 @@ struct wb_server {
 	struct wl_list outputs; // wb_output::link
 };
 
-bool init_wb(struct wb_server* server);
-bool start_wb(struct wb_server* server);
-bool terminate_wb(struct wb_server* server);
+bool wb_create_backend(struct wb_server* server);
+bool wb_start_server(struct wb_server* server);
+bool wb_terminate(struct wb_server* server);
 
 #endif // server.h
