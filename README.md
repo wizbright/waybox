@@ -14,6 +14,7 @@ contributing.](https://github.com/wizbright/waybox/blob/master/CONTRIBUTING.md)
 * meson
 * wlroots
 * wayland
+* xkbcommon
 
 ### Build instructions
 
