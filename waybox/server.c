@@ -46,8 +46,13 @@ bool wb_start_server(struct wb_server* server) {
 		return false;
 	}
 
-	/* Needs to be done better, for languages with different word order */
-	wlr_log(WLR_INFO, "%s '%s'\n", _("Running Wayland compositor on Wayland display"), socket);
+	const char*const tmp = _("Running Wayland compositor on Wayland display '%s'");
+	char *sockmsg = calloc(sizeof(char), strlen(tmp) + strlen(socket) - 2);
+	if (sockmsg) {
+		sprintf(sockmsg, tmp, socket);
+		wlr_log(WLR_INFO, "%s\n", sockmsg);
+	}
+	free(sockmsg);
 	setenv("WAYLAND_DISPLAY", socket, true);
 
 	wlr_gamma_control_manager_v1_create(server->wl_display);
