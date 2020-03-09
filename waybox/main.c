@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
 			} else if ((!strcmp("--startup", argv[i]) || !strcmp("-s", argv[i])) && i < argc) {
 				startup_cmd = argv[i + 1];
 			} else if (!strcmp("--version", argv[i]) || !strcmp("-V", argv[i])) {
-				printf(VERSION "\n");
+				printf(PACKAGE_NAME " " PACKAGE_VERSION "\n");
 				return 0;
 			} else if (argv[i][0] == '-') {
 				printf("Usage: %s [--debug] [--exit] [--help] [--startup CMD] [--version]\n", argv[0]);
