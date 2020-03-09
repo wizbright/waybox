@@ -6,19 +6,28 @@
 #include "waybox/server.h"
 
 int main(int argc, char **argv) {
+	textdomain(GETTEXT_PACKAGE);
+	bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
+	setlocale(LC_ALL, "");
+
 	char *startup_cmd = NULL;
 	if (argc > 0) {
 		int i;
 		for (i = 0; i < argc; i++) {
-			if (!strcmp("--debug", argv[i]) || !strcmp("-v", argv[i]) || !strcmp("--exit", argv[i])) {
-				printf("Warning: option %s is currently unimplemented\n", argv[i]);
-			} else if ((!strcmp("--startup", argv[i]) || !strcmp("-s", argv[i])) && i < argc) {
-				startup_cmd = argv[i + 1];
+			if (!strcmp("--debug", argv[i]) || !strcmp("-v", argv[i]) ||
+					!strcmp("--exit", argv[i])) {
+				fprintf(stderr, _("Warning: option %s is currently unimplemented\n"), argv[i]);
+			} else if ((!strcmp("--startup", argv[i]) || !strcmp("-s", argv[i]))) {
+				if (i < argc - 1) {
+					startup_cmd = argv[i + 1];
+				} else {
+					fprintf(stderr, _("%s requires an argument\n"), argv[i]);
+				}
 			} else if (!strcmp("--version", argv[i]) || !strcmp("-V", argv[i])) {
 				printf(PACKAGE_NAME " " PACKAGE_VERSION "\n");
 				return 0;
 			} else if (argv[i][0] == '-') {
-				printf("Usage: %s [--debug] [--exit] [--help] [--startup CMD] [--version]\n", argv[0]);
+				printf(_("Usage: %s [--debug] [--exit] [--help] [--startup CMD] [--version]\n"), argv[0]);
 				return strcmp("--help", argv[i]) != 0 && strcmp("-h", argv[i]) != 0;
 			}
 		}
@@ -27,12 +36,12 @@ int main(int argc, char **argv) {
 	struct wb_server server = {0};
 
 	if (!wb_create_backend(&server)) {
-		printf("Failed to create backend\n");
+		fprintf(stderr, _("Failed to create backend\n"));
 		exit(EXIT_FAILURE);
 	}
 
 	if (!wb_start_server(&server)) {
-		printf("Failed to start server\n");
+		fprintf(stderr, _("Failed to start server\n"));
 		wb_terminate(&server);
 		exit(EXIT_FAILURE);
 	}

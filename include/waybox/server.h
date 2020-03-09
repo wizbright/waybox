@@ -20,6 +20,10 @@
 #include <wlr/types/wlr_output_layout.h>
 #include <wlr/types/wlr_xdg_shell.h>
 
+#include <libintl.h>
+#include <locale.h>
+#define _ gettext
+
 #include "waybox/output.h"
 #include "waybox/cursor.h"
 #include "waybox/seat.h"
