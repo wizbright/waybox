@@ -5,7 +5,7 @@ bool wb_create_backend(struct wb_server* server) {
 	// create display
 	server->wl_display = wl_display_create();
 	if (server->wl_display == NULL) {
-		fprintf(stderr, _("Failed to connect to a Wayland display\n"));
+		wlr_log(WLR_ERROR, "%s\n", _("Failed to connect to a Wayland display"));
 		return false;
 	}
 
@@ -40,13 +40,14 @@ bool wb_start_server(struct wb_server* server) {
 	}
 
 	if (!wlr_backend_start(server->backend)) {
-		fprintf(stderr, _("Failed to start backend\n"));
+		wlr_log(WLR_ERROR, "%s\n", _("Failed to start backend"));
 		wlr_backend_destroy(server->backend);
 		wl_display_destroy(server->wl_display);
 		return false;
 	}
 
-	printf(_("Running Wayland compositor on Wayland display '%s'\n"), socket);
+	/* Needs to be done better, for languages with different word order */
+	wlr_log(WLR_INFO, "%s '%s'\n", _("Running Wayland compositor on Wayland display"), socket);
 	setenv("WAYLAND_DISPLAY", socket, true);
 
 	wlr_gamma_control_manager_v1_create(server->wl_display);
@@ -68,7 +69,7 @@ bool wb_terminate(struct wb_server* server) {
 	wlr_output_layout_destroy(server->layout);
 	wl_display_destroy(server->wl_display);
 
-	printf(_("Display destroyed.\n"));
+	wlr_log(WLR_INFO, "%s\n", _("Display destroyed"));
 
 	return true;
 }

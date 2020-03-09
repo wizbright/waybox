@@ -8,14 +8,16 @@
 int main(int argc, char **argv) {
 	textdomain(GETTEXT_PACKAGE);
 	bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
-	setlocale(LC_ALL, "");
+	setlocale(LC_ALL, NULL);
 
 	char *startup_cmd = NULL;
+	bool debug = false;
 	if (argc > 0) {
 		int i;
 		for (i = 0; i < argc; i++) {
-			if (!strcmp("--debug", argv[i]) || !strcmp("-v", argv[i]) ||
-					!strcmp("--exit", argv[i])) {
+			if (!strcmp("--debug", argv[i]) || !strcmp("-v", argv[i])) {
+				debug = true;
+			} else if (!strcmp("--exit", argv[i])) {
 				fprintf(stderr, _("Warning: option %s is currently unimplemented\n"), argv[i]);
 			} else if ((!strcmp("--startup", argv[i]) || !strcmp("-s", argv[i]))) {
 				if (i < argc - 1) {
@@ -33,15 +35,16 @@ int main(int argc, char **argv) {
 		}
 	}
 
+	wlr_log_init(debug ? WLR_DEBUG : WLR_ERROR, NULL);
 	struct wb_server server = {0};
 
 	if (!wb_create_backend(&server)) {
-		fprintf(stderr, _("Failed to create backend\n"));
+		wlr_log(WLR_ERROR, "%s\n", _("Failed to create backend"));
 		exit(EXIT_FAILURE);
 	}
 
 	if (!wb_start_server(&server)) {
-		fprintf(stderr, _("Failed to start server\n"));
+		wlr_log(WLR_ERROR, "%s\n", _("Failed to start server"));
 		wb_terminate(&server);
 		exit(EXIT_FAILURE);
 	}
