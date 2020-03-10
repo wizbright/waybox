@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
 				return 0;
 			} else if (!strcmp("--config-file", argv[i]) ||
 					!strcmp("--sm-disable", argv[i])) {
-				fprintf(stderr, _("Warning: option '%s' hasn't been implemented yet.\n"), argv[i]);
+				fprintf(stderr, _("%s hasn't been implemented yet.\n"), argv[i]);
 				if (i == argc - 1) {
 					fprintf(stderr, _("%s requires an argument\n"), argv[i]);
 				}
@@ -61,13 +61,17 @@ int main(int argc, char **argv) {
 	wlr_log_init(debug ? WLR_DEBUG : WLR_ERROR, NULL);
 	struct wb_server server = {0};
 
-	if (!wb_create_backend(&server)) {
-		wlr_log(WLR_ERROR, "%s\n", _("Failed to create backend"));
+	if (wb_create_backend(&server)) {
+		wlr_log(WLR_INFO, "%s", _("Successfully created backend"));
+	} else {
+		wlr_log(WLR_ERROR, "%s", _("Failed to create backend"));
 		exit(EXIT_FAILURE);
 	}
 
-	if (!wb_start_server(&server)) {
-		wlr_log(WLR_ERROR, "%s\n", _("Failed to start server"));
+	if (wb_start_server(&server)) {
+		wlr_log(WLR_INFO, "%s", _("Successfully started server"));
+	} else {
+		wlr_log(WLR_ERROR, "%s", _("Failed to start server"));
 		wb_terminate(&server);
 		exit(EXIT_FAILURE);
 	}

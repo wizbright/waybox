@@ -5,7 +5,7 @@ bool wb_create_backend(struct wb_server* server) {
 	// create display
 	server->wl_display = wl_display_create();
 	if (server->wl_display == NULL) {
-		wlr_log(WLR_ERROR, "%s\n", _("Failed to connect to a Wayland display"));
+		wlr_log(WLR_ERROR, "%s", _("Failed to connect to a Wayland display"));
 		return false;
 	}
 
@@ -40,7 +40,7 @@ bool wb_start_server(struct wb_server* server) {
 	}
 
 	if (!wlr_backend_start(server->backend)) {
-		wlr_log(WLR_ERROR, "%s\n", _("Failed to start backend"));
+		wlr_log(WLR_ERROR, "%s", _("Failed to start backend"));
 		wlr_backend_destroy(server->backend);
 		wl_display_destroy(server->wl_display);
 		return false;
@@ -50,7 +50,7 @@ bool wb_start_server(struct wb_server* server) {
 	char *sockmsg = calloc(sizeof(char), strlen(tmp) + strlen(socket) - 2);
 	if (sockmsg) {
 		sprintf(sockmsg, tmp, socket);
-		wlr_log(WLR_INFO, "%s\n", sockmsg);
+		wlr_log(WLR_INFO, "%s", sockmsg);
 	}
 	free(sockmsg);
 	setenv("WAYLAND_DISPLAY", socket, true);
@@ -74,7 +74,7 @@ bool wb_terminate(struct wb_server* server) {
 	wlr_output_layout_destroy(server->layout);
 	wl_display_destroy(server->wl_display);
 
-	wlr_log(WLR_INFO, "%s\n", _("Display destroyed"));
+	wlr_log(WLR_INFO, "%s", _("Display destroyed"));
 
 	return true;
 }
