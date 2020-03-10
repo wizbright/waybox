@@ -308,6 +308,10 @@ msgstr "  --debug             顯示偵錯輸出\n"
 msgid "  --debug-focus       Display debugging output for focus handling\n"
 msgstr "  --debug-focus       顯示焦點處理的偵錯輸出\n"
 
+#: openbox/openbox.c:548
+msgid "  --startup CMD       Run CMD after starting\n"
+msgstr ""
+
 #: openbox/openbox.c:551
 msgid "  --debug-session     Display debugging output for session management\n"
 msgstr ""

@@ -309,6 +309,10 @@ msgid "  --debug-focus       Display debugging output for focus handling\n"
 msgstr ""
 "  --debug-focus       ফোকাস হ্যান্ডলিং সংক্রান্ত ডিবাগের ফলাফল প্রদর্শন করে\n"
 
+#: openbox/openbox.c:548
+msgid "  --startup CMD       Run CMD after starting\n"
+msgstr ""
+
 #: openbox/openbox.c:551
 #, fuzzy
 msgid "  --debug-session     Display debugging output for session management\n"

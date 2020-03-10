@@ -319,6 +319,10 @@ msgid "  --debug-focus       Display debugging output for focus handling\n"
 msgstr ""
 "  --debug-focus       Mostrar salida del depurador para el manejo del foco\n"
 
+#: openbox/openbox.c:548
+msgid "  --startup CMD       Run CMD after starting\n"
+msgstr ""
+
 #: openbox/openbox.c:551
 msgid "  --debug-session     Display debugging output for session management\n"
 msgstr ""

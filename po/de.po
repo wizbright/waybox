@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: Waybox 0.0.1\n"
 "Report-Msgid-Bugs-To: https://github.com/wizbright/waybox/issues\n"
 "POT-Creation-Date: 2008-11-15 22:28+0100\n"
-"PO-Revision-Date: 2020-03-10 14:06-0400\n"
+"PO-Revision-Date: 2020-03-10 18:58-0400\n"
 "Last-Translator: Volker Ribbert <volker.nospam@netcologne.de>\n"
 "Language-Team:  <de@li.org>\n"
 "Language: de\n"
@@ -53,7 +53,7 @@ msgstr "Beenden"
 
 #: openbox/actions/exit.c:56
 msgid "Are you sure you want to exit Waybox?"
-msgstr "Möchten Sie Waybox  wirklich beenden?"
+msgstr "Möchten Sie Waybox wirklich beenden?"
 
 #: openbox/actions/exit.c:57
 msgid "Exit Waybox"
@@ -318,6 +318,10 @@ msgid "  --debug-focus       Display debugging output for focus handling\n"
 msgstr ""
 "  --debug-focus       Fehlersuche-Ergebnis für Fokus-Handling anzeigen\n"
 
+#: openbox/openbox.c:548
+msgid "  --startup CMD       Run CMD after starting\n"
+msgstr "  --startup CMD       CMD nach Start ausführen\n"
+
 #: openbox/openbox.c:551
 msgid "  --debug-session     Display debugging output for session management\n"
 msgstr "  --debug-session     Fehler-Ergebnis für Sitzungsmanager anzeigen\n"
@@ -372,7 +376,7 @@ msgstr "Kann nicht Verzeichnis \"%s\" machen: %s"
 #: openbox/session.c:466
 #, c-format
 msgid "Unable to save the session to \"%s\": %s"
-msgstr "Speichern Sitzung in \"%s\" nicht möglich: %s"
+msgstr "Sitzung in \"%s\" speichern ist nicht möglich: %s"
 
 #: openbox/session.c:605
 #, c-format

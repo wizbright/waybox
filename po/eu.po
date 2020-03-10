@@ -311,6 +311,10 @@ msgstr "  --debug             Arazketa irteera erakutsi\n"
 msgid "  --debug-focus       Display debugging output for focus handling\n"
 msgstr "  --debug-focus       Erakutsi arazketa irteera foku maneiurako\n"
 
+#: openbox/openbox.c:548
+msgid "  --startup CMD       Run CMD after starting\n"
+msgstr ""
+
 #: openbox/openbox.c:551
 msgid "  --debug-session     Display debugging output for session management\n"
 msgstr ""

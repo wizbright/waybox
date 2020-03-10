@@ -318,6 +318,10 @@ msgstr ""
 "  --debug-focus       Εμφάνισης αποτελεσμάτων αποσφαλμάτωσης για εστίαση "
 "χειρισμών\n"
 
+#: openbox/openbox.c:548
+msgid "  --startup CMD       Run CMD after starting\n"
+msgstr ""
+
 #: openbox/openbox.c:551
 #, fuzzy
 msgid "  --debug-session     Display debugging output for session management\n"

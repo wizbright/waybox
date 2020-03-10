@@ -309,6 +309,10 @@ msgstr "  --debug             اعرض خرْج التنقيح\n"
 msgid "  --debug-focus       Display debugging output for focus handling\n"
 msgstr "  --debug-focus       اعرض خرج التنقيح للتعامل مع البؤرة\n"
 
+#: openbox/openbox.c:548
+msgid "  --startup CMD       Run CMD after starting\n"
+msgstr ""
+
 #: openbox/openbox.c:551
 msgid "  --debug-session     Display debugging output for session management\n"
 msgstr ""

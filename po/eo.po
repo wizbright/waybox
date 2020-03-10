@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Waybox 0.0.1\n"
 "Report-Msgid-Bugs-To: https://github.com/wizbright/waybox/issues\n"
 "POT-Creation-Date: 2008-11-15 22:28+0100\n"
-"PO-Revision-Date: 2020-03-10 14:07-0400\n"
+"PO-Revision-Date: 2020-03-10 19:04-0400\n"
 "Last-Translator: Keith <keith@localhost>\n"
 "Language-Team: Esperanto\n"
 "Language: eo\n"
@@ -280,7 +280,7 @@ msgstr "  --help              Montri ĉi tiun helpilon kaj finiĝi\n"
 
 #: openbox/openbox.c:532
 msgid "  --version           Display the version and exit\n"
-msgstr "  --version           Montri la eldonon kaj finigi\n"
+msgstr "  --version           Montri la eldonon kaj finiĝi\n"
 
 #. TRANSLATORS: if you translate "FILE" here, make sure to keep the "Specify..."
 #. aligned still, if you have to, make a new line with \n and 22 spaces. It's
@@ -288,8 +288,8 @@ msgstr "  --version           Montri la eldonon kaj finigi\n"
 #: openbox/openbox.c:537
 msgid "  --config-file FILE  Specify the path to the config file to use\n"
 msgstr ""
-"--config-file DOSIERO\n"
-"                     Specifi la vojon de la uzota agorda dosiero\n"
+"  --config-file DOSIERO\n"
+"                      La vojo de la uzota agorda dosiero\n"
 
 #: openbox/openbox.c:538
 msgid "  --sm-disable        Disable connection to the session manager\n"
@@ -314,6 +314,10 @@ msgstr "  --debug             Montri senerarigajn eligojn\n"
 #: openbox/openbox.c:546
 msgid "  --debug-focus       Display debugging output for focus handling\n"
 msgstr "  --debug-focus       Montri senerarigajn eligojn por fokus-traktado\n"
+
+#: openbox/openbox.c:548
+msgid "  --startup CMD       Run CMD after starting\n"
+msgstr "  --startup KOMANDO   Plenumiĝos KOMANDO post starto\n"
 
 #: openbox/openbox.c:551
 msgid "  --debug-session     Display debugging output for session management\n"

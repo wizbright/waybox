@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Waybox 0.0.1\n"
 "Report-Msgid-Bugs-To: https://github.com/wizbright/waybox/issues\n"
 "POT-Creation-Date: 2008-11-15 22:28+0100\n"
-"PO-Revision-Date: 2020-03-10 14:08-0400\n"
+"PO-Revision-Date: 2020-03-10 18:42-0400\n"
 "Last-Translator: Laszlo Dvornik <rezuri@zoho.com>\n"
 "Language-Team: Hungarian\n"
 "Language: hu\n"
@@ -315,6 +315,10 @@ msgid "  --debug-focus       Display debugging output for focus handling\n"
 msgstr ""
 "  --debug-focus       Fókuszkezelésre vonatkozó hibakeresési kimenetek "
 "megjelenítése\n"
+
+#: openbox/openbox.c:548
+msgid "  --startup CMD       Run CMD after starting\n"
+msgstr "  --startup PARANCS   PARANCS futtatása indulás után\n"
 
 #: openbox/openbox.c:551
 msgid "  --debug-session     Display debugging output for session management\n"

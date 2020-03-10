@@ -312,6 +312,10 @@ msgstr "  --debug             Показать вывод отладки\n"
 msgid "  --debug-focus       Display debugging output for focus handling\n"
 msgstr "  --debug-focus       Показать вывод отладки для выделенного фокусом\n"
 
+#: openbox/openbox.c:548
+msgid "  --startup CMD       Run CMD after starting\n"
+msgstr ""
+
 #: openbox/openbox.c:551
 msgid "  --debug-session     Display debugging output for session management\n"
 msgstr ""

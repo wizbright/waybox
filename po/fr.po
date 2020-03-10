@@ -321,6 +321,10 @@ msgstr ""
 "  --debug-focus       Affiche la sortie de déboguage pour la gestion du "
 "focus\n"
 
+#: openbox/openbox.c:548
+msgid "  --startup CMD       Run CMD after starting\n"
+msgstr ""
+
 #: openbox/openbox.c:551
 msgid "  --debug-session     Display debugging output for session management\n"
 msgstr ""

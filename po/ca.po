@@ -318,6 +318,10 @@ msgstr ""
 "  --debug-focus       Mostra la sortida de depuració per a la gestió del "
 "focus\n"
 
+#: openbox/openbox.c:548
+msgid "  --startup CMD       Run CMD after starting\n"
+msgstr ""
+
 #: openbox/openbox.c:551
 msgid "  --debug-session     Display debugging output for session management\n"
 msgstr ""

@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Waybox 0.0.1\n"
 "Report-Msgid-Bugs-To: https://github.com/wizbright/waybox/issues\n"
 "POT-Creation-Date: 2008-11-15 22:28+0100\n"
-"PO-Revision-Date: 2020-03-10 14:08-0400\n"
+"PO-Revision-Date: 2020-03-10 18:42-0400\n"
 "Last-Translator: Algimantas Margevičius <margevicius.algimantas@gmail.com>\n"
 "Language-Team: Lietuvių <>\n"
 "Language: lt\n"
@@ -313,6 +313,10 @@ msgstr "  --debug             Rodyti derinimo išvestį\n"
 msgid "  --debug-focus       Display debugging output for focus handling\n"
 msgstr ""
 "  --debug-focus       Rodyti derinimo išvestį susijusią su fokusavimu\n"
+
+#: openbox/openbox.c:548
+msgid "  --startup CMD       Run CMD after starting\n"
+msgstr "  --startup CMD       Vykdyti komandą CMD po paleidimo\n"
 
 #: openbox/openbox.c:551
 msgid "  --debug-session     Display debugging output for session management\n"

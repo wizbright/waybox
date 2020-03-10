@@ -314,6 +314,10 @@ msgstr ""
 "  --debug-focus       Прикажи излаз код отклањања грешака за руковање "
 "фокусом\n"
 
+#: openbox/openbox.c:548
+msgid "  --startup CMD       Run CMD after starting\n"
+msgstr ""
+
 #: openbox/openbox.c:551
 msgid "  --debug-session     Display debugging output for session management\n"
 msgstr ""

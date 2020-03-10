@@ -315,6 +315,10 @@ msgstr ""
 "  --debug-focus       Afișează output-ul pentru depanare a problemelor de "
 "focus\n"
 
+#: openbox/openbox.c:548
+msgid "  --startup CMD       Run CMD after starting\n"
+msgstr ""
+
 #: openbox/openbox.c:551
 msgid "  --debug-session     Display debugging output for session management\n"
 msgstr ""

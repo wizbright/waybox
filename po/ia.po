@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Waybox 0.0.1\n"
 "Report-Msgid-Bugs-To: https://github.com/wizbright/waybox/issues\n"
 "POT-Creation-Date: 2008-11-15 22:28+0100\n"
-"PO-Revision-Date: 2020-03-10 14:08-0400\n"
+"PO-Revision-Date: 2020-03-10 18:42-0400\n"
 "Last-Translator: Nik Kalach <nikka@fedoraproject.org>\n"
 "Language-Team: Interlingua (International Auxiliary Language Association) "
 "<trans-ia@lists.fedoraproject.org>\n"
@@ -316,6 +316,10 @@ msgid "  --debug-focus       Display debugging output for focus handling\n"
 msgstr ""
 "  --debug-focus       Monstrar datos pro eliminar faltas in le gestion del "
 "foco\n"
+
+#: openbox/openbox.c:548
+msgid "  --startup CMD       Run CMD after starting\n"
+msgstr "  --startup CMD       Exequer CMD post le lanceamento de Waybox\n"
 
 #: openbox/openbox.c:551
 msgid "  --debug-session     Display debugging output for session management\n"
