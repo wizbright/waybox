@@ -128,12 +128,15 @@ static void new_input_notify(struct wl_listener *listener, void *data) {
 	struct wb_server *server = wl_container_of(listener, server, new_input);
 	switch (device->type) {
 		case WLR_INPUT_DEVICE_KEYBOARD:
+			wlr_log(WLR_INFO, "%s: %s", _("New keyboard detected"), device->name);
 			handle_new_keyboard(server, device);
 			break;
 		case WLR_INPUT_DEVICE_POINTER:
+			wlr_log(WLR_INFO, "%s: %s", _("New pointer detected"), device->name);
 			wlr_cursor_attach_input_device(server->cursor->cursor, device);
 			break;
 		default:
+			wlr_log(WLR_INFO, "%s: %s", _("Unsupported input device detected"), device->name);
 			break;
 	}
 

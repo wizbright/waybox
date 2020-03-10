@@ -20,6 +20,7 @@ static void render_surface(struct wlr_surface *surface, int sx, int sy, void *da
 	 * means. You don't have to worry about this, wlroots takes care of it. */
 	struct wlr_texture *texture = wlr_surface_get_texture(surface);
 	if (texture == NULL) {
+		wlr_log(WLR_ERROR, "%s: %s", _("Couldn't get a surface texture"));
 		return;
 	}
 
@@ -75,6 +76,7 @@ void output_frame_notify(struct wl_listener *listener, void *data) {
 	clock_gettime(CLOCK_MONOTONIC, &now);
 
 	if (!wlr_output_attach_render(output->wlr_output, NULL)) {
+		wlr_log_errno(WLR_ERROR, "%s", _("Couldn't attach renderer to output"));
 		return;
 	}
 	int width, height;
@@ -119,6 +121,7 @@ void new_output_notify(struct wl_listener *listener, void *data) {
 			listener, server, new_output
 			);
 	struct wlr_output *wlr_output = data;
+	wlr_log(WLR_INFO, "%s: %s", _("New output device detected"), wlr_output->name);
 
 	if (!wl_list_empty(&wlr_output->modes)) {
 		struct wlr_output_mode *mode = wlr_output_preferred_mode(wlr_output);
@@ -126,6 +129,7 @@ void new_output_notify(struct wl_listener *listener, void *data) {
 		wlr_output_enable(wlr_output, true);
 
 		if (!wlr_output_commit(wlr_output)) {
+			wlr_log_errno(WLR_ERROR, "%s", _("Couldn't commit pending frame to output"));
 			return;
 		}
 	}

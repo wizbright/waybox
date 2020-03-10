@@ -46,13 +46,7 @@ bool wb_start_server(struct wb_server* server) {
 		return false;
 	}
 
-	const char*const tmp = _("Running Wayland compositor on Wayland display '%s'");
-	char *sockmsg = calloc(sizeof(char), strlen(tmp) + strlen(socket) - 2);
-	if (sockmsg) {
-		sprintf(sockmsg, tmp, socket);
-		wlr_log(WLR_INFO, "%s", sockmsg);
-	}
-	free(sockmsg);
+	wlr_log(WLR_INFO, "%s: WAYLAND_DISPLAY=%s", _("Running Wayland compositor on Wayland display"), socket);
 	setenv("WAYLAND_DISPLAY", socket, true);
 
 	wlr_gamma_control_manager_v1_create(server->wl_display);
