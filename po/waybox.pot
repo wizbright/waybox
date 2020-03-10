@@ -79,28 +79,6 @@ msgstr ""
 msgid "Killing..."
 msgstr ""
 
-#: openbox/client.c:2028 openbox/client.c:2060
-msgid "Not Responding"
-msgstr ""
-
-#: openbox/client.c:3454
-#, c-format
-msgid ""
-"The window \"%s\" does not seem to be responding.  Do you want to force it "
-"to exit by sending the %s signal?"
-msgstr ""
-
-#: openbox/client.c:3456
-msgid "End Process"
-msgstr ""
-
-#: openbox/client.c:3460
-#, c-format
-msgid ""
-"The window \"%s\" does not seem to be responding.  Do you want to disconnect "
-"it from the X server?"
-msgstr ""
-
 #: openbox/client.c:3462
 msgid "Disconnect"
 msgstr ""
@@ -241,18 +219,6 @@ msgstr ""
 msgid "Failed to open the display from the DISPLAY environment variable."
 msgstr ""
 
-#: openbox/openbox.c:183
-msgid "Failed to initialize the obrender library."
-msgstr ""
-
-#: openbox/openbox.c:194
-msgid "X server does not support locale."
-msgstr ""
-
-#: openbox/openbox.c:196
-msgid "Cannot set locale modifiers for the X server."
-msgstr ""
-
 #: openbox/openbox.c:263
 msgid "Unable to find a valid config file, using some simple defaults"
 msgstr ""
@@ -304,10 +270,6 @@ msgstr ""
 msgid "  --version           Display the version and exit\n"
 msgstr ""
 
-#: openbox/openbox.c:533
-msgid "  --replace           Replace the currently running window manager\n"
-msgstr ""
-
 #. TRANSLATORS: if you translate "FILE" here, make sure to keep the "Specify..."
 #. aligned still, if you have to, make a new line with \n and 22 spaces. It's
 #. fine to leave it as FILE though.
@@ -317,24 +279,6 @@ msgstr ""
 
 #: openbox/openbox.c:538
 msgid "  --sm-disable        Disable connection to the session manager\n"
-msgstr ""
-
-#: openbox/openbox.c:539
-msgid ""
-"\n"
-"Passing messages to a running Waybox instance:\n"
-msgstr ""
-
-#: openbox/openbox.c:540
-msgid "  --reconfigure       Reload Waybox's configuration\n"
-msgstr ""
-
-#: openbox/openbox.c:541
-msgid "  --restart           Restart Waybox\n"
-msgstr ""
-
-#: openbox/openbox.c:542
-msgid "  --exit              Exit Waybox\n"
 msgstr ""
 
 #: openbox/openbox.c:543
@@ -355,8 +299,8 @@ msgstr ""
 msgid "  --debug-focus       Display debugging output for focus handling\n"
 msgstr ""
 
-#: openbox/openbox.c:547
-msgid "  --debug-xinerama    Split the display into fake xinerama screens\n"
+#: openbox/openbox.c:551
+msgid "  --debug-session     Display debugging output for session management\n"
 msgstr ""
 
 #: openbox/openbox.c:548
@@ -367,27 +311,12 @@ msgid ""
 msgstr ""
 
 #: openbox/openbox.c:617
-msgid "--config-file requires an argument\n"
+msgid "%s requires an argument\n"
 msgstr ""
 
 #: openbox/openbox.c:660
 #, c-format
 msgid "Invalid command line argument \"%s\"\n"
-msgstr ""
-
-#: openbox/screen.c:102 openbox/screen.c:190
-#, c-format
-msgid "A window manager is already running on screen %d"
-msgstr ""
-
-#: openbox/screen.c:124
-#, c-format
-msgid "Could not acquire window manager selection on screen %d"
-msgstr ""
-
-#: openbox/screen.c:145
-#, c-format
-msgid "The WM on screen %d is not exiting"
 msgstr ""
 
 #. TRANSLATORS: If you need to specify a different order of the
@@ -447,16 +376,6 @@ msgstr ""
 #: openbox/translate.c:145
 #, c-format
 msgid "Invalid key name \"%s\" in key binding"
-msgstr ""
-
-#: openbox/translate.c:151
-#, c-format
-msgid "Requested key \"%s\" does not exist on the display"
-msgstr ""
-
-#: openbox/xerror.c:40
-#, c-format
-msgid "X Error: %s"
 msgstr ""
 
 #: openbox/prompt.c:200
