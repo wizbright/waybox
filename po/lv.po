@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Waybox 0.0.1\n"
 "Report-Msgid-Bugs-To: https://github.com/wizbright/waybox/issues\n"
-"POT-Creation-Date: 2014-11-05 16:51+0100\n"
-"PO-Revision-Date: 2010-01-08 21:11+0200\n"
+"POT-Creation-Date: 2008-11-15 22:28+0100\n"
+"PO-Revision-Date: 2020-03-10 14:08-0400\n"
 "Last-Translator: Einars Sprugis <einars8@gmail.com>\n"
 "Language-Team: Latvian <locale@laka.lv>\n"
 "Language: lv\n"
@@ -19,178 +19,157 @@ msgstr ""
 "2);\n"
 "X-Generator: Lokalize 1.0\n"
 
-#: openbox/actions.c:234
+#: openbox/actions.c:149
 #, c-format
 msgid "Invalid action \"%s\" requested. No such action exists."
 msgstr "Prasīta neatļauta darbība \"%s\". Šāda darbība neeksistē."
 
-#: openbox/actions/execute.c:245
+#: openbox/actions/execute.c:128
 msgid "No"
 msgstr "Nē"
 
-#: openbox/actions/execute.c:246
+#: openbox/actions/execute.c:129
 msgid "Yes"
 msgstr "Jā"
 
-#: openbox/actions/execute.c:250
+#: openbox/actions/execute.c:133
 msgid "Execute"
 msgstr "Izpildīt"
 
-#: openbox/actions/execute.c:259
+#: openbox/actions/execute.c:142
 #, c-format
 msgid "Failed to convert the path \"%s\" from utf8"
 msgstr "Neizdevās pārveidot ceļu \"%s\" no utf8"
 
-#: openbox/actions/exit.c:69 openbox/client.c:3665
+#: openbox/actions/exit.c:52 openbox/actions/session.c:64 openbox/client.c:3465
 msgid "Cancel"
 msgstr "Atcelt"
 
-#: openbox/actions/exit.c:70
+#: openbox/actions/exit.c:53
 msgid "Exit"
 msgstr "Iziet"
 
-#: openbox/actions/exit.c:74
-msgid "Are you sure you want to log out?"
-msgstr "Vai tiešām vēlaties atteikties?"
-
-#: openbox/actions/exit.c:75
-msgid "Log Out"
-msgstr "Atteikties"
-
-#: openbox/actions/exit.c:78
+#: openbox/actions/exit.c:56
 msgid "Are you sure you want to exit Waybox?"
 msgstr "Vai tiešām vēlaties iziet no Waybox?"
 
-#: openbox/actions/exit.c:79
+#: openbox/actions/exit.c:57
 msgid "Exit Waybox"
 msgstr "Iziet no Waybox"
 
-#: openbox/client.c:2115
+#. TRANSLATORS: Don't translate the word "SessionLogout" as it's the
+#. name of the action you write in rc.xml
+#: openbox/actions/session.c:43
+msgid ""
+"The SessionLogout action is not available since Waybox was built without "
+"session management support"
+msgstr ""
+
+#: openbox/actions/session.c:65 openbox/actions/session.c:70
+msgid "Log Out"
+msgstr "Atteikties"
+
+#: openbox/actions/session.c:69
+msgid "Are you sure you want to log out?"
+msgstr "Vai tiešām vēlaties atteikties?"
+
+#: openbox/client.c:2012
 msgid "Unnamed Window"
 msgstr "Logs bez nosaukuma"
 
-#: openbox/client.c:2129 openbox/client.c:2160
+#: openbox/client.c:2026 openbox/client.c:2058
 msgid "Killing..."
 msgstr "Nogalina..."
 
-#: openbox/client.c:2131 openbox/client.c:2162
-msgid "Not Responding"
-msgstr "Neatbild"
-
-#: openbox/client.c:3654
-#, c-format
-msgid ""
-"The window \"%s\" does not seem to be responding.  Do you want to force it "
-"to exit by sending the %s signal?"
-msgstr ""
-"Logs \"%s\" neatbild. Vai vēlieties to aizvērt piespiedu kārtā, nosūtot "
-"signālu %s?"
-
-#: openbox/client.c:3656
-msgid "End Process"
-msgstr "Nobeigt procesu"
-
-#: openbox/client.c:3660
-#, c-format
-msgid ""
-"The window \"%s\" does not seem to be responding.  Do you want to disconnect "
-"it from the X server?"
-msgstr "Logs \"%s\" neatbild. Vai vēlaties to atvienot no X servera?"
-
-#: openbox/client.c:3662
+#: openbox/client.c:3462
 msgid "Disconnect"
 msgstr "Atvienot"
 
-#: openbox/client_list_combined_menu.c:93 openbox/client_list_menu.c:90
+#: openbox/client_list_combined_menu.c:87 openbox/client_list_menu.c:91
 msgid "Go there..."
 msgstr "Iet uz turieni..."
 
-#: openbox/client_list_combined_menu.c:100
+#: openbox/client_list_combined_menu.c:94
 msgid "Manage desktops"
 msgstr "Pārvaldīt darbvirsmas"
 
-#: openbox/client_list_combined_menu.c:101 openbox/client_list_menu.c:166
+#: openbox/client_list_combined_menu.c:95 openbox/client_list_menu.c:155
 msgid "_Add new desktop"
 msgstr "Pievienot j_aunu darbvirsmu"
 
-#: openbox/client_list_combined_menu.c:102 openbox/client_list_menu.c:167
+#: openbox/client_list_combined_menu.c:96 openbox/client_list_menu.c:156
 msgid "_Remove last desktop"
 msgstr "Noņemt pēdējo da_rbvirsmu"
 
-#: openbox/client_list_combined_menu.c:157
+#: openbox/client_list_combined_menu.c:149
 msgid "Windows"
 msgstr "Logi"
 
-#: openbox/client_list_menu.c:214
+#: openbox/client_list_menu.c:203
 msgid "Desktops"
 msgstr "Darbvirsmas"
 
-#: openbox/client_menu.c:259
+#: openbox/client_menu.c:258
 msgid "All desktops"
 msgstr "Visas darbvirsmas"
 
-#: openbox/client_menu.c:371
+#: openbox/client_menu.c:370
 msgid "_Layer"
 msgstr "S_lānis"
 
-#: openbox/client_menu.c:376
+#: openbox/client_menu.c:375
 msgid "Always on _top"
 msgstr "Vienmēr augšā"
 
-#: openbox/client_menu.c:377
+#: openbox/client_menu.c:376
 msgid "_Normal"
 msgstr "_Normāls"
 
-#: openbox/client_menu.c:378
+#: openbox/client_menu.c:377
 msgid "Always on _bottom"
 msgstr "Vienmēr a_pakšā"
 
-#: openbox/client_menu.c:380
+#: openbox/client_menu.c:379
 msgid "_Send to desktop"
 msgstr "No_sūtīt uz darbvirsmu"
 
-#: openbox/client_menu.c:384
+#: openbox/client_menu.c:383
 msgid "Client menu"
 msgstr "Klienta izvēlne"
 
-#: openbox/client_menu.c:394
+#: openbox/client_menu.c:393
 msgid "R_estore"
 msgstr "Atja_unot"
 
-#: openbox/client_menu.c:398
+#: openbox/client_menu.c:397
 msgid "_Move"
 msgstr "Pārviet_ot"
 
-#: openbox/client_menu.c:400
+#: openbox/client_menu.c:399
 msgid "Resi_ze"
 msgstr "Mainīt i_zmēru"
 
-#: openbox/client_menu.c:402
+#: openbox/client_menu.c:401
 msgid "Ico_nify"
 msgstr "Mi_nimizēt"
 
-#: openbox/client_menu.c:406
+#: openbox/client_menu.c:405
 msgid "Ma_ximize"
 msgstr "Maksimizē_t"
 
-#: openbox/client_menu.c:410
+#: openbox/client_menu.c:409
 msgid "_Roll up/down"
 msgstr "Sa_ritināt/Atritināt"
 
-#: openbox/client_menu.c:414
+#: openbox/client_menu.c:411
 msgid "Un/_Decorate"
 msgstr "Bez/Ar _dekorācijām"
 
-#: openbox/client_menu.c:418
+#: openbox/client_menu.c:415
 msgid "_Close"
 msgstr "Ai_zvērt"
 
-#: openbox/config.c:563
-#, c-format
-msgid "Invalid context \"%s\" in mouse binding"
-msgstr "Neatļauts konteksts \"%s\" peles saīsnē"
-
-#: openbox/config.c:931
+#: openbox/config.c:781
 #, c-format
 msgid "Invalid button \"%s\" specified in config file"
 msgstr "Konfigurācijas failā \"%s\" norādīts neatļauts taustiņš"
@@ -201,75 +180,59 @@ msgid ""
 "be loaded."
 msgstr ""
 
-#: openbox/debug.c:57
-#, c-format
-msgid "Unable to make directory '%s': %s"
-msgstr "Nevarēja izveidot mapi '%s': %s"
-
-#: openbox/debug.c:195 openbox/openbox.c:377
-msgid "Close"
-msgstr "Aizvērt"
-
-#: openbox/keyboard.c:161
+#: openbox/keyboard.c:157
 msgid "Conflict with key binding in config file"
 msgstr "Konfliktē ar tastatūras saīsnēm konfigurācijas failā"
 
-#: openbox/menu.c:103 openbox/menu.c:115
+#: openbox/menu.c:102 openbox/menu.c:110
 #, c-format
 msgid "Unable to find a valid menu file \"%s\""
 msgstr "Nav atrasts atļauts izvēlnes fails \"%s\""
 
-#: openbox/menu.c:168
+#: openbox/menu.c:170
 #, c-format
 msgid "Failed to execute command for pipe-menu \"%s\": %s"
 msgstr "Nevarēja izpildīt skriptētās izvēlnes komandu \"%s\": %s"
 
-#: openbox/menu.c:182
+#: openbox/menu.c:184
 #, c-format
 msgid "Invalid output from pipe-menu \"%s\""
 msgstr "Neatļauta izvade no skriptētās izvēlnes \"%s\""
 
-#: openbox/menu.c:195
+#: openbox/menu.c:197
 #, c-format
 msgid "Attempted to access menu \"%s\" but it does not exist"
 msgstr "Mēģināja piekļūt izvēlnei \"%s\", bet tā neeksistē"
 
-#: openbox/menu.c:411 openbox/menu.c:412
+#: openbox/menu.c:367 openbox/menu.c:368
 msgid "More..."
 msgstr "Vairāk..."
 
-#: openbox/mouse.c:382
+#: openbox/mouse.c:373
 #, c-format
 msgid "Invalid button \"%s\" in mouse binding"
 msgstr "Neatļauts taustiņš \"%s\" peles saīsnē"
 
-#: openbox/openbox.c:137
+#: openbox/mouse.c:379
+#, c-format
+msgid "Invalid context \"%s\" in mouse binding"
+msgstr "Neatļauts konteksts \"%s\" peles saīsnē"
+
+#: openbox/openbox.c:133
 #, c-format
 msgid "Unable to change to home directory \"%s\": %s"
 msgstr "Nevarēja pāriet uz mājas mapi \"%s\": %s"
 
-#: openbox/openbox.c:152
-msgid "Failed to open the display from the DISPLAY environment variable."
-msgstr "Neizdevās atvērt displeju no DISPLAY vides mainīgā."
-
-#: openbox/openbox.c:182
-msgid "Failed to initialize the obrender library."
-msgstr "Neizdevās inicializēt obrender bibliotēku."
-
-#: openbox/openbox.c:193
-msgid "X server does not support locale."
-msgstr "X serveris neatbalsta lokāli."
-
-#: openbox/openbox.c:195
-msgid "Cannot set locale modifiers for the X server."
-msgstr "Nevar uzstādīt lokāles modificētājus X serverim."
-
-#: openbox/openbox.c:254
+#: openbox/openbox.c:263
 msgid "Unable to find a valid config file, using some simple defaults"
 msgstr ""
 "Nevarēja atrast atļautu konfigurācijas failu, tiek izmantoti noklusējumi"
 
-#: openbox/openbox.c:270
+#: openbox/openbox.c:297
+msgid "Unable to load a theme."
+msgstr "Nebija iespējams ielādēt tēmu."
+
+#: openbox/openbox.c:377
 #, c-format
 msgid ""
 "One or more XML syntax errors were found while parsing the Waybox "
@@ -280,28 +243,28 @@ msgstr ""
 "XML sintakses kļūdas. Aplūkojiet standarta izvadi, lai noskaidrotu vairāk. "
 "Pēdējā kļūda bija failā \"%s\" - %d rinda, kļūdas ziņojums: %s"
 
-#: openbox/openbox.c:295
-msgid "Unable to load a theme."
-msgstr "Nebija iespējams ielādēt tēmu."
-
-#: openbox/openbox.c:376
+#: openbox/openbox.c:379
 msgid "Waybox Syntax Error"
 msgstr "Waybox sintakses kļūda"
 
-#: openbox/openbox.c:442
+#: openbox/openbox.c:379
+msgid "Close"
+msgstr "Aizvērt"
+
+#: openbox/openbox.c:448
 #, c-format
 msgid "Restart failed to execute new executable \"%s\": %s"
 msgstr "Pārstartētājam neizdevās palaist jauno izpildāmo \"%s\": %s"
 
-#: openbox/openbox.c:521 openbox/openbox.c:523
+#: openbox/openbox.c:518 openbox/openbox.c:520
 msgid "Copyright (c)"
 msgstr "Autortiesības (c)"
 
-#: openbox/openbox.c:532
+#: openbox/openbox.c:529
 msgid "Syntax: openbox [options]\n"
 msgstr "Sintakse: openbox [opcijas]\n"
 
-#: openbox/openbox.c:533
+#: openbox/openbox.c:530
 msgid ""
 "\n"
 "Options:\n"
@@ -309,51 +272,27 @@ msgstr ""
 "\n"
 "Opcijas:\n"
 
-#: openbox/openbox.c:534
+#: openbox/openbox.c:531
 msgid "  --help              Display this help and exit\n"
 msgstr "  --help              Parāda šo palīdzības tekstu un iziet\n"
 
-#: openbox/openbox.c:535
+#: openbox/openbox.c:532
 msgid "  --version           Display the version and exit\n"
 msgstr "  --version           Parāda versiju un iziet\n"
-
-#: openbox/openbox.c:536
-msgid "  --replace           Replace the currently running window manager\n"
-msgstr "  --replace           Aizvieto pašreiz palaisto logu pārvaldnieku\n"
 
 #. TRANSLATORS: if you translate "FILE" here, make sure to keep the "Specify..."
 #. aligned still, if you have to, make a new line with \n and 22 spaces. It's
 #. fine to leave it as FILE though.
-#: openbox/openbox.c:540
+#: openbox/openbox.c:537
 msgid "  --config-file FILE  Specify the path to the config file to use\n"
 msgstr ""
 "  --config-file FAILS Norāda ceļu uz izmantojamo konfigurācijas failu\n"
 
-#: openbox/openbox.c:541
+#: openbox/openbox.c:538
 msgid "  --sm-disable        Disable connection to the session manager\n"
 msgstr "  --sm-disable        Pārtrauc savienojumu ar sesiju pārvaldnieku\n"
 
-#: openbox/openbox.c:542
-msgid ""
-"\n"
-"Passing messages to a running Waybox instance:\n"
-msgstr ""
-"\n"
-"Nodod ziņojumus esošai Waybox instancei:\n"
-
 #: openbox/openbox.c:543
-msgid "  --reconfigure       Reload Waybox's configuration\n"
-msgstr "  --reconfigure       Pārlādē Waybox konfigurācijas failus\n"
-
-#: openbox/openbox.c:544
-msgid "  --restart           Restart Waybox\n"
-msgstr "  --restart           Pārstartē Waybox\n"
-
-#: openbox/openbox.c:545
-msgid "  --exit              Exit Waybox\n"
-msgstr "  --exit              Iziet no Waybox\n"
-
-#: openbox/openbox.c:546
 msgid ""
 "\n"
 "Debugging options:\n"
@@ -361,19 +300,15 @@ msgstr ""
 "\n"
 "Atkļūdošanas iespējas:\n"
 
-#: openbox/openbox.c:547
+#: openbox/openbox.c:544
 msgid "  --sync              Run in synchronous mode\n"
 msgstr "  --sync              Palaist sinhronajā režīmā\n"
 
-#: openbox/openbox.c:548
-msgid "  --startup CMD       Run CMD after starting\n"
-msgstr ""
-
-#: openbox/openbox.c:549
+#: openbox/openbox.c:545
 msgid "  --debug             Display debugging output\n"
 msgstr "  --debug             Rādīt atkļūdošanas izvadi\n"
 
-#: openbox/openbox.c:550
+#: openbox/openbox.c:546
 msgid "  --debug-focus       Display debugging output for focus handling\n"
 msgstr "  --debug-focus       Rādīt atkļūdošanas izvadi fokusēšanas darbībām\n"
 
@@ -381,12 +316,7 @@ msgstr "  --debug-focus       Rādīt atkļūdošanas izvadi fokusēšanas darb�
 msgid "  --debug-session     Display debugging output for session management\n"
 msgstr ""
 
-#: openbox/openbox.c:552
-msgid "  --debug-xinerama    Split the display into fake xinerama screens\n"
-msgstr ""
-"  --debug-xinerama    Sadalīt displeju vairākos viltus xinerama ekrānos\n"
-
-#: openbox/openbox.c:553
+#: openbox/openbox.c:548
 #, c-format
 msgid ""
 "\n"
@@ -395,36 +325,20 @@ msgstr ""
 "\n"
 "Lūdzu, ziņojiet kļūdas %s\n"
 
-#: openbox/openbox.c:636 openbox/openbox.c:670
-#, c-format
+#: openbox/openbox.c:617
 msgid "%s requires an argument\n"
 msgstr "%s vajadzīgs arguments\n"
 
-#: openbox/openbox.c:713
+#: openbox/openbox.c:660
 #, c-format
 msgid "Invalid command line argument \"%s\"\n"
 msgstr "Neatļauts komandrindas arguments \"%s\"\n"
-
-#: openbox/screen.c:106 openbox/screen.c:191
-#, c-format
-msgid "A window manager is already running on screen %d"
-msgstr "Logu pārvaldnieks jau palaists uz %d. ekrāna"
-
-#: openbox/screen.c:127
-#, c-format
-msgid "Could not acquire window manager selection on screen %d"
-msgstr "Nevarēja iegūt logu pārvaldnieka izvēli uz %d. ekrāna"
-
-#: openbox/screen.c:150
-#, c-format
-msgid "The WM on screen %d is not exiting"
-msgstr "Logu pārvaldnieks uz %d. ekrāna nebeidz darbību"
 
 #. TRANSLATORS: If you need to specify a different order of the
 #. arguments, you can use %1$d for the first one and %2$d for the
 #. second one. For example,
 #. "The current session has %2$d desktops, but Waybox is configured for %1$d ..."
-#: openbox/screen.c:421
+#: openbox/screen.c:412
 #, c-format
 msgid ""
 "Waybox is configured for %d desktop, but the current session has %d.  "
@@ -442,12 +356,31 @@ msgstr[2] ""
 "Waybox ir konfigurēts %d darbvirsmām, bet pašreizējai sesijai tādu ir %d.  "
 "Šī Waybox konfigurācijas opcija tiks ignorēta."
 
-#: openbox/screen.c:1204
+#: openbox/screen.c:1180
 #, c-format
 msgid "desktop %i"
 msgstr "darbvirsma %i"
 
-#: openbox/startupnotify.c:241
+#: openbox/session.c:104
+#, fuzzy, c-format
+msgid "Unable to make directory \"%s\": %s"
+msgstr "Nevarēja izveidot mapi '%s': %s"
+
+#: openbox/session.c:466
+#, fuzzy, c-format
+msgid "Unable to save the session to \"%s\": %s"
+msgstr "Nevarēja pāriet uz mājas mapi \"%s\": %s"
+
+#: openbox/session.c:605
+#, c-format
+msgid "Error while saving the session to \"%s\": %s"
+msgstr ""
+
+#: openbox/session.c:842
+msgid "Not connected to a session manager"
+msgstr ""
+
+#: openbox/startupnotify.c:243
 #, c-format
 msgid "Running %s"
 msgstr "Palaiž %s"
@@ -467,11 +400,6 @@ msgstr "Neatļauts taustiņa kods \"%s\" tastatūras saīsnē"
 msgid "Invalid key name \"%s\" in key binding"
 msgstr "Neatļauts taustiņa nosaukums \"%s\" tastatūras saīsnē"
 
-#: openbox/translate.c:151
-#, c-format
-msgid "Requested key \"%s\" does not exist on the display"
-msgstr "Pieprasītais taustiņš \"%s\" uz displeja neeksistē"
-
-#: openbox/prompt.c:154
+#: openbox/prompt.c:200
 msgid "OK"
 msgstr "Labi"

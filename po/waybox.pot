@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Waybox 0.0.1\n"
-"Report-Msgid-Bugs-To: http://bugzilla.icculus.org\n"
+"Report-Msgid-Bugs-To: https://github.com/wizbright/waybox/issues\n"
 "POT-Creation-Date: 2008-11-15 22:28+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
@@ -172,6 +172,12 @@ msgstr ""
 msgid "Invalid button \"%s\" specified in config file"
 msgstr ""
 
+#: openbox/config.c:956
+msgid ""
+"Waybox was compiled without image loading support. Icons in menus will "
+"not be loaded."
+msgstr ""
+
 #: openbox/keyboard.c:157
 msgid "Conflict with key binding in config file"
 msgstr ""
@@ -213,10 +219,6 @@ msgstr ""
 #: openbox/openbox.c:133
 #, c-format
 msgid "Unable to change to home directory \"%s\": %s"
-msgstr ""
-
-#: openbox/openbox.c:152
-msgid "Failed to open the display from the DISPLAY environment variable."
 msgstr ""
 
 #: openbox/openbox.c:263

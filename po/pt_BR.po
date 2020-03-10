@@ -9,9 +9,10 @@ msgstr ""
 "Project-Id-Version: Waybox 0.0.1\n"
 "Report-Msgid-Bugs-To: https://github.com/wizbright/waybox/issues\n"
 "POT-Creation-Date: 2008-11-15 22:28+0100\n"
-"PO-Revision-Date: 2008-03-04 16:07-0500\n"
+"PO-Revision-Date: 2020-03-10 14:09-0400\n"
 "Last-Translator: Og Maciel <ogmaciel@gnome.org>\n"
 "Language-Team: Brazilian Portuguese <gnome-l10n-br@listas.cipsga.org.br>\n"
+"Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -39,8 +40,7 @@ msgstr "Executar"
 msgid "Failed to convert the path \"%s\" from utf8"
 msgstr "Falha ao converter o caminho \"%s\" do utf8"
 
-#: openbox/actions/exit.c:52 openbox/actions/session.c:64
-#: openbox/client.c:3465
+#: openbox/actions/exit.c:52 openbox/actions/session.c:64 openbox/client.c:3465
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -81,31 +81,6 @@ msgstr "Janela sem nome"
 #: openbox/client.c:2026 openbox/client.c:2058
 msgid "Killing..."
 msgstr "Terminando..."
-
-#: openbox/client.c:2028 openbox/client.c:2060
-msgid "Not Responding"
-msgstr "Não Responsivo"
-
-#: openbox/client.c:3454
-#, c-format
-msgid ""
-"The window \"%s\" does not seem to be responding.  Do you want to force it "
-"to exit by sending the %s signal?"
-msgstr ""
-"A janela \"%s\" não está responsiva. Você deseja forçá-la a sair enviando o "
-"sinal %s?"
-
-#: openbox/client.c:3456
-msgid "End Process"
-msgstr "Terminar Processo"
-
-#: openbox/client.c:3460
-#, c-format
-msgid ""
-"The window \"%s\" does not seem to be responding.  Do you want to disconnect "
-"it from the X server?"
-msgstr ""
-"A janela \"%s\" não está responsiva. Você deseja desconectá-la do servidor X?"
 
 #: openbox/client.c:3462
 msgid "Disconnect"
@@ -200,6 +175,12 @@ msgstr "_Fechar"
 msgid "Invalid button \"%s\" specified in config file"
 msgstr "Botão inválido \"%s\" especificado no arquivo de configuração"
 
+#: openbox/config.c:956
+msgid ""
+"Waybox was compiled without image loading support. Icons in menus will not "
+"be loaded."
+msgstr ""
+
 #: openbox/keyboard.c:157
 msgid "Conflict with key binding in config file"
 msgstr "Conflito com associação de chave no arquivo de configuração"
@@ -242,23 +223,6 @@ msgstr "Contexto \"%s\" inválido na associação do mouse"
 #, c-format
 msgid "Unable to change to home directory \"%s\": %s"
 msgstr "Não foi possível mudar para o diretório pessoal \"%s\": %s"
-
-#: openbox/openbox.c:152
-msgid "Failed to open the display from the DISPLAY environment variable."
-msgstr "Falha ao abrir a tela da variavel de ambiente DISPLAY"
-
-#: openbox/openbox.c:183
-msgid "Failed to initialize the obrender library."
-msgstr "Falha ao iniciar a biblioteca obrender."
-
-#: openbox/openbox.c:194
-msgid "X server does not support locale."
-msgstr "Servidor X não suporta localização."
-
-#: openbox/openbox.c:196
-msgid "Cannot set locale modifiers for the X server."
-msgstr ""
-"Não foi possível configurar modificadores de localização para o servidor X."
 
 #: openbox/openbox.c:263
 msgid "Unable to find a valid config file, using some simple defaults"
@@ -318,10 +282,6 @@ msgstr "  --help              Mostra esta ajuda e sai\n"
 msgid "  --version           Display the version and exit\n"
 msgstr "  --version           Mostra a versão e sai\n"
 
-#: openbox/openbox.c:533
-msgid "  --replace           Replace the currently running window manager\n"
-msgstr "  --replace           Substitui o gerenciador de janelas ativo\n"
-
 #. TRANSLATORS: if you translate "FILE" here, make sure to keep the "Specify..."
 #. aligned still, if you have to, make a new line with \n and 22 spaces. It's
 #. fine to leave it as FILE though.
@@ -336,26 +296,6 @@ msgstr ""
 msgid "  --sm-disable        Disable connection to the session manager\n"
 msgstr ""
 "  --sm-disable        Desabilita conexão com o gerenciador de sessões\n"
-
-#: openbox/openbox.c:539
-msgid ""
-"\n"
-"Passing messages to a running Waybox instance:\n"
-msgstr ""
-"\n"
-"Passando mensagens para uma instância do Waybox em execução:\n"
-
-#: openbox/openbox.c:540
-msgid "  --reconfigure       Reload Waybox's configuration\n"
-msgstr "  --reconfigure       Recarrega a configuração do Waybox\n"
-
-#: openbox/openbox.c:541
-msgid "  --restart           Restart Waybox\n"
-msgstr "  --restart           Reinicia o Waybox\n"
-
-#: openbox/openbox.c:542
-msgid "  --exit              Exit Waybox\n"
-msgstr "  --exit              Sai do Waybox\n"
 
 #: openbox/openbox.c:543
 msgid ""
@@ -378,11 +318,11 @@ msgid "  --debug-focus       Display debugging output for focus handling\n"
 msgstr ""
 "  --debug-focus       Mostra saída de depuração para manipulação de foco\n"
 
-#: openbox/openbox.c:547
-msgid "  --debug-xinerama    Split the display into fake xinerama screens\n"
+#: openbox/openbox.c:551
+#, fuzzy
+msgid "  --debug-session     Display debugging output for session management\n"
 msgstr ""
-"  --debug-xinerama    Divide a exibição de telas em telas de xinerama "
-"falsas\n"
+"  --debug-focus       Mostra saída de depuração para manipulação de foco\n"
 
 #: openbox/openbox.c:548
 #, c-format
@@ -394,29 +334,14 @@ msgstr ""
 "Por favor reporte erros em %s\n"
 
 #: openbox/openbox.c:617
-msgid "--config-file requires an argument\n"
+#, fuzzy
+msgid "%s requires an argument\n"
 msgstr "--config-file requere um argumento\n"
 
 #: openbox/openbox.c:660
 #, c-format
 msgid "Invalid command line argument \"%s\"\n"
 msgstr "Argumento de linha de comando inválido \"%s\"\n"
-
-#: openbox/screen.c:102 openbox/screen.c:190
-#, c-format
-msgid "A window manager is already running on screen %d"
-msgstr "Um gerenciador de janelas já está em execução na tela %d"
-
-#: openbox/screen.c:124
-#, c-format
-msgid "Could not acquire window manager selection on screen %d"
-msgstr ""
-"Não foi possível adquirir a seleção do gerenciador de janelas na tela %d"
-
-#: openbox/screen.c:145
-#, c-format
-msgid "The WM on screen %d is not exiting"
-msgstr "O gerenciador de janelas na tela %d não está saindo"
 
 #. TRANSLATORS: If you need to specify a different order of the
 #. arguments, you can use %1$d for the first one and %2$d for the
@@ -481,22 +406,6 @@ msgstr "Código chave \"%s\" inválido na associação de chave"
 msgid "Invalid key name \"%s\" in key binding"
 msgstr "Nome de chave \"%s\" inválido na associação de chave"
 
-#: openbox/translate.c:151
-#, c-format
-msgid "Requested key \"%s\" does not exist on the display"
-msgstr "Chave requerida \"%s\" não existe na tela"
-
-#: openbox/xerror.c:40
-#, c-format
-msgid "X Error: %s"
-msgstr "Erro no X: %s"
-
 #: openbox/prompt.c:200
 msgid "OK"
 msgstr "OK"
-
-#~ msgid "Failed to execute \"%s\": %s"
-#~ msgstr "Falha ao executar \"%s\": %s"
-
-#~ msgid "Invalid use of action \"%s\". Action will be ignored."
-#~ msgstr "Uso inválido da ação \"%s\". Ação será ignorada."

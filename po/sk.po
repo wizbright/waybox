@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Waybox 0.0.1\n"
 "Report-Msgid-Bugs-To: https://github.com/wizbright/waybox/issues\n"
-"POT-Creation-Date: 2014-11-05 16:51+0100\n"
-"PO-Revision-Date: 2009-07-16 17:30+0200\n"
+"POT-Creation-Date: 2008-11-15 22:28+0100\n"
+"PO-Revision-Date: 2020-03-10 14:09-0400\n"
 "Last-Translator: Frantisek Elias <elias.frantisek@gmail.com>\n"
 "Language-Team: Slovak <sk@sk.org>\n"
 "Language: sk\n"
@@ -18,176 +18,157 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 1 : (n>=2 && n<=4) ? 2 : 0;\n"
 
-#: openbox/actions.c:234
+#: openbox/actions.c:149
 #, c-format
 msgid "Invalid action \"%s\" requested. No such action exists."
 msgstr "Vyžiadaná neplatná akcia \"%s\". Takáto akcia neexistuje."
 
-#: openbox/actions/execute.c:245
+#: openbox/actions/execute.c:128
 msgid "No"
 msgstr "Nie"
 
-#: openbox/actions/execute.c:246
+#: openbox/actions/execute.c:129
 msgid "Yes"
 msgstr "Áno"
 
-#: openbox/actions/execute.c:250
+#: openbox/actions/execute.c:133
 msgid "Execute"
 msgstr "Spustiť"
 
-#: openbox/actions/execute.c:259
+#: openbox/actions/execute.c:142
 #, c-format
 msgid "Failed to convert the path \"%s\" from utf8"
 msgstr "Nepodarilo sa skonvertovať cestu \"%s\" z utf8"
 
-#: openbox/actions/exit.c:69 openbox/client.c:3665
+#: openbox/actions/exit.c:52 openbox/actions/session.c:64 openbox/client.c:3465
 msgid "Cancel"
 msgstr "Zrušiť"
 
-#: openbox/actions/exit.c:70
+#: openbox/actions/exit.c:53
 msgid "Exit"
 msgstr "Ukončiť"
 
-#: openbox/actions/exit.c:74
-msgid "Are you sure you want to log out?"
-msgstr "Naozaj sa chcete odhlásiť?"
-
-#: openbox/actions/exit.c:75
-msgid "Log Out"
-msgstr "Odhlásiť sa"
-
-#: openbox/actions/exit.c:78
+#: openbox/actions/exit.c:56
 msgid "Are you sure you want to exit Waybox?"
 msgstr "Určite chcete ukončiť Waybox?"
 
-#: openbox/actions/exit.c:79
+#: openbox/actions/exit.c:57
 msgid "Exit Waybox"
 msgstr "Ukončiť Waybox"
 
-#: openbox/client.c:2115
+#. TRANSLATORS: Don't translate the word "SessionLogout" as it's the
+#. name of the action you write in rc.xml
+#: openbox/actions/session.c:43
+msgid ""
+"The SessionLogout action is not available since Waybox was built without "
+"session management support"
+msgstr ""
+
+#: openbox/actions/session.c:65 openbox/actions/session.c:70
+msgid "Log Out"
+msgstr "Odhlásiť sa"
+
+#: openbox/actions/session.c:69
+msgid "Are you sure you want to log out?"
+msgstr "Naozaj sa chcete odhlásiť?"
+
+#: openbox/client.c:2012
 msgid "Unnamed Window"
 msgstr "Nepomenované okno"
 
-#: openbox/client.c:2129 openbox/client.c:2160
+#: openbox/client.c:2026 openbox/client.c:2058
 msgid "Killing..."
 msgstr "Ukončujem proces..."
 
-#: openbox/client.c:2131 openbox/client.c:2162
-msgid "Not Responding"
-msgstr "Neodpovedá"
-
-#: openbox/client.c:3654
-#, c-format
-msgid ""
-"The window \"%s\" does not seem to be responding.  Do you want to force it "
-"to exit by sending the %s signal?"
-msgstr ""
-
-#: openbox/client.c:3656
-msgid "End Process"
-msgstr "Ukončiť proces"
-
-#: openbox/client.c:3660
-#, c-format
-msgid ""
-"The window \"%s\" does not seem to be responding.  Do you want to disconnect "
-"it from the X server?"
-msgstr "Zdá sa, že okno \"%s\" neodpovedá. Chcete ho odpojiť z X serveru?"
-
-#: openbox/client.c:3662
+#: openbox/client.c:3462
 msgid "Disconnect"
 msgstr "Odpojiť"
 
-#: openbox/client_list_combined_menu.c:93 openbox/client_list_menu.c:90
+#: openbox/client_list_combined_menu.c:87 openbox/client_list_menu.c:91
 msgid "Go there..."
 msgstr "Prejsť na..."
 
-#: openbox/client_list_combined_menu.c:100
+#: openbox/client_list_combined_menu.c:94
 msgid "Manage desktops"
 msgstr "Správa plôch"
 
-#: openbox/client_list_combined_menu.c:101 openbox/client_list_menu.c:166
+#: openbox/client_list_combined_menu.c:95 openbox/client_list_menu.c:155
 msgid "_Add new desktop"
 msgstr "_Pridať novú plochu"
 
-#: openbox/client_list_combined_menu.c:102 openbox/client_list_menu.c:167
+#: openbox/client_list_combined_menu.c:96 openbox/client_list_menu.c:156
 msgid "_Remove last desktop"
 msgstr "_Odstrániť poslednú plochu"
 
-#: openbox/client_list_combined_menu.c:157
+#: openbox/client_list_combined_menu.c:149
 msgid "Windows"
 msgstr "Okná"
 
-#: openbox/client_list_menu.c:214
+#: openbox/client_list_menu.c:203
 msgid "Desktops"
 msgstr "Plochy"
 
-#: openbox/client_menu.c:259
+#: openbox/client_menu.c:258
 msgid "All desktops"
 msgstr "Všetky plochy"
 
-#: openbox/client_menu.c:371
+#: openbox/client_menu.c:370
 msgid "_Layer"
 msgstr "_Vrstva"
 
-#: openbox/client_menu.c:376
+#: openbox/client_menu.c:375
 msgid "Always on _top"
 msgstr "Vždy _navrchu"
 
-#: openbox/client_menu.c:377
+#: openbox/client_menu.c:376
 msgid "_Normal"
 msgstr "Nor_málna"
 
-#: openbox/client_menu.c:378
+#: openbox/client_menu.c:377
 msgid "Always on _bottom"
 msgstr "Vždy _dole"
 
-#: openbox/client_menu.c:380
+#: openbox/client_menu.c:379
 msgid "_Send to desktop"
 msgstr "_Poslať na plochu"
 
-#: openbox/client_menu.c:384
+#: openbox/client_menu.c:383
 msgid "Client menu"
 msgstr "Menu klienta"
 
-#: openbox/client_menu.c:394
+#: openbox/client_menu.c:393
 msgid "R_estore"
 msgstr "_Obnoviť"
 
-#: openbox/client_menu.c:398
+#: openbox/client_menu.c:397
 msgid "_Move"
 msgstr "Pre_sunúť"
 
-#: openbox/client_menu.c:400
+#: openbox/client_menu.c:399
 msgid "Resi_ze"
 msgstr "Z_mena veľkosti"
 
-#: openbox/client_menu.c:402
+#: openbox/client_menu.c:401
 msgid "Ico_nify"
 msgstr "Do iko_ny"
 
-#: openbox/client_menu.c:406
+#: openbox/client_menu.c:405
 msgid "Ma_ximize"
 msgstr "Ma_ximalizovať"
 
-#: openbox/client_menu.c:410
+#: openbox/client_menu.c:409
 msgid "_Roll up/down"
 msgstr "Ro/_Zvinúť"
 
-#: openbox/client_menu.c:414
+#: openbox/client_menu.c:411
 msgid "Un/_Decorate"
 msgstr "(Ne)_Dekorovať"
 
-#: openbox/client_menu.c:418
+#: openbox/client_menu.c:415
 msgid "_Close"
 msgstr "Z_avrieť"
 
-#: openbox/config.c:563
-#, c-format
-msgid "Invalid context \"%s\" in mouse binding"
-msgstr "Neplatný kontext \"%s\" v priradení myši"
-
-#: openbox/config.c:931
+#: openbox/config.c:781
 #, c-format
 msgid "Invalid button \"%s\" specified in config file"
 msgstr "Neplatné tlačidlo \"%s\" špecifikované v konfiguračnom súbore"
@@ -198,76 +179,60 @@ msgid ""
 "be loaded."
 msgstr ""
 
-#: openbox/debug.c:57
-#, c-format
-msgid "Unable to make directory '%s': %s"
-msgstr "Nebolo možné vytvoriť adresár '%s': %s"
-
-#: openbox/debug.c:195 openbox/openbox.c:377
-msgid "Close"
-msgstr "Zavrieť"
-
-#: openbox/keyboard.c:161
+#: openbox/keyboard.c:157
 msgid "Conflict with key binding in config file"
 msgstr "Konflikt priradenie klávesov v konfiguračnom súbore"
 
-#: openbox/menu.c:103 openbox/menu.c:115
+#: openbox/menu.c:102 openbox/menu.c:110
 #, c-format
 msgid "Unable to find a valid menu file \"%s\""
 msgstr "Nepodarilo sa nájsť platný súbor menu \"%s\""
 
-#: openbox/menu.c:168
+#: openbox/menu.c:170
 #, c-format
 msgid "Failed to execute command for pipe-menu \"%s\": %s"
 msgstr "Nepodarilo sa spustiť príkaz pre pipe-menu \"%s\": %s"
 
-#: openbox/menu.c:182
+#: openbox/menu.c:184
 #, c-format
 msgid "Invalid output from pipe-menu \"%s\""
 msgstr "Neplatný výstup z pipe-menu \"%s\""
 
-#: openbox/menu.c:195
+#: openbox/menu.c:197
 #, c-format
 msgid "Attempted to access menu \"%s\" but it does not exist"
 msgstr "Pokus o sprístupnenie menu \"%s\", ale to neexistuje"
 
-#: openbox/menu.c:411 openbox/menu.c:412
+#: openbox/menu.c:367 openbox/menu.c:368
 msgid "More..."
 msgstr "Viac..."
 
-#: openbox/mouse.c:382
+#: openbox/mouse.c:373
 #, c-format
 msgid "Invalid button \"%s\" in mouse binding"
 msgstr "Neplatné tlačidlo \"%s\" v priradení myši"
 
-#: openbox/openbox.c:137
+#: openbox/mouse.c:379
+#, c-format
+msgid "Invalid context \"%s\" in mouse binding"
+msgstr "Neplatný kontext \"%s\" v priradení myši"
+
+#: openbox/openbox.c:133
 #, c-format
 msgid "Unable to change to home directory \"%s\": %s"
 msgstr "Nepodarilo sa prejsť do domovského adresára \"%s\": %s"
 
-#: openbox/openbox.c:152
-msgid "Failed to open the display from the DISPLAY environment variable."
-msgstr "Nepodarilo sa otvoriť displej z premennej prostredia DISPLAY"
-
-#: openbox/openbox.c:182
-msgid "Failed to initialize the obrender library."
-msgstr "Nepodarilo sa inicializovať knižnicu obrender."
-
-#: openbox/openbox.c:193
-msgid "X server does not support locale."
-msgstr "X server nepodporuje locale."
-
-#: openbox/openbox.c:195
-msgid "Cannot set locale modifiers for the X server."
-msgstr "Nemôžem nastaviť locale pre X server."
-
-#: openbox/openbox.c:254
+#: openbox/openbox.c:263
 msgid "Unable to find a valid config file, using some simple defaults"
 msgstr ""
 "Nepodarilo sa nájsť platný konfiguračný súbor, použijem jednoduché "
 "implicitné nastavenia"
 
-#: openbox/openbox.c:270
+#: openbox/openbox.c:297
+msgid "Unable to load a theme."
+msgstr "Nepodarilo sa nahrať tému."
+
+#: openbox/openbox.c:377
 #, c-format
 msgid ""
 "One or more XML syntax errors were found while parsing the Waybox "
@@ -275,28 +240,28 @@ msgid ""
 "was in file \"%s\" line %d, with message: %s"
 msgstr ""
 
-#: openbox/openbox.c:295
-msgid "Unable to load a theme."
-msgstr "Nepodarilo sa nahrať tému."
-
-#: openbox/openbox.c:376
+#: openbox/openbox.c:379
 msgid "Waybox Syntax Error"
 msgstr ""
 
-#: openbox/openbox.c:442
+#: openbox/openbox.c:379
+msgid "Close"
+msgstr "Zavrieť"
+
+#: openbox/openbox.c:448
 #, c-format
 msgid "Restart failed to execute new executable \"%s\": %s"
 msgstr "Reštart zlyhal pri spúšťaní novej binárky \"%s\": %s"
 
-#: openbox/openbox.c:521 openbox/openbox.c:523
+#: openbox/openbox.c:518 openbox/openbox.c:520
 msgid "Copyright (c)"
 msgstr "Copyright (c)"
 
-#: openbox/openbox.c:532
+#: openbox/openbox.c:529
 msgid "Syntax: openbox [options]\n"
 msgstr "Syntax: openbox [volby]\n"
 
-#: openbox/openbox.c:533
+#: openbox/openbox.c:530
 msgid ""
 "\n"
 "Options:\n"
@@ -304,51 +269,26 @@ msgstr ""
 "\n"
 "Volby:\n"
 
-#: openbox/openbox.c:534
+#: openbox/openbox.c:531
 msgid "  --help              Display this help and exit\n"
 msgstr "  --help              Zobrazi tuto napovedu a skonci\n"
 
-#: openbox/openbox.c:535
+#: openbox/openbox.c:532
 msgid "  --version           Display the version and exit\n"
 msgstr "  --version           Zobrazi cislo verzie a skonci\n"
-
-#: openbox/openbox.c:536
-msgid "  --replace           Replace the currently running window manager\n"
-msgstr ""
-"  --replace           Nahradi momentalne beziace sedenie window manazera\n"
 
 #. TRANSLATORS: if you translate "FILE" here, make sure to keep the "Specify..."
 #. aligned still, if you have to, make a new line with \n and 22 spaces. It's
 #. fine to leave it as FILE though.
-#: openbox/openbox.c:540
+#: openbox/openbox.c:537
 msgid "  --config-file FILE  Specify the path to the config file to use\n"
 msgstr ""
 
-#: openbox/openbox.c:541
+#: openbox/openbox.c:538
 msgid "  --sm-disable        Disable connection to the session manager\n"
 msgstr "  --sm-disable        Vypne spojenie k manazerovi sedenia\n"
 
-#: openbox/openbox.c:542
-msgid ""
-"\n"
-"Passing messages to a running Waybox instance:\n"
-msgstr ""
-"\n"
-"Predavanie sprav beziacej instancii Wayboxu:\n"
-
 #: openbox/openbox.c:543
-msgid "  --reconfigure       Reload Waybox's configuration\n"
-msgstr "  --reconfigure       Opatovne nacita konfiguraciu Wayboxu\n"
-
-#: openbox/openbox.c:544
-msgid "  --restart           Restart Waybox\n"
-msgstr "  --restart           Restartuje Waybox\n"
-
-#: openbox/openbox.c:545
-msgid "  --exit              Exit Waybox\n"
-msgstr ""
-
-#: openbox/openbox.c:546
 msgid ""
 "\n"
 "Debugging options:\n"
@@ -356,19 +296,15 @@ msgstr ""
 "\n"
 "Volby ladenia:\n"
 
-#: openbox/openbox.c:547
+#: openbox/openbox.c:544
 msgid "  --sync              Run in synchronous mode\n"
 msgstr "  --sync              Spustit v synchronnom mode\n"
 
-#: openbox/openbox.c:548
-msgid "  --startup CMD       Run CMD after starting\n"
-msgstr ""
-
-#: openbox/openbox.c:549
+#: openbox/openbox.c:545
 msgid "  --debug             Display debugging output\n"
 msgstr "  --debug             Zobrazit ladiaci vystup\n"
 
-#: openbox/openbox.c:550
+#: openbox/openbox.c:546
 msgid "  --debug-focus       Display debugging output for focus handling\n"
 msgstr ""
 "  --debug-focus       Zobrazit ladiaci vystup pre manipulaciu s fokusom\n"
@@ -377,11 +313,7 @@ msgstr ""
 msgid "  --debug-session     Display debugging output for session management\n"
 msgstr ""
 
-#: openbox/openbox.c:552
-msgid "  --debug-xinerama    Split the display into fake xinerama screens\n"
-msgstr "  --debug-xinerama    Rozdelit displej na neprave obrazovky xineramy\n"
-
-#: openbox/openbox.c:553
+#: openbox/openbox.c:548
 #, c-format
 msgid ""
 "\n"
@@ -390,36 +322,20 @@ msgstr ""
 "\n"
 "Prosim hlaste chyby na %s\n"
 
-#: openbox/openbox.c:636 openbox/openbox.c:670
-#, c-format
+#: openbox/openbox.c:617
 msgid "%s requires an argument\n"
 msgstr "%s vyzaduje parameter\n"
 
-#: openbox/openbox.c:713
+#: openbox/openbox.c:660
 #, c-format
 msgid "Invalid command line argument \"%s\"\n"
 msgstr "Neplatny parameter prikazoveho riadku \"%s\"\n"
-
-#: openbox/screen.c:106 openbox/screen.c:191
-#, c-format
-msgid "A window manager is already running on screen %d"
-msgstr "Okenny manazer uz bezi na obrazovke %d"
-
-#: openbox/screen.c:127
-#, c-format
-msgid "Could not acquire window manager selection on screen %d"
-msgstr "Nepodarilo sa získať výber okenného manažéra na obrazovke %d"
-
-#: openbox/screen.c:150
-#, c-format
-msgid "The WM on screen %d is not exiting"
-msgstr "Okenný manažér na obrazovke %d sa neukončuje"
 
 #. TRANSLATORS: If you need to specify a different order of the
 #. arguments, you can use %1$d for the first one and %2$d for the
 #. second one. For example,
 #. "The current session has %2$d desktops, but Waybox is configured for %1$d ..."
-#: openbox/screen.c:421
+#: openbox/screen.c:412
 #, c-format
 msgid ""
 "Waybox is configured for %d desktop, but the current session has %d.  "
@@ -430,12 +346,31 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: openbox/screen.c:1204
+#: openbox/screen.c:1180
 #, c-format
 msgid "desktop %i"
 msgstr "plocha %i"
 
-#: openbox/startupnotify.c:241
+#: openbox/session.c:104
+#, fuzzy, c-format
+msgid "Unable to make directory \"%s\": %s"
+msgstr "Nebolo možné vytvoriť adresár '%s': %s"
+
+#: openbox/session.c:466
+#, fuzzy, c-format
+msgid "Unable to save the session to \"%s\": %s"
+msgstr "Nepodarilo sa prejsť do domovského adresára \"%s\": %s"
+
+#: openbox/session.c:605
+#, c-format
+msgid "Error while saving the session to \"%s\": %s"
+msgstr ""
+
+#: openbox/session.c:842
+msgid "Not connected to a session manager"
+msgstr ""
+
+#: openbox/startupnotify.c:243
 #, c-format
 msgid "Running %s"
 msgstr "Spúšťam %s"
@@ -455,11 +390,6 @@ msgstr "Neplatný kód klávesu \"%s\" v priradení klávesov"
 msgid "Invalid key name \"%s\" in key binding"
 msgstr "Neplatný názov klávesu \"%s\" v priradení klávesov"
 
-#: openbox/translate.c:151
-#, c-format
-msgid "Requested key \"%s\" does not exist on the display"
-msgstr "Požadovaný kláves \"%s\" na displeji neexistuje"
-
-#: openbox/prompt.c:154
+#: openbox/prompt.c:200
 msgid "OK"
 msgstr "OK"

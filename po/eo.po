@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Waybox 0.0.1\n"
 "Report-Msgid-Bugs-To: https://github.com/wizbright/waybox/issues\n"
-"POT-Creation-Date: 2014-11-05 16:51+0100\n"
-"PO-Revision-Date: 2020-03-08 16:12-0400\n"
+"POT-Creation-Date: 2008-11-15 22:28+0100\n"
+"PO-Revision-Date: 2020-03-10 14:07-0400\n"
 "Last-Translator: Keith <keith@localhost>\n"
 "Language-Team: Esperanto\n"
 "Language: eo\n"
@@ -17,180 +17,159 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: openbox/actions.c:234
+#: openbox/actions.c:149
 #, c-format
 msgid "Invalid action \"%s\" requested. No such action exists."
 msgstr "Nevalida ago \"%s\" petita. Ne ekzistas tia ago."
 
-#: openbox/actions/execute.c:245
+#: openbox/actions/execute.c:128
 msgid "No"
 msgstr "Ne"
 
-#: openbox/actions/execute.c:246
+#: openbox/actions/execute.c:129
 msgid "Yes"
 msgstr "Jes"
 
-#: openbox/actions/execute.c:250
+#: openbox/actions/execute.c:133
 msgid "Execute"
 msgstr "Plenumigi"
 
-#: openbox/actions/execute.c:259
+#: openbox/actions/execute.c:142
 #, c-format
 msgid "Failed to convert the path \"%s\" from utf8"
 msgstr "Malsukcesis konverti la vojon \"%s\" el UTF-8"
 
-#: openbox/actions/exit.c:69 openbox/client.c:3665
+#: openbox/actions/exit.c:52 openbox/actions/session.c:64 openbox/client.c:3465
 msgid "Cancel"
 msgstr "Nuligi"
 
-#: openbox/actions/exit.c:70
+#: openbox/actions/exit.c:53
 msgid "Exit"
 msgstr "Fini"
 
-#: openbox/actions/exit.c:74
-msgid "Are you sure you want to log out?"
-msgstr "Ĉu vi certas ke vi volas elsaluti"
-
-#: openbox/actions/exit.c:75
-msgid "Log Out"
-msgstr "Elsaluti"
-
-#: openbox/actions/exit.c:78
+#: openbox/actions/exit.c:56
 msgid "Are you sure you want to exit Waybox?"
 msgstr "Ĉu vi certas ke vi volas fini el Waybox?"
 
-#: openbox/actions/exit.c:79
+#: openbox/actions/exit.c:57
 msgid "Exit Waybox"
 msgstr "Fini el Waybox"
 
-#: openbox/client.c:2115
+#. TRANSLATORS: Don't translate the word "SessionLogout" as it's the
+#. name of the action you write in rc.xml
+#: openbox/actions/session.c:43
+msgid ""
+"The SessionLogout action is not available since Waybox was built without "
+"session management support"
+msgstr ""
+"La ago SessionLogout ne estas disponebla, ĉar Waybox estis muntita sen "
+"seancadministrado"
+
+#: openbox/actions/session.c:65 openbox/actions/session.c:70
+msgid "Log Out"
+msgstr "Elsaluti"
+
+#: openbox/actions/session.c:69
+msgid "Are you sure you want to log out?"
+msgstr "Ĉu vi certas ke vi volas elsaluti"
+
+#: openbox/client.c:2012
 msgid "Unnamed Window"
 msgstr "Sennoma fenestro"
 
-#: openbox/client.c:2129 openbox/client.c:2160
+#: openbox/client.c:2026 openbox/client.c:2058
 msgid "Killing..."
 msgstr "Haltigas..."
 
-#: openbox/client.c:2131 openbox/client.c:2162
-msgid "Not Responding"
-msgstr "Ne respondas"
-
-#: openbox/client.c:3654
-#, c-format
-msgid ""
-"The window \"%s\" does not seem to be responding.  Do you want to force it "
-"to exit by sending the %s signal?"
-msgstr ""
-"La fenestro \"%s\" ŝajne ne respondas. Ĉu vi volas eldevigi, ke ĝi finiĝi "
-"per sendo de la signalo %s?"
-
-#: openbox/client.c:3656
-msgid "End Process"
-msgstr "Fini procezon"
-
-#: openbox/client.c:3660
-#, c-format
-msgid ""
-"The window \"%s\" does not seem to be responding.  Do you want to disconnect "
-"it from the X server?"
-msgstr ""
-"La fenestro \"%s\" ŝajne ne respondas. Ĉu vi volas malkonekti ĝin de la X-"
-"servilo?"
-
-#: openbox/client.c:3662
+#: openbox/client.c:3462
 msgid "Disconnect"
 msgstr "Malkonekti"
 
-#: openbox/client_list_combined_menu.c:93 openbox/client_list_menu.c:90
+#: openbox/client_list_combined_menu.c:87 openbox/client_list_menu.c:91
 msgid "Go there..."
 msgstr "Iri tien..."
 
-#: openbox/client_list_combined_menu.c:100
+#: openbox/client_list_combined_menu.c:94
 msgid "Manage desktops"
 msgstr "Administri labortablojn"
 
-#: openbox/client_list_combined_menu.c:101 openbox/client_list_menu.c:166
+#: openbox/client_list_combined_menu.c:95 openbox/client_list_menu.c:155
 msgid "_Add new desktop"
 msgstr "_Aldoni novan labortablon"
 
-#: openbox/client_list_combined_menu.c:102 openbox/client_list_menu.c:167
+#: openbox/client_list_combined_menu.c:96 openbox/client_list_menu.c:156
 msgid "_Remove last desktop"
 msgstr "_Forigi antaŭan labortablon"
 
-#: openbox/client_list_combined_menu.c:157
+#: openbox/client_list_combined_menu.c:149
 msgid "Windows"
 msgstr "Fenestro"
 
-#: openbox/client_list_menu.c:214
+#: openbox/client_list_menu.c:203
 msgid "Desktops"
 msgstr "Labortablo"
 
-#: openbox/client_menu.c:259
+#: openbox/client_menu.c:258
 msgid "All desktops"
 msgstr "Ĉiuj labortabloj"
 
-#: openbox/client_menu.c:371
+#: openbox/client_menu.c:370
 msgid "_Layer"
 msgstr "_Tavolo"
 
-#: openbox/client_menu.c:376
+#: openbox/client_menu.c:375
 msgid "Always on _top"
 msgstr "Ĉiam ĉe _supro"
 
-#: openbox/client_menu.c:377
+#: openbox/client_menu.c:376
 msgid "_Normal"
 msgstr "_Normala"
 
-#: openbox/client_menu.c:378
+#: openbox/client_menu.c:377
 msgid "Always on _bottom"
 msgstr "Ĉiam ĉe _malsupro"
 
-#: openbox/client_menu.c:380
+#: openbox/client_menu.c:379
 msgid "_Send to desktop"
 msgstr "Sendi al _labortablo"
 
-#: openbox/client_menu.c:384
+#: openbox/client_menu.c:383
 msgid "Client menu"
 msgstr "Klienta menuo"
 
-#: openbox/client_menu.c:394
+#: openbox/client_menu.c:393
 msgid "R_estore"
 msgstr "R_estarigi"
 
-#: openbox/client_menu.c:398
+#: openbox/client_menu.c:397
 msgid "_Move"
 msgstr "M_ovi"
 
-#: openbox/client_menu.c:400
+#: openbox/client_menu.c:399
 msgid "Resi_ze"
 msgstr "Ali_grandigi"
 
-#: openbox/client_menu.c:402
+#: openbox/client_menu.c:401
 msgid "Ico_nify"
 msgstr "Minim&umigi"
 
-#: openbox/client_menu.c:406
+#: openbox/client_menu.c:405
 msgid "Ma_ximize"
 msgstr "Ma_ksimumigi"
 
-#: openbox/client_menu.c:410
+#: openbox/client_menu.c:409
 msgid "_Roll up/down"
 msgstr "_Ruli (mal)supren/supren"
 
-#: openbox/client_menu.c:414
+#: openbox/client_menu.c:411
 msgid "Un/_Decorate"
 msgstr "(Mal)ornam_i"
 
-#: openbox/client_menu.c:418
+#: openbox/client_menu.c:415
 msgid "_Close"
 msgstr "F_ermi"
 
-#: openbox/config.c:563
-#, c-format
-msgid "Invalid context \"%s\" in mouse binding"
-msgstr "Nevalida kunteksto \"%s\" en butonkombino"
-
-#: openbox/config.c:931
+#: openbox/config.c:781
 #, c-format
 msgid "Invalid button \"%s\" specified in config file"
 msgstr "Nevalida butono \"%s\" specifita en la agorda dosiero"
@@ -203,75 +182,59 @@ msgstr ""
 "Waybox kompilumiĝis sen regado por bilda ŝargado. Piktogramoj en menuoj ne "
 "ŝargiĝos."
 
-#: openbox/debug.c:57
-#, c-format
-msgid "Unable to make directory '%s': %s"
-msgstr "Ne eblas fari dosierujon '%s': %s"
-
-#: openbox/debug.c:195 openbox/openbox.c:377
-msgid "Close"
-msgstr "Fermi"
-
-#: openbox/keyboard.c:161
+#: openbox/keyboard.c:157
 msgid "Conflict with key binding in config file"
 msgstr "Konflikto kun klavkombino en la agorda dosiero"
 
-#: openbox/menu.c:103 openbox/menu.c:115
+#: openbox/menu.c:102 openbox/menu.c:110
 #, c-format
 msgid "Unable to find a valid menu file \"%s\""
 msgstr "Ne eblas trovi validan menuo-dosieron \"%s\""
 
-#: openbox/menu.c:168
+#: openbox/menu.c:170
 #, c-format
 msgid "Failed to execute command for pipe-menu \"%s\": %s"
 msgstr "Malsukcesis plenumigi komandon por dukto-menuo \"%s\": %s"
 
-#: openbox/menu.c:182
+#: openbox/menu.c:184
 #, c-format
 msgid "Invalid output from pipe-menu \"%s\""
 msgstr "Nevalida eligo de dukto-menuo \"%s\""
 
-#: openbox/menu.c:195
+#: openbox/menu.c:197
 #, c-format
 msgid "Attempted to access menu \"%s\" but it does not exist"
 msgstr "Provis atingi menuon \"%s\" sed ĝi ne ekzista"
 
-#: openbox/menu.c:411 openbox/menu.c:412
+#: openbox/menu.c:367 openbox/menu.c:368
 msgid "More..."
 msgstr "Pliaj..."
 
-#: openbox/mouse.c:382
+#: openbox/mouse.c:373
 #, c-format
 msgid "Invalid button \"%s\" in mouse binding"
 msgstr "Nevalida butono \"%s\" en butonkombino"
 
-#: openbox/openbox.c:137
+#: openbox/mouse.c:379
+#, c-format
+msgid "Invalid context \"%s\" in mouse binding"
+msgstr "Nevalida kunteksto \"%s\" en butonkombino"
+
+#: openbox/openbox.c:133
 #, c-format
 msgid "Unable to change to home directory \"%s\": %s"
 msgstr "Ne eblas ŝanĝiĝi al hejmdosierujo \"%s\": %s"
 
-#: openbox/openbox.c:152
-msgid "Failed to open the display from the DISPLAY environment variable."
-msgstr "Malsukcesis malfermi la ekranprezenton laŭ la medivariablo DISPLAY."
-
-#: openbox/openbox.c:182
-msgid "Failed to initialize the obrender library."
-msgstr "Malsukcesis startigi la bibliotekon obrender."
-
-#: openbox/openbox.c:193
-msgid "X server does not support locale."
-msgstr "X-servilo ne havas tiun lokaĵaron."
-
-#: openbox/openbox.c:195
-msgid "Cannot set locale modifiers for the X server."
-msgstr "Ne eblas agordi lokaĵarajn modifilojn por la X-servilo."
-
-#: openbox/openbox.c:254
+#: openbox/openbox.c:263
 msgid "Unable to find a valid config file, using some simple defaults"
 msgstr ""
 "Ne eblas trovi validan agordan dosieron. Uzas iujn simplajn aprioraĵojn"
 
-#: openbox/openbox.c:270
+#: openbox/openbox.c:297
+msgid "Unable to load a theme."
+msgstr "Ne eblas ŝargi etoson."
+
+#: openbox/openbox.c:377
 #, c-format
 msgid ""
 "One or more XML syntax errors were found while parsing the Waybox "
@@ -282,28 +245,28 @@ msgstr ""
 "dosieroj de Waybox. Legu la eneligilon por pliaj inforomoj. La lasta eraro "
 "vidita estis en dosiero \"%s\", linio %d, kun mesaĝo: %s"
 
-#: openbox/openbox.c:295
-msgid "Unable to load a theme."
-msgstr "Ne eblas ŝargi etoson."
-
-#: openbox/openbox.c:376
+#: openbox/openbox.c:379
 msgid "Waybox Syntax Error"
 msgstr "Sintaksa eraro en Waybox"
 
-#: openbox/openbox.c:442
+#: openbox/openbox.c:379
+msgid "Close"
+msgstr "Fermi"
+
+#: openbox/openbox.c:448
 #, c-format
 msgid "Restart failed to execute new executable \"%s\": %s"
 msgstr "Restarto malsukcesis plenumigi novan plenumigeblaĵon \"%s\": %s"
 
-#: openbox/openbox.c:521 openbox/openbox.c:523
+#: openbox/openbox.c:518 openbox/openbox.c:520
 msgid "Copyright (c)"
 msgstr "Kopirajto (c)"
 
-#: openbox/openbox.c:532
+#: openbox/openbox.c:529
 msgid "Syntax: openbox [options]\n"
 msgstr "Sintakso: openbox [elektebloj]\n"
 
-#: openbox/openbox.c:533
+#: openbox/openbox.c:530
 msgid ""
 "\n"
 "Options:\n"
@@ -311,54 +274,28 @@ msgstr ""
 "\n"
 "Elektebloj:\n"
 
-#: openbox/openbox.c:534
+#: openbox/openbox.c:531
 msgid "  --help              Display this help and exit\n"
 msgstr "  --help              Montri ĉi tiun helpilon kaj finiĝi\n"
 
-#: openbox/openbox.c:535
+#: openbox/openbox.c:532
 msgid "  --version           Display the version and exit\n"
 msgstr "  --version           Montri la eldonon kaj finigi\n"
-
-#: openbox/openbox.c:536
-msgid "  --replace           Replace the currently running window manager\n"
-msgstr ""
-"  --replace           Anstataŭigi la nune plenumiĝantan "
-"fenestradministrilon\n"
 
 #. TRANSLATORS: if you translate "FILE" here, make sure to keep the "Specify..."
 #. aligned still, if you have to, make a new line with \n and 22 spaces. It's
 #. fine to leave it as FILE though.
-#: openbox/openbox.c:540
+#: openbox/openbox.c:537
 msgid "  --config-file FILE  Specify the path to the config file to use\n"
 msgstr ""
 "--config-file DOSIERO\n"
 "                     Specifi la vojon de la uzota agorda dosiero\n"
 
-#: openbox/openbox.c:541
+#: openbox/openbox.c:538
 msgid "  --sm-disable        Disable connection to the session manager\n"
 msgstr "  --sm-disable        Malebligi konektiĝon al la seancadministrilo\n"
 
-#: openbox/openbox.c:542
-msgid ""
-"\n"
-"Passing messages to a running Waybox instance:\n"
-msgstr ""
-"\n"
-"Donado de mesaĝoj al plenumiĝanta okazo de Waybox:\n"
-
 #: openbox/openbox.c:543
-msgid "  --reconfigure       Reload Waybox's configuration\n"
-msgstr "  --reconfigure       Reŝargi la agordon de Waybox\n"
-
-#: openbox/openbox.c:544
-msgid "  --restart           Restart Waybox\n"
-msgstr "  --restart           Restartigo de Waybox\n"
-
-#: openbox/openbox.c:545
-msgid "  --exit              Exit Waybox\n"
-msgstr "  --exit              Fini de Waybox\n"
-
-#: openbox/openbox.c:546
 msgid ""
 "\n"
 "Debugging options:\n"
@@ -366,19 +303,15 @@ msgstr ""
 "\n"
 "Senerarigaj elektebloj:\n"
 
-#: openbox/openbox.c:547
+#: openbox/openbox.c:544
 msgid "  --sync              Run in synchronous mode\n"
 msgstr "  --sync              Plenumigi laŭ sinkrona reĝimo\n"
 
-#: openbox/openbox.c:548
-msgid "  --startup CMD       Run CMD after starting\n"
-msgstr "  --startup KOMANDO   Plenumigi KOMANDOn post starto\n"
-
-#: openbox/openbox.c:549
+#: openbox/openbox.c:545
 msgid "  --debug             Display debugging output\n"
 msgstr "  --debug             Montri senerarigajn eligojn\n"
 
-#: openbox/openbox.c:550
+#: openbox/openbox.c:546
 msgid "  --debug-focus       Display debugging output for focus handling\n"
 msgstr "  --debug-focus       Montri senerarigajn eligojn por fokus-traktado\n"
 
@@ -387,12 +320,7 @@ msgid "  --debug-session     Display debugging output for session management\n"
 msgstr ""
 "  --debug-session     Montri senerarigajn eligojn por seancadminstrado\n"
 
-#: openbox/openbox.c:552
-msgid "  --debug-xinerama    Split the display into fake xinerama screens\n"
-msgstr ""
-"  --debug-xinerama    Dividi la ekranprezenton en falsajn xinerama-ekranojn\n"
-
-#: openbox/openbox.c:553
+#: openbox/openbox.c:548
 #, c-format
 msgid ""
 "\n"
@@ -401,36 +329,20 @@ msgstr ""
 "\n"
 "Bonvolu sendi programerarojn al %s\n"
 
-#: openbox/openbox.c:636 openbox/openbox.c:670
-#, c-format
+#: openbox/openbox.c:617
 msgid "%s requires an argument\n"
 msgstr "%s postulas argumenton\n"
 
-#: openbox/openbox.c:713
+#: openbox/openbox.c:660
 #, c-format
 msgid "Invalid command line argument \"%s\"\n"
 msgstr "Nevalida komandlinia argumento \"%s\"\n"
-
-#: openbox/screen.c:106 openbox/screen.c:191
-#, c-format
-msgid "A window manager is already running on screen %d"
-msgstr "Fenestradministrilo jam plenumiĝas ĉe ekrano %d"
-
-#: openbox/screen.c:127
-#, c-format
-msgid "Could not acquire window manager selection on screen %d"
-msgstr "Ne eblas akiri fenestradministrila elekto ĉe ekrano %d"
-
-#: openbox/screen.c:150
-#, c-format
-msgid "The WM on screen %d is not exiting"
-msgstr "La FA ĉe ekrano %d ne finiĝas"
 
 #. TRANSLATORS: If you need to specify a different order of the
 #. arguments, you can use %1$d for the first one and %2$d for the
 #. second one. For example,
 #. "The current session has %2$d desktops, but Waybox is configured for %1$d ..."
-#: openbox/screen.c:421
+#: openbox/screen.c:412
 #, c-format
 msgid ""
 "Waybox is configured for %d desktop, but the current session has %d.  "
@@ -445,53 +357,10 @@ msgstr[1] ""
 "Waybox estas agordata por %d labortabloj, sed la nuna seanco havas %d. "
 "Superregas la Waybox-agordon."
 
-#: openbox/screen.c:1204
+#: openbox/screen.c:1180
 #, c-format
 msgid "desktop %i"
 msgstr "labortablo %i"
-
-#: openbox/startupnotify.c:241
-#, c-format
-msgid "Running %s"
-msgstr "Plenumas je %s"
-
-#: openbox/translate.c:59
-#, c-format
-msgid "Invalid modifier key \"%s\" in key/mouse binding"
-msgstr "Nevalida modifila klavo \"%s\" en klava/butona kombino"
-
-#: openbox/translate.c:138
-#, c-format
-msgid "Invalid key code \"%s\" in key binding"
-msgstr "Nevalida klavkodo \"%s\" en klavkombino"
-
-#: openbox/translate.c:145
-#, c-format
-msgid "Invalid key name \"%s\" in key binding"
-msgstr "Nevalida klavnomo \"%s\" en klavkombino"
-
-#: openbox/translate.c:151
-#, c-format
-msgid "Requested key \"%s\" does not exist on the display"
-msgstr "Petita klavo \"%s\" ne ekzistas ĉe la ekranprezento"
-
-#: openbox/prompt.c:154
-msgid "OK"
-msgstr "OK"
-
-#. TRANSLATORS: Don't translate the word "SessionLogout" as it's the
-#. name of the action you write in rc.xml
-#: openbox/actions/session.c:43
-msgid ""
-"The SessionLogout action is not available since Waybox was built without "
-"session management support"
-msgstr ""
-"La ago SessionLogout ne estas disponebla, ĉar Waybox estis muntita sen "
-"seancadministrado"
-
-#: openbox/openbox.c:617
-msgid "--config-file requires an argument\n"
-msgstr "--config-file postulas argumenton\n"
 
 #: openbox/session.c:104
 #, c-format
@@ -512,10 +381,26 @@ msgstr "Eraro dum konservi la seancon al \"%s\": %s"
 msgid "Not connected to a session manager"
 msgstr "Ne konektiĝinta al seancadministrilo"
 
-#: openbox/xerror.c:40
+#: openbox/startupnotify.c:243
 #, c-format
-msgid "X Error: %s"
-msgstr "X-eraro: %s"
+msgid "Running %s"
+msgstr "Plenumas je %s"
 
-msgid "ĉe"
-msgstr "at"
+#: openbox/translate.c:59
+#, c-format
+msgid "Invalid modifier key \"%s\" in key/mouse binding"
+msgstr "Nevalida modifila klavo \"%s\" en klava/butona kombino"
+
+#: openbox/translate.c:138
+#, c-format
+msgid "Invalid key code \"%s\" in key binding"
+msgstr "Nevalida klavkodo \"%s\" en klavkombino"
+
+#: openbox/translate.c:145
+#, c-format
+msgid "Invalid key name \"%s\" in key binding"
+msgstr "Nevalida klavnomo \"%s\" en klavkombino"
+
+#: openbox/prompt.c:200
+msgid "OK"
+msgstr "OK"

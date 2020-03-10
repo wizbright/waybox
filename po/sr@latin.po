@@ -9,14 +9,15 @@ msgstr ""
 "Project-Id-Version: Waybox 0.0.1\n"
 "Report-Msgid-Bugs-To: https://github.com/wizbright/waybox/issues\n"
 "POT-Creation-Date: 2008-11-15 22:28+0100\n"
-"PO-Revision-Date: 2008-11-11 14:52+0100\n"
+"PO-Revision-Date: 2020-03-10 14:09-0400\n"
 "Last-Translator: Jay A. Fleming <tito.nehru.naser@gmail.com>\n"
 "Language-Team: None\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
-"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: openbox/actions.c:149
 #, c-format
@@ -40,8 +41,7 @@ msgstr "Izvrši"
 msgid "Failed to convert the path \"%s\" from utf8"
 msgstr "Pretvaranje putanje „%s“ iz UTF-8 nije uspelo"
 
-#: openbox/actions/exit.c:52 openbox/actions/session.c:64
-#: openbox/client.c:3465
+#: openbox/actions/exit.c:52 openbox/actions/session.c:64 openbox/client.c:3465
 msgid "Cancel"
 msgstr "Poništi"
 
@@ -82,32 +82,6 @@ msgstr "Bezimeni prozor"
 #: openbox/client.c:2026 openbox/client.c:2058
 msgid "Killing..."
 msgstr "Ubijanje..."
-
-#: openbox/client.c:2028 openbox/client.c:2060
-msgid "Not Responding"
-msgstr "Program se ne odaziva"
-
-#: openbox/client.c:3454
-#, c-format
-msgid ""
-"The window \"%s\" does not seem to be responding.  Do you want to force it "
-"to exit by sending the %s signal?"
-msgstr ""
-"Izgleda da se prozor „%s“ ne odaziva. Želite li da ga primorate na izlaz "
-"slanjem signala %s?"
-
-#: openbox/client.c:3456
-msgid "End Process"
-msgstr "Završetak procesa"
-
-#: openbox/client.c:3460
-#, c-format
-msgid ""
-"The window \"%s\" does not seem to be responding.  Do you want to disconnect "
-"it from the X server?"
-msgstr ""
-"Izgleda da se prozor „%s“ ne odaziva. Želite li da ga odspojite od grafičkog "
-"servera?"
 
 #: openbox/client.c:3462
 msgid "Disconnect"
@@ -202,6 +176,12 @@ msgstr "Zatvori"
 msgid "Invalid button \"%s\" specified in config file"
 msgstr "Pogrešno dugme „%s“ navedeno u datoteci za podešavanje"
 
+#: openbox/config.c:956
+msgid ""
+"Waybox was compiled without image loading support. Icons in menus will not "
+"be loaded."
+msgstr ""
+
 #: openbox/keyboard.c:157
 msgid "Conflict with key binding in config file"
 msgstr "Sukob u kombinaciji tastera u datoteci za podešavanje"
@@ -244,22 +224,6 @@ msgstr "Pogrešan sadržaj „%s“ u spajanju miša"
 #, c-format
 msgid "Unable to change to home directory \"%s\": %s"
 msgstr "Ne mogu se premestiti u Ličnu fasciklu „%s“:%s"
-
-#: openbox/openbox.c:152
-msgid "Failed to open the display from the DISPLAY environment variable."
-msgstr "Nije uspeo pristup ekranu iz promenljive okruženja „DISPLAY“"
-
-#: openbox/openbox.c:183
-msgid "Failed to initialize the obrender library."
-msgstr "Nije uspela inicijalizacija „obrender“ biblioteke."
-
-#: openbox/openbox.c:194
-msgid "X server does not support locale."
-msgstr "Grafički server ne podržava lokalitet."
-
-#: openbox/openbox.c:196
-msgid "Cannot set locale modifiers for the X server."
-msgstr "Ne može se postaviti izmenjivač lokaliteta za grafički server"
 
 #: openbox/openbox.c:263
 msgid "Unable to find a valid config file, using some simple defaults"
@@ -319,10 +283,6 @@ msgstr "  --help              Prikaži ovu pomoć i izađi\n"
 msgid "  --version           Display the version and exit\n"
 msgstr "  --version           Prikaži verziju i izađi\n"
 
-#: openbox/openbox.c:533
-msgid "  --replace           Replace the currently running window manager\n"
-msgstr "  --replace           Zameni trenutno pokrenut upravnik prozora\n"
-
 #. TRANSLATORS: if you translate "FILE" here, make sure to keep the "Specify..."
 #. aligned still, if you have to, make a new line with \n and 22 spaces. It's
 #. fine to leave it as FILE though.
@@ -335,26 +295,6 @@ msgstr ""
 #: openbox/openbox.c:538
 msgid "  --sm-disable        Disable connection to the session manager\n"
 msgstr "  --sm-disable        Onemogući vezu sa upravljačem sesija\n"
-
-#: openbox/openbox.c:539
-msgid ""
-"\n"
-"Passing messages to a running Waybox instance:\n"
-msgstr ""
-"\n"
-"Prosleđujem poruke pokrenutom primerku Openboksa:\n"
-
-#: openbox/openbox.c:540
-msgid "  --reconfigure       Reload Waybox's configuration\n"
-msgstr "  --reconfigure       Ponovo učitaj podešavanja za Openboks\n"
-
-#: openbox/openbox.c:541
-msgid "  --restart           Restart Waybox\n"
-msgstr "  --restart           Pokreni opet Openboks\n"
-
-#: openbox/openbox.c:542
-msgid "  --exit              Exit Waybox\n"
-msgstr "  --exit              Izađi iz Openboksa\n"
 
 #: openbox/openbox.c:543
 msgid ""
@@ -378,9 +318,12 @@ msgstr ""
 "  --debug-focus       Prikaži izlaz kod otklanjanja grešaka za rukovanje "
 "fokusom\n"
 
-#: openbox/openbox.c:547
-msgid "  --debug-xinerama    Split the display into fake xinerama screens\n"
-msgstr "  --debug-xinerama    Podeli ekran na imitacije „xinerama“ ekrana\n"
+#: openbox/openbox.c:551
+#, fuzzy
+msgid "  --debug-session     Display debugging output for session management\n"
+msgstr ""
+"  --debug-focus       Prikaži izlaz kod otklanjanja grešaka za rukovanje "
+"fokusom\n"
 
 #: openbox/openbox.c:548
 #, c-format
@@ -392,28 +335,14 @@ msgstr ""
 "Prijavite greške na %s\n"
 
 #: openbox/openbox.c:617
-msgid "--config-file requires an argument\n"
+#, fuzzy
+msgid "%s requires an argument\n"
 msgstr "--config-file zahteva odgovarajući argument\n"
 
 #: openbox/openbox.c:660
 #, c-format
 msgid "Invalid command line argument \"%s\"\n"
 msgstr "Neispravan argument komandne linije „%s“\n"
-
-#: openbox/screen.c:102 openbox/screen.c:190
-#, c-format
-msgid "A window manager is already running on screen %d"
-msgstr "Upravvnik prozora je već pokrenut na ekranu %d"
-
-#: openbox/screen.c:124
-#, c-format
-msgid "Could not acquire window manager selection on screen %d"
-msgstr "Nisam mogao da dobijem izbor upravnika prozora na ekranu %d"
-
-#: openbox/screen.c:145
-#, c-format
-msgid "The WM on screen %d is not exiting"
-msgstr "Upravvnik prozora na ekranu %d nije završio sa radom"
 
 #. TRANSLATORS: If you need to specify a different order of the
 #. arguments, you can use %1$d for the first one and %2$d for the
@@ -480,16 +409,6 @@ msgstr "Neispravan kod tastera „%s“ u kombinaciji tastera"
 #, c-format
 msgid "Invalid key name \"%s\" in key binding"
 msgstr "Neispravno ime tastera „%s“ u kombinaciji tastera"
-
-#: openbox/translate.c:151
-#, c-format
-msgid "Requested key \"%s\" does not exist on the display"
-msgstr "Zahtevani taster „%s“ ne postoji na ekranu"
-
-#: openbox/xerror.c:40
-#, c-format
-msgid "X Error: %s"
-msgstr "Greška grafičkog servera: %s"
 
 #: openbox/prompt.c:200
 msgid "OK"
