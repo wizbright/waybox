@@ -27,12 +27,12 @@ int main(int argc, char **argv) {
 	textdomain(GETTEXT_PACKAGE);
 
 	char *startup_cmd = NULL;
-	bool debug = false;
+	enum wlr_log_importance debuglevel = WLR_ERROR;
 	if (argc > 1) {
 		int i;
 		for (i = 0; i < argc; i++) {
 			if (!strcmp("--debug", argv[i]) || !strcmp("-v", argv[i])) {
-				debug = true;
+				debuglevel = WLR_INFO;
 			} else if ((!strcmp("--startup", argv[i]) || !strcmp("-s", argv[i]))) {
 				if (i < argc - 1) {
 					startup_cmd = argv[i + 1];
@@ -58,7 +58,7 @@ int main(int argc, char **argv) {
 		}
 	}
 
-	wlr_log_init(debug ? WLR_DEBUG : WLR_ERROR, NULL);
+	wlr_log_init(debuglevel, NULL);
 	struct wb_server server = {0};
 
 	if (wb_create_backend(&server)) {
