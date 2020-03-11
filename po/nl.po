@@ -1,0 +1,412 @@
+# Dutch translations for openbox.
+# This file is distributed under the same license as the Waybox package.
+#
+# Mark Pustjens <pustjens@dds.nl>, 2007.
+# Jochem Kossen <jkossen@xs4all.nl>, 2007.
+# Marvin Vek <laen@onedot.nl>, 2008.
+# Benno Schulenberg <benno@vertaalt.nl>, 2008.
+# Pjotr <pjotrvertaalt@gmail.com>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Waybox 0.0.1\n"
+"Report-Msgid-Bugs-To: https://github.com/wizbright/waybox/issues\n"
+"POT-Creation-Date: 2008-11-15 22:28+0100\n"
+"PO-Revision-Date: 2020-03-10 14:08-0400\n"
+"Last-Translator: Pjotr <pjotrvertaalt@gmail.com>\n"
+"Language-Team: Dutch <vertaling@vrijschrift.org>\n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: openbox/actions.c:149
+#, c-format
+msgid "Invalid action \"%s\" requested. No such action exists."
+msgstr "Er werd gevraagd om ongeldige actie '%s'. Deze actie bestaat niet."
+
+#: openbox/actions/execute.c:128
+msgid "No"
+msgstr "Nee"
+
+#: openbox/actions/execute.c:129
+msgid "Yes"
+msgstr "Ja"
+
+#: openbox/actions/execute.c:133
+msgid "Execute"
+msgstr "Uitvoeren"
+
+#: openbox/actions/execute.c:142
+#, c-format
+msgid "Failed to convert the path \"%s\" from utf8"
+msgstr "Converteren van het pad '%s' vanuit UTF-8 is mislukt"
+
+#: openbox/actions/exit.c:52 openbox/actions/session.c:64 openbox/client.c:3465
+msgid "Cancel"
+msgstr "Annuleren"
+
+#: openbox/actions/exit.c:53
+msgid "Exit"
+msgstr "Afsluiten"
+
+#: openbox/actions/exit.c:56
+msgid "Are you sure you want to exit Waybox?"
+msgstr "Weet u zeker dat u Waybox wilt afsluiten?"
+
+#: openbox/actions/exit.c:57
+msgid "Exit Waybox"
+msgstr "Waybox afsluiten"
+
+#. TRANSLATORS: Don't translate the word "SessionLogout" as it's the
+#. name of the action you write in rc.xml
+#: openbox/actions/session.c:43
+msgid ""
+"The SessionLogout action is not available since Waybox was built without "
+"session management support"
+msgstr ""
+
+#: openbox/actions/session.c:65 openbox/actions/session.c:70
+msgid "Log Out"
+msgstr "Afmelden"
+
+#: openbox/actions/session.c:69
+msgid "Are you sure you want to log out?"
+msgstr "Weet u zeker dat u zich wilt afmelden?"
+
+#: openbox/client.c:2012
+msgid "Unnamed Window"
+msgstr "Naamloos venster"
+
+#: openbox/client.c:2026 openbox/client.c:2058
+msgid "Killing..."
+msgstr "Bezig met termineren..."
+
+#: openbox/client.c:3462
+msgid "Disconnect"
+msgstr "Verbreek verbinding"
+
+#: openbox/client_list_combined_menu.c:87 openbox/client_list_menu.c:91
+msgid "Go there..."
+msgstr "Ga erheen..."
+
+#: openbox/client_list_combined_menu.c:94
+msgid "Manage desktops"
+msgstr "Bureaubladen beheren"
+
+#: openbox/client_list_combined_menu.c:95 openbox/client_list_menu.c:155
+msgid "_Add new desktop"
+msgstr "_Voeg nieuw bureaublad toe"
+
+#: openbox/client_list_combined_menu.c:96 openbox/client_list_menu.c:156
+msgid "_Remove last desktop"
+msgstr "V_erwijder laatste bureaublad"
+
+#: openbox/client_list_combined_menu.c:149
+msgid "Windows"
+msgstr "Vensters"
+
+#: openbox/client_list_menu.c:203
+msgid "Desktops"
+msgstr "Bureaubladen"
+
+#: openbox/client_menu.c:258
+msgid "All desktops"
+msgstr "Alle bureaubladen"
+
+#: openbox/client_menu.c:370
+msgid "_Layer"
+msgstr "_Laag"
+
+#: openbox/client_menu.c:375
+msgid "Always on _top"
+msgstr "Altijd _bovenop"
+
+#: openbox/client_menu.c:376
+msgid "_Normal"
+msgstr "_Normaal"
+
+#: openbox/client_menu.c:377
+msgid "Always on _bottom"
+msgstr "Altijd _onderop"
+
+#: openbox/client_menu.c:379
+msgid "_Send to desktop"
+msgstr "Verplaats _naar bureaublad"
+
+#: openbox/client_menu.c:383
+msgid "Client menu"
+msgstr "Venstermenu"
+
+#: openbox/client_menu.c:393
+msgid "R_estore"
+msgstr "_Herstellen"
+
+#: openbox/client_menu.c:397
+msgid "_Move"
+msgstr "_Verplaatsen"
+
+#: openbox/client_menu.c:399
+msgid "Resi_ze"
+msgstr "_Grootte aanpassen"
+
+#: openbox/client_menu.c:401
+msgid "Ico_nify"
+msgstr "Pictogram van maken"
+
+#: openbox/client_menu.c:405
+msgid "Ma_ximize"
+msgstr "_Maximaliseren"
+
+#: openbox/client_menu.c:409
+msgid "_Roll up/down"
+msgstr "_Op-/neerrollen"
+
+#: openbox/client_menu.c:411
+msgid "Un/_Decorate"
+msgstr "_Vensterrand weghalen/toevoegen"
+
+#: openbox/client_menu.c:415
+msgid "_Close"
+msgstr "_Sluiten"
+
+#: openbox/config.c:781
+#, c-format
+msgid "Invalid button \"%s\" specified in config file"
+msgstr "Ongeldige knop '%s' opgegeven in het instellingenbestand"
+
+#: openbox/config.c:956
+msgid ""
+"Waybox was compiled without image loading support. Icons in menus will not "
+"be loaded."
+msgstr ""
+
+#: openbox/keyboard.c:157
+msgid "Conflict with key binding in config file"
+msgstr "Conflict bij toetsbindingen in het instellingenbestand"
+
+#: openbox/menu.c:102 openbox/menu.c:110
+#, c-format
+msgid "Unable to find a valid menu file \"%s\""
+msgstr "Kan geen geldig menubestand '%s' vinden"
+
+#: openbox/menu.c:170
+#, c-format
+msgid "Failed to execute command for pipe-menu \"%s\": %s"
+msgstr "Uitvoeren van opdracht voor pipe-menu '%s' is mislukt: %s"
+
+#: openbox/menu.c:184
+#, c-format
+msgid "Invalid output from pipe-menu \"%s\""
+msgstr "Ongeldige uitvoer van pipe-menu '%s'"
+
+#: openbox/menu.c:197
+#, c-format
+msgid "Attempted to access menu \"%s\" but it does not exist"
+msgstr "Getracht niet-bestaand menu '%s' te benaderen"
+
+#: openbox/menu.c:367 openbox/menu.c:368
+msgid "More..."
+msgstr "Meer..."
+
+#: openbox/mouse.c:373
+#, c-format
+msgid "Invalid button \"%s\" in mouse binding"
+msgstr "Ongeldige knop '%s' in muisbinding"
+
+#: openbox/mouse.c:379
+#, c-format
+msgid "Invalid context \"%s\" in mouse binding"
+msgstr "Ongeldige context '%s' in muisbinding"
+
+#: openbox/openbox.c:133
+#, c-format
+msgid "Unable to change to home directory \"%s\": %s"
+msgstr "Kan niet overschakelen naar thuismap '%s': %s"
+
+#: openbox/openbox.c:263
+msgid "Unable to find a valid config file, using some simple defaults"
+msgstr ""
+"Kan geen geldig configuratiebestand vinden; er worden enkele simpele "
+"standaardinstellingen gebruikt"
+
+#: openbox/openbox.c:297
+msgid "Unable to load a theme."
+msgstr "Kan geen thema laden."
+
+#: openbox/openbox.c:377
+#, c-format
+msgid ""
+"One or more XML syntax errors were found while parsing the Waybox "
+"configuration files.  See stdout for more information.  The last error seen "
+"was in file \"%s\" line %d, with message: %s"
+msgstr ""
+"Er zijn een of meer XML-syntaxfouten gevonden tijdens het inlezen van de "
+"Waybox-configuratiebestanden. Zie standaarduitvoer voor meer informatie.  De "
+"laatste fout werd gevonden in bestand '%s' regel %d, met bericht: %s"
+
+#: openbox/openbox.c:379
+msgid "Waybox Syntax Error"
+msgstr "Waybox-syntaxfout"
+
+#: openbox/openbox.c:379
+msgid "Close"
+msgstr "Sluiten"
+
+#: openbox/openbox.c:448
+#, c-format
+msgid "Restart failed to execute new executable \"%s\": %s"
+msgstr "Bij herstart is uitvoeren van nieuw programma '%s' mislukt: %s"
+
+#: openbox/openbox.c:518 openbox/openbox.c:520
+msgid "Copyright (c)"
+msgstr "Auteursrecht (c)"
+
+#: openbox/openbox.c:529
+msgid "Syntax: openbox [options]\n"
+msgstr "Gebruik: openbox [opties]\n"
+
+#: openbox/openbox.c:530
+msgid ""
+"\n"
+"Options:\n"
+msgstr ""
+"\n"
+"Opties:\n"
+
+#: openbox/openbox.c:531
+msgid "  --help              Display this help and exit\n"
+msgstr "  --help              Toon deze hulptekst en sluit af\n"
+
+#: openbox/openbox.c:532
+msgid "  --version           Display the version and exit\n"
+msgstr "  --version           Toon versie en sluit af\n"
+
+#. TRANSLATORS: if you translate "FILE" here, make sure to keep the "Specify..."
+#. aligned still, if you have to, make a new line with \n and 22 spaces. It's
+#. fine to leave it as FILE though.
+#: openbox/openbox.c:537
+msgid "  --config-file FILE  Specify the path to the config file to use\n"
+msgstr ""
+"  --config-file BESTAND\n"
+"                      Dit configuratiebestand gebruiken\n"
+
+#: openbox/openbox.c:538
+msgid "  --sm-disable        Disable connection to the session manager\n"
+msgstr "  --sm-disable        Verbinding met de sessiebeheerder uitschakelen\n"
+
+#: openbox/openbox.c:543
+msgid ""
+"\n"
+"Debugging options:\n"
+msgstr ""
+"\n"
+"Opties voor foutopsporing:\n"
+
+#: openbox/openbox.c:544
+msgid "  --sync              Run in synchronous mode\n"
+msgstr "  --sync              In synchrone modus starten\n"
+
+#: openbox/openbox.c:545
+msgid "  --debug             Display debugging output\n"
+msgstr "  --debug             Toon foutopsporingsuitvoer\n"
+
+#: openbox/openbox.c:546
+msgid "  --debug-focus       Display debugging output for focus handling\n"
+msgstr ""
+"  --debug-focus       Toon foutopsporingsuitvoer voor afhandeling van "
+"scherpstelling\n"
+
+#: openbox/openbox.c:548
+msgid "  --startup CMD       Run CMD after starting\n"
+msgstr ""
+
+#: openbox/openbox.c:551
+msgid "  --debug-session     Display debugging output for session management\n"
+msgstr ""
+
+#: openbox/openbox.c:548
+#, c-format
+msgid ""
+"\n"
+"Please report bugs at %s\n"
+msgstr ""
+"\n"
+"Gelieve fouten te melden aan %s\n"
+
+#: openbox/openbox.c:617
+msgid "%s requires an argument\n"
+msgstr "'%s' vereist een argument\n"
+
+#: openbox/openbox.c:660
+#, c-format
+msgid "Invalid command line argument \"%s\"\n"
+msgstr "Ongeldige opdrachtregeloptie '%s'\n"
+
+#. TRANSLATORS: If you need to specify a different order of the
+#. arguments, you can use %1$d for the first one and %2$d for the
+#. second one. For example,
+#. "The current session has %2$d desktops, but Waybox is configured for %1$d ..."
+#: openbox/screen.c:412
+#, c-format
+msgid ""
+"Waybox is configured for %d desktop, but the current session has %d.  "
+"Overriding the Waybox configuration."
+msgid_plural ""
+"Waybox is configured for %d desktops, but the current session has %d.  "
+"Overriding the Waybox configuration."
+msgstr[0] ""
+"Waybox is ingesteld op %d bureaublad, maar de huidige sessie heeft er %d.  "
+"De Waybox-instelling wordt genegeerd."
+msgstr[1] ""
+"Waybox is ingesteld op %d bureaubladen, maar de huidige sessie heeft er %d.  "
+"De Waybox-instelling wordt genegeerd."
+
+#: openbox/screen.c:1180
+#, c-format
+msgid "desktop %i"
+msgstr "bureaublad %i"
+
+#: openbox/session.c:104
+#, fuzzy, c-format
+msgid "Unable to make directory \"%s\": %s"
+msgstr "Kan niet overschakelen naar thuismap '%s': %s"
+
+#: openbox/session.c:466
+#, fuzzy, c-format
+msgid "Unable to save the session to \"%s\": %s"
+msgstr "Kan niet overschakelen naar thuismap '%s': %s"
+
+#: openbox/session.c:605
+#, c-format
+msgid "Error while saving the session to \"%s\": %s"
+msgstr ""
+
+#: openbox/session.c:842
+msgid "Not connected to a session manager"
+msgstr ""
+
+#: openbox/startupnotify.c:243
+#, c-format
+msgid "Running %s"
+msgstr "%s aan het draaien"
+
+#: openbox/translate.c:59
+#, c-format
+msgid "Invalid modifier key \"%s\" in key/mouse binding"
+msgstr "Ongeldige aanpassingstoets '%s' in toetsen-/muisbinding"
+
+#: openbox/translate.c:138
+#, c-format
+msgid "Invalid key code \"%s\" in key binding"
+msgstr "Ongeldige toetscode '%s' in toetsenbinding"
+
+#: openbox/translate.c:145
+#, c-format
+msgid "Invalid key name \"%s\" in key binding"
+msgstr "Ongeldige toetsnaam '%s' in toetsenbinding"
+
+#: openbox/prompt.c:200
+msgid "OK"
+msgstr "OK"

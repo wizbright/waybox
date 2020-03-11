@@ -1,0 +1,410 @@
+# Turkish translation of openbox.
+# Copyright (C) 2020 Joe Wisdom
+# This file is distributed under the same license as the Waybox package.
+# Tutku Dalmaz <mektup@tutkudalmaz.org>, 2008.
+# Muhammet Kara <muhammet.k@gmail.com>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Waybox 0.0.1\n"
+"Report-Msgid-Bugs-To: https://github.com/wizbright/waybox/issues\n"
+"POT-Creation-Date: 2008-11-15 22:28+0100\n"
+"PO-Revision-Date: 2020-03-10 14:09-0400\n"
+"Last-Translator: Muhammet Kara <muhammet.k@gmail.com>\n"
+"Language-Team: Turkish <gnome-turk@gnome.org>\n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n == 1 ? 0 : 1;\n"
+
+#: openbox/actions.c:149
+#, c-format
+msgid "Invalid action \"%s\" requested. No such action exists."
+msgstr "\"%s\" geçersiz eylem isteği. Böyle bir eylem yok."
+
+#: openbox/actions/execute.c:128
+msgid "No"
+msgstr "Hayır"
+
+#: openbox/actions/execute.c:129
+msgid "Yes"
+msgstr "Evet"
+
+#: openbox/actions/execute.c:133
+msgid "Execute"
+msgstr "Çalıştır"
+
+#: openbox/actions/execute.c:142
+#, c-format
+msgid "Failed to convert the path \"%s\" from utf8"
+msgstr "\"%s\" yolu utf8'e çevrilmesi başarısız oldu"
+
+#: openbox/actions/exit.c:52 openbox/actions/session.c:64 openbox/client.c:3465
+msgid "Cancel"
+msgstr "İptal"
+
+#: openbox/actions/exit.c:53
+msgid "Exit"
+msgstr "Çık"
+
+#: openbox/actions/exit.c:56
+msgid "Are you sure you want to exit Waybox?"
+msgstr "Waybox'tan çıkmak istediğinize emin misiniz?"
+
+#: openbox/actions/exit.c:57
+msgid "Exit Waybox"
+msgstr "Waybox'tan Çık"
+
+#. TRANSLATORS: Don't translate the word "SessionLogout" as it's the
+#. name of the action you write in rc.xml
+#: openbox/actions/session.c:43
+msgid ""
+"The SessionLogout action is not available since Waybox was built without "
+"session management support"
+msgstr ""
+
+#: openbox/actions/session.c:65 openbox/actions/session.c:70
+msgid "Log Out"
+msgstr "Oturumu Kapat"
+
+#: openbox/actions/session.c:69
+msgid "Are you sure you want to log out?"
+msgstr "Oturumu kapatmak istediğinizden emin misiniz?"
+
+#: openbox/client.c:2012
+msgid "Unnamed Window"
+msgstr "İsimsiz Pencere"
+
+#: openbox/client.c:2026 openbox/client.c:2058
+msgid "Killing..."
+msgstr "Sonlandırılıyor..."
+
+#: openbox/client.c:3462
+msgid "Disconnect"
+msgstr "Bağlantıyı Kes"
+
+#: openbox/client_list_combined_menu.c:87 openbox/client_list_menu.c:91
+msgid "Go there..."
+msgstr "Oraya git..."
+
+#: openbox/client_list_combined_menu.c:94
+msgid "Manage desktops"
+msgstr "Masaüstlerini yönet"
+
+#: openbox/client_list_combined_menu.c:95 openbox/client_list_menu.c:155
+msgid "_Add new desktop"
+msgstr "_Yeni masaüstü ekle"
+
+#: openbox/client_list_combined_menu.c:96 openbox/client_list_menu.c:156
+msgid "_Remove last desktop"
+msgstr "_Son masaüstünü kaldır"
+
+#: openbox/client_list_combined_menu.c:149
+msgid "Windows"
+msgstr "Pencereler"
+
+#: openbox/client_list_menu.c:203
+msgid "Desktops"
+msgstr "Masaüstleri"
+
+#: openbox/client_menu.c:258
+msgid "All desktops"
+msgstr "Tüm masaüstleri"
+
+#: openbox/client_menu.c:370
+msgid "_Layer"
+msgstr "_Katman"
+
+#: openbox/client_menu.c:375
+msgid "Always on _top"
+msgstr "_Her zaman üstte"
+
+#: openbox/client_menu.c:376
+msgid "_Normal"
+msgstr "_Normal"
+
+#: openbox/client_menu.c:377
+msgid "Always on _bottom"
+msgstr "_Her zaman altta"
+
+#: openbox/client_menu.c:379
+msgid "_Send to desktop"
+msgstr "_Masaüstüne gönder"
+
+#: openbox/client_menu.c:383
+msgid "Client menu"
+msgstr "İstemci menüsü"
+
+#: openbox/client_menu.c:393
+msgid "R_estore"
+msgstr "_Eski durumuna getir"
+
+#: openbox/client_menu.c:397
+msgid "_Move"
+msgstr "_Taşı"
+
+#: openbox/client_menu.c:399
+msgid "Resi_ze"
+msgstr "_Yeniden boyutlandır"
+
+#: openbox/client_menu.c:401
+msgid "Ico_nify"
+msgstr "_Simge durumuna küçült"
+
+#: openbox/client_menu.c:405
+msgid "Ma_ximize"
+msgstr "_Ekranı kapla"
+
+#: openbox/client_menu.c:409
+msgid "_Roll up/down"
+msgstr "_Dürele/Aç"
+
+#: openbox/client_menu.c:411
+msgid "Un/_Decorate"
+msgstr "Geri Al/Kapla"
+
+#: openbox/client_menu.c:415
+msgid "_Close"
+msgstr "_Kapat"
+
+#: openbox/config.c:781
+#, c-format
+msgid "Invalid button \"%s\" specified in config file"
+msgstr "Yapılandırılma dosyasında belirtilmiş geçersiz \"%s\" düğmesi"
+
+#: openbox/config.c:956
+msgid ""
+"Waybox was compiled without image loading support. Icons in menus will not "
+"be loaded."
+msgstr ""
+
+#: openbox/keyboard.c:157
+msgid "Conflict with key binding in config file"
+msgstr "Yapılandırma dosyasındaki tuş bağlantısında çakışma"
+
+#: openbox/menu.c:102 openbox/menu.c:110
+#, c-format
+msgid "Unable to find a valid menu file \"%s\""
+msgstr "\"%s\" geçerli menü dosyası bulunamadı"
+
+#: openbox/menu.c:170
+#, c-format
+msgid "Failed to execute command for pipe-menu \"%s\": %s"
+msgstr "İletim menüsü için \"%s\": %s komutunun çalıştırılması başarısız oldu"
+
+#: openbox/menu.c:184
+#, c-format
+msgid "Invalid output from pipe-menu \"%s\""
+msgstr "\"%s\" iletim menüsü için geçersiz çıkış"
+
+#: openbox/menu.c:197
+#, c-format
+msgid "Attempted to access menu \"%s\" but it does not exist"
+msgstr "\"%s\" menüsüne erişilmeye çalışıldı fakat bu menü yok"
+
+#: openbox/menu.c:367 openbox/menu.c:368
+msgid "More..."
+msgstr "Daha..."
+
+#: openbox/mouse.c:373
+#, c-format
+msgid "Invalid button \"%s\" in mouse binding"
+msgstr "Fare bağında geçersiz \"%s\" tuşu"
+
+#: openbox/mouse.c:379
+#, c-format
+msgid "Invalid context \"%s\" in mouse binding"
+msgstr "Fare bağında geçersinz \"%s\" içeriği"
+
+#: openbox/openbox.c:133
+#, c-format
+msgid "Unable to change to home directory \"%s\": %s"
+msgstr "\"%s\": %s ev dizini değiştirilemedi"
+
+#: openbox/openbox.c:263
+msgid "Unable to find a valid config file, using some simple defaults"
+msgstr ""
+"Geçerli yapılandırma dosyası bulunamadı, bazı basit öntanımlı ayarlar "
+"kullanılıyor"
+
+#: openbox/openbox.c:297
+msgid "Unable to load a theme."
+msgstr "Tema yüklenemedi."
+
+#: openbox/openbox.c:377
+#, c-format
+msgid ""
+"One or more XML syntax errors were found while parsing the Waybox "
+"configuration files.  See stdout for more information.  The last error seen "
+"was in file \"%s\" line %d, with message: %s"
+msgstr ""
+"Waybox yapılandırma dosyası ayrıştırılırken bir yada daha fazla XML "
+"sözdizimi hatası bulundu. Daha fazla bilgi için stdout çıktısına bakınız. "
+"Son hata \"%s\" dosyası içerisindeki %d satırında %s hata iletisi ile görüldü"
+
+#: openbox/openbox.c:379
+msgid "Waybox Syntax Error"
+msgstr "Waybox Sözdizimi Hatası"
+
+#: openbox/openbox.c:379
+msgid "Close"
+msgstr "Kapat"
+
+#: openbox/openbox.c:448
+#, c-format
+msgid "Restart failed to execute new executable \"%s\": %s"
+msgstr ""
+"Yeniden başlatmadaki \"%s\": %s çalıştırılabilir dosyalarının başlatılması "
+"başarısız oldu"
+
+#: openbox/openbox.c:518 openbox/openbox.c:520
+msgid "Copyright (c)"
+msgstr "Telif Hakkı (c)"
+
+#: openbox/openbox.c:529
+msgid "Syntax: openbox [options]\n"
+msgstr "Sözdizimi: openbox [seçenekler]\n"
+
+#: openbox/openbox.c:530
+msgid ""
+"\n"
+"Options:\n"
+msgstr ""
+"\n"
+"Seçenekler:\n"
+
+#: openbox/openbox.c:531
+msgid "  --help              Display this help and exit\n"
+msgstr "  --help              Yardımı görüntüle ve çık\n"
+
+#: openbox/openbox.c:532
+msgid "  --version           Display the version and exit\n"
+msgstr "  --version           Sürüm bilgisini görüntüle ve çık\n"
+
+#. TRANSLATORS: if you translate "FILE" here, make sure to keep the "Specify..."
+#. aligned still, if you have to, make a new line with \n and 22 spaces. It's
+#. fine to leave it as FILE though.
+#: openbox/openbox.c:537
+msgid "  --config-file FILE  Specify the path to the config file to use\n"
+msgstr ""
+"  --config-file FILE  Kullanılacak yapılandırma dosyasının yolunu belirtir\n"
+
+#: openbox/openbox.c:538
+msgid "  --sm-disable        Disable connection to the session manager\n"
+msgstr ""
+"  --sm-disable        Oturum yöneticisiyle olan bağlanıyı etkisiz kıl\n"
+
+#: openbox/openbox.c:543
+msgid ""
+"\n"
+"Debugging options:\n"
+msgstr ""
+"\n"
+"Hata ayıklama seçenekleri:\n"
+
+#: openbox/openbox.c:544
+msgid "  --sync              Run in synchronous mode\n"
+msgstr "  --sync              Eş zamanlı kipte çalış\n"
+
+#: openbox/openbox.c:545
+msgid "  --debug             Display debugging output\n"
+msgstr "  --debug             Hata ayıklama çıktısını göster\n"
+
+#: openbox/openbox.c:546
+msgid "  --debug-focus       Display debugging output for focus handling\n"
+msgstr ""
+"  --debug-focus       Özelleşmiş durum için hata ayıklama çıktısını göster\n"
+
+#: openbox/openbox.c:548
+msgid "  --startup CMD       Run CMD after starting\n"
+msgstr ""
+
+#: openbox/openbox.c:551
+msgid "  --debug-session     Display debugging output for session management\n"
+msgstr ""
+
+#: openbox/openbox.c:548
+#, c-format
+msgid ""
+"\n"
+"Please report bugs at %s\n"
+msgstr ""
+"\n"
+"Lütfen hataları %s adresine bildiriniz\n"
+
+#: openbox/openbox.c:617
+msgid "%s requires an argument\n"
+msgstr "%s dosyası bir değişkene ihtiyaç duyuyor\n"
+
+#: openbox/openbox.c:660
+#, c-format
+msgid "Invalid command line argument \"%s\"\n"
+msgstr "\"%s\" geçersiz komut satırı değişkeni\n"
+
+#. TRANSLATORS: If you need to specify a different order of the
+#. arguments, you can use %1$d for the first one and %2$d for the
+#. second one. For example,
+#. "The current session has %2$d desktops, but Waybox is configured for %1$d ..."
+#: openbox/screen.c:412
+#, c-format
+msgid ""
+"Waybox is configured for %d desktop, but the current session has %d.  "
+"Overriding the Waybox configuration."
+msgid_plural ""
+"Waybox is configured for %d desktops, but the current session has %d.  "
+"Overriding the Waybox configuration."
+msgstr[0] ""
+"Waybox %d masaüstü için yapılandırılmıştır fakat güncel oturumda %d masaüstü "
+"var. Waybox yapılandırması geçersiz kılınıyor."
+msgstr[1] ""
+"Waybox %d masaüstleri için yapılandırılmıştır fakat güncel oturum %d dir. "
+"Waybox yapılandırmasının üzerien yazılıyor."
+
+#: openbox/screen.c:1180
+#, c-format
+msgid "desktop %i"
+msgstr "%i masaüstü"
+
+#: openbox/session.c:104
+#, fuzzy, c-format
+msgid "Unable to make directory \"%s\": %s"
+msgstr "\"%s\": %s ev dizini değiştirilemedi"
+
+#: openbox/session.c:466
+#, fuzzy, c-format
+msgid "Unable to save the session to \"%s\": %s"
+msgstr "\"%s\": %s ev dizini değiştirilemedi"
+
+#: openbox/session.c:605
+#, c-format
+msgid "Error while saving the session to \"%s\": %s"
+msgstr ""
+
+#: openbox/session.c:842
+msgid "Not connected to a session manager"
+msgstr ""
+
+#: openbox/startupnotify.c:243
+#, c-format
+msgid "Running %s"
+msgstr "%s çalışıyor"
+
+#: openbox/translate.c:59
+#, c-format
+msgid "Invalid modifier key \"%s\" in key/mouse binding"
+msgstr "Klavye/fare bağında geçersiz \"%s\" tuş değiştirici"
+
+#: openbox/translate.c:138
+#, c-format
+msgid "Invalid key code \"%s\" in key binding"
+msgstr "Tuş bağında \"%s\" geçersiz tuş kodu"
+
+#: openbox/translate.c:145
+#, c-format
+msgid "Invalid key name \"%s\" in key binding"
+msgstr "Tuş bağında \"%s\" geçersiz tuş adı"
+
+#: openbox/prompt.c:200
+msgid "OK"
+msgstr "Tamam"
