@@ -1,8 +1,8 @@
-# waybox
-An openbox clone on Wayland (WIP)
+# Waybox
+An Openbox clone on Wayland (WIP)
 
 ### Goals
-The main goal of this project is to provide a similar feel to openbox but on wayland
+The main goal of this project is to provide a similar feel to Openbox but on Wayland
 
 ### Contributing
 
@@ -24,7 +24,7 @@ cd build
 ninja
 ```
 
-After that, you should have an executable in build/
+After that, you should have an executable as waybox/waybox
 
 ### Contact
 I can be found as wiz on Rizon and WizBright on Freenode. 

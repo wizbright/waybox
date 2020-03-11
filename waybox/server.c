@@ -1,7 +1,7 @@
 #include "waybox/server.h"
 #include "waybox/xdg_shell.h"
 
-bool init_wb(struct wb_server* server) {
+bool wb_create_backend(struct wb_server* server) {
 	// create display
 	server->wl_display = wl_display_create();
 	if (server->wl_display == NULL) {
@@ -27,7 +27,7 @@ bool init_wb(struct wb_server* server) {
 	return true;
 }
 
-bool start_wb(struct wb_server* server) {
+bool wb_start_server(struct wb_server* server) {
 	wl_list_init(&server->outputs);
 
 	server->new_output.notify = new_output_notify;
@@ -51,7 +51,7 @@ bool start_wb(struct wb_server* server) {
 
 	wlr_gamma_control_manager_v1_create(server->wl_display);
 	wlr_screencopy_manager_v1_create(server->wl_display);
-	wlr_gtk_primary_selection_device_manager_create(server->wl_display);
+	wlr_primary_selection_v1_device_manager_create(server->wl_display);
 	wlr_idle_create(server->wl_display);
 
 	wlr_data_device_manager_create(server->wl_display);
@@ -61,7 +61,7 @@ bool start_wb(struct wb_server* server) {
 	return true;
 }
 
-bool terminate_wb(struct wb_server* server) {
+bool wb_terminate(struct wb_server* server) {
 	wl_display_destroy_clients(server->wl_display);
 	wb_cursor_destroy(server->cursor);
 	wb_seat_destroy(server->seat);

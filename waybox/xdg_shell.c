@@ -57,7 +57,8 @@ static void xdg_surface_unmap(struct wl_listener *listener, void *data) {
 		focus_view(current_view, current_view->xdg_surface->surface);
 	}
 	/* Otherwise, focus the next view, if any. */
-	else if (next_view->xdg_surface->surface && wlr_surface_is_xdg_surface(next_view->xdg_surface->surface)) {
+	else if (next_view->xdg_surface->surface &&
+			wlr_surface_is_xdg_surface(next_view->xdg_surface->surface)) {
 		focus_view(next_view, next_view->xdg_surface->surface);
 	}
 }

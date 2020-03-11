@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
 			} else if ((!strcmp("--startup", argv[i]) || !strcmp("-s", argv[i])) && i < argc) {
 				startup_cmd = argv[i + 1];
 			} else if (!strcmp("--version", argv[i]) || !strcmp("-V", argv[i])) {
-				printf(VERSION "\n");
+				printf(PACKAGE_NAME " " PACKAGE_VERSION "\n");
 				return 0;
 			} else if (argv[i][0] == '-') {
 				printf("Usage: %s [--debug] [--exit] [--help] [--startup CMD] [--version]\n", argv[0]);
@@ -26,26 +26,26 @@ int main(int argc, char **argv) {
 
 	struct wb_server server = {0};
 
-	if (init_wb(&server) == false) {
+	if (!wb_create_backend(&server)) {
 		printf("Failed to create backend\n");
 		exit(EXIT_FAILURE);
 	}
 
-	if (!start_wb(&server)) {
+	if (!wb_start_server(&server)) {
 		printf("Failed to start server\n");
-		terminate_wb(&server);
+		wb_terminate(&server);
 		exit(EXIT_FAILURE);
 	}
 
 	if (startup_cmd) {
 		if (fork() == 0) {
-			execl("/bin/sh", "/bin/sh", "-c", startup_cmd, NULL);
+			execl("/bin/sh", "/bin/sh", "-c", startup_cmd, (char *) NULL);
 		}
 	}
 
 	wl_display_run(server.wl_display);
 
-	terminate_wb(&server);
+	wb_terminate(&server);
 
 	return 0;
 }

@@ -1,10 +1,9 @@
 #ifndef SERVER_H
 #define SERVER_H
 
-#ifdef _POSIX_C_SOURCE
-#undef _POSIX_C_SOURCE
-#endif
+#ifndef _POSIX_C_SOURCE
 #define _POSIX_C_SOURCE 200112L
+#endif
 
 #include <stdio.h>
 
@@ -17,7 +16,7 @@
 #include <wlr/types/wlr_screencopy_v1.h>
 #include <wlr/types/wlr_matrix.h>
 #include <wlr/types/wlr_gamma_control_v1.h>
-#include <wlr/types/wlr_gtk_primary_selection.h>
+#include <wlr/types/wlr_primary_selection_v1.h>
 #include <wlr/types/wlr_output_layout.h>
 #include <wlr/types/wlr_xdg_shell.h>
 
@@ -50,8 +49,8 @@ struct wb_server {
 	struct wl_list outputs; // wb_output::link
 };
 
-bool init_wb(struct wb_server* server);
-bool start_wb(struct wb_server* server);
-bool terminate_wb(struct wb_server* server);
+bool wb_create_backend(struct wb_server* server);
+bool wb_start_server(struct wb_server* server);
+bool wb_terminate(struct wb_server* server);
 
 #endif // server.h
