@@ -11,12 +11,15 @@
 
 #include <wlr/render/wlr_renderer.h>
 #include <wlr/render/wlr_texture.h>
+#include <wlr/types/wlr_xdg_output_v1.h>
 
 #include "waybox/server.h"
 
 struct wb_output {
 	struct wlr_output *wlr_output;
 	struct wb_server *server;
+
+	struct wlr_xdg_output_manager_v1 *manager;
 
 	struct wl_listener destroy;
 	struct wl_listener frame;
