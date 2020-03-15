@@ -1,4 +1,5 @@
 #include "waybox/output.h"
+#define MIN(a, b) (a < b ? a : b)
 
 struct render_data {
 	struct wlr_output *output;
@@ -40,6 +41,21 @@ static void render_surface(struct wlr_surface *surface, int sx, int sy, void *da
 		.width = surface->current.width * output->scale,
 		.height = surface->current.height * output->scale,
 	};
+
+	/* Ensure box dimensions of top-level surfaces don't exceed the output's. */
+	if (!strcmp(surface->role->name, "xdg_toplevel")) {
+		double aspect = (box.width * 1.0) / (box.height * 1.0);
+		if (box.x + box.height > output->height) {
+			box.height = output->height - box.x;
+		}
+		if (box.y + box.width > output->width) {
+			/* Under the rare occasions that the height is larger than the
+			 * width, we don't want to divide by < 1 (i.e. make the width even
+			 * wider); instead we'll multiply. */
+			box.width = MIN((output->width - box.y) / aspect,
+					(output->width - box.y) * aspect);
+		}
+	}
 
 	/*
 	 * Those familiar with OpenGL are also familiar with the role of matrices
