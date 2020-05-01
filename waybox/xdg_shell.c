@@ -84,18 +84,25 @@ static void begin_interactive(struct wb_view *view,
 	}
 	server->grabbed_view = view;
 	server->cursor->cursor_mode = mode;
-	struct wlr_box geo_box;
-	wlr_xdg_surface_get_geometry(view->xdg_surface, &geo_box);
+
 	if (mode == WB_CURSOR_MOVE) {
 		server->grab_x = server->cursor->cursor->x - view->x;
 		server->grab_y = server->cursor->cursor->y - view->y;
-	} else {
-		server->grab_x = server->cursor->cursor->x + geo_box.x;
-		server->grab_y = server->cursor->cursor->y + geo_box.y;
+	} else if (mode == WB_CURSOR_RESIZE) {
+		struct wlr_box geo_box;
+		wlr_xdg_surface_get_geometry(view->xdg_surface, &geo_box);
+
+		double border_x = (view->x + geo_box.x) + ((edges & WLR_EDGE_RIGHT) ? geo_box.width : 0);
+		double border_y = (view->y + geo_box.y) + ((edges & WLR_EDGE_BOTTOM) ? geo_box.height : 0);
+		server->grab_x = server->cursor->cursor->x - border_x;
+		server->grab_y = server->cursor->cursor->y - border_y;
+
+		server->grab_geo_box = geo_box;
+		server->grab_geo_box.x += view->x;
+		server->grab_geo_box.y += view->y;
+
+		server->resize_edges = edges;
 	}
-	server->grab_width = geo_box.width;
-	server->grab_height = geo_box.height;
-	server->resize_edges = edges;
 }
 
 static void xdg_toplevel_request_move(

@@ -37,7 +37,7 @@ struct wb_server {
 
 	struct wb_view *grabbed_view;
 	double grab_x, grab_y;
-	int grab_width, grab_height;
+	struct wlr_box grab_geo_box;
 	uint32_t resize_edges;
 
 	struct wlr_xdg_shell *xdg_shell;
