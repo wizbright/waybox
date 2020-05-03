@@ -1,0 +1,117 @@
+# "Makro"
+# A Fluxbox theme by: skypher of perplexity
+# 2001
+
+toolbar:                             Gradient Vertical Sunken
+toolbar.color:                       rgb:CC/CC/AA
+
+toolbar.button:                      Flat Solid
+toolbar.button.color:                rgb:AB/90/40
+toolbar.button.picColor:             rgb:50/30/10
+
+toolbar.button.pressed:              Sunken Flat
+toolbar.button.pressed.color:        rgb:90/70/20
+
+toolbar.clock:                       Flat
+toolbar.clock.color:                 rgb:AB/90/40
+toolbar.clock.textColor:             rgb:40/20/05
+
+toolbar.label:                       Flat
+toolbar.label.color:                 rgb:AB/90/40
+toolbar.label.textColor:             rgb:40/20/05
+
+toolbar.windowLabel:                 Flat
+toolbar.windowLabel.color:           rgb:AB/90/40
+toolbar.windowLabel.textColor:       rgb:40/20/05
+
+toolbar.justify:                     Left
+
+menu.title:                          Raised Flat
+menu.title.color:                    rgb:AB/90/40
+menu.title.textColor:                rgb:40/20/05
+menu.title.justify:                  Left
+
+menu.frame:                          Gradient PipeCross
+menu.frame.color:                    rgb:CC/CC/AA
+menu.frame.colorTo:                  rgb:AB/AA/90
+menu.frame.textColor:                rgb:10/10/01
+menu.frame.justify:                  Right
+
+menu.hilite:                         Flat
+menu.hilite.color:                   rgb:DF/CF/BF
+menu.hilite.textColor:               rgb:00/00/00
+
+menu.bullet:                         Square
+menu.bullet.position:                Right
+
+
+window.title.focus:                  Gradient Vertical Sunken
+window.title.focus.color:            rgb:CC/CC/AA
+
+window.title.unfocus:                Gradient Vertical Sunken
+window.title.unfocus.color:          rgb:AC/AC/90
+
+window.label.focus:                  Solid Flat
+window.label.focus.color:            rgb:AB/90/40
+window.label.focus.textColor:        rgb:40/20/05
+
+window.label.unfocus:                Flat Solid
+window.label.unfocus.color:          rgb:AA/80/30
+window.label.unfocus.textColor:      rgb:45/25/10
+
+window.button.focus:                 Flat Solid
+window.button.focus.color:           rgb:AC/99/50
+window.button.focus.picColor:        rgb:40/20/05
+
+window.button.unfocus:               Flat Solid
+window.button.unfocus.color:         rgb:AA/80/30
+window.button.unfocus.picColor:      rgb:45/25/10
+
+window.button.pressed:               Sunken Solid
+window.button.pressed.color:         rgb:90/70/20
+
+window.frame.focus:                  Flat
+window.frame.focus.color:            rgb:00/00/00
+window.frame.unfocus:                Flat
+window.frame.unfocus.color:          rgb:10/10/10
+
+window.handle.focus:                 Sunken Solid
+window.handle.focus.color:           rgb:AC/99/50
+window.handle.unfocus:               Flat Solid
+window.handle.unfocus.color:         rgb:AA/80/30
+
+window.grip.focus:                   Sunken Gradient Diagonal Interlaced
+window.grip.focus.color:             rgb:AC/99/50
+window.grip.focus.colorTo:           rgb:AA/80/30
+window.grip.unfocus:                 Raised Gradient Diagonal
+window.grip.unfocus.color:           rgb:AA/80/30
+window.grip.unfocus.colorTo:         rgb:AC/99/50
+
+! ----------- tab - explicit for fluxbox, the best wm out there[tm] (;
+window.tab.justify:                  Center
+window.tab.label.unfocus:            Flat Solid
+window.tab.label.unfocus.color:      rgb:AA/80/30
+window.tab.label.unfocus.textColor:  rgb:45/25/10
+window.tab.label.focus:              Solid Flat
+window.tab.label.focus.color:        rgb:AB/90/40
+window.tab.label.focus.textColor:    rgb:40/20/05
+window.tab.borderWidth:              1
+window.tab.borderColor:              rgb:10/10/10
+! ----------- (fluxbox.sourceforge.net)
+window.tab.font:                     -*-helvetica-medium-r-*-*-11-*-*-*-*-*-iso8859-*
+
+window.justify:                      Left
+
+toolbar.font:                        -*-helvetica-medium-r-*-*-11-*-*-*-*-*-iso8859-*
+window.font:                         -*-helvetica-bold-r-*-*-11-*-*-*-*-*-iso8859-*
+menu.title.font:                     -*-helvetica-bold-r-*-*-11-*-*-*-*-*-iso8859-*
+menu.frame.font:                     -*-helvetica-medium-r-*-*-10-*-*-*-*-*-iso8859-*
+
+borderColor:                         rgb:10/10/10
+
+bevelWidth:                          2
+borderWidth:                         1
+handleWidth:                         3
+
+background: flat
+background.color: rgb:9A/9A/90

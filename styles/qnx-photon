@@ -1,0 +1,136 @@
+# photon-qnx
+# theme for fluxbox
+# 2001 (c) skypher
+
+toolbar:                             raised gradient vertical
+toolbar.color:                       rgb:DB/DA/DB
+toolbar.colorTo:                     rgb:D4/CE/D2
+
+toolbar.label:                       flat gradient vertical
+toolbar.label.color:                 rgb:DB/DA/DB
+toolbar.label.colorTo:               rgb:D4/CE/D2
+toolbar.label.textColor:             rgb:45/45/45
+
+toolbar.windowLabel:                 sunken solid
+toolbar.windowLabel.color:           rgb:FC/F9/DF
+toolbar.windowLabel.textColor:       rgb:45/45/45
+
+toolbar.clock:                       flat gradient vertical
+toolbar.clock.color:                 rgb:DB/DA/DB
+toolbar.clock.colorTo:               rgb:D4/CE/D2
+toolbar.clock.textColor:             rgb:45/45/45
+
+toolbar.button:                      solid flat
+toolbar.button.color:                rgb:EB/EB/EB
+toolbar.button.picColor:             rgb:15/15/15
+
+toolbar.button.pressed:              sunken flat
+toolbar.button.pressed.color:        rgb:AB/AB/AB
+
+menu.title:                          raised gradient vertical
+menu.title.color:                    rgb:68/95/E3
+menu.title.colorTo:                  rgb:31/59/9C
+menu.title.textColor:                white
+
+menu.frame:                          sunken gradient vertical
+menu.frame.color:                    rgb:DB/DA/DB
+menu.frame.colorTo:                  rgb:D4/CE/D2
+menu.frame.textColor:                rgb:45/45/45
+
+menu.hilite:                         flat solid
+menu.hilite.color:                   rgb:91/A3/9E
+menu.hilite.textColor:               white
+
+menu.bullet:                         triangle
+menu.bullet.position:                right
+
+! win focus
+window.title.focus:                  flat gradient vertical
+window.title.focus.color:            rgb:D9/D9/D9
+window.title.focus.colorTo:          white
+
+window.label.focus:                  raised gradient vertical
+window.label.focus.color:            rgb:68/95/E3
+window.label.focus.colorTo:          rgb:31/59/9C
+window.label.focus.textColor:        white
+
+window.button.focus:                 raised gradient vertical
+window.button.focus.color:           rgb:EA/EA/EA
+window.button.focus.colorTo:         rgb:94/9B/99
+window.button.focus.picColor:        rgb:35/35/35
+
+window.button.pressed:               sunken solid
+window.button.pressed.color:         rgb:94/9B/99
+
+window.handle.focus:                 raised solid
+window.handle.focus.color:           rgb:EA/EA/EA
+
+window.grip.focus:                   Raised Gradient vertical
+window.grip.focus.color:             rgb:68/95/E3
+window.grip.focus.colorTo:           rgb:31/59/9C
+
+window.frame.focusColor:             black
+
+
+! unfocused win
+window.title.unfocus:                flat gradient vertical
+window.title.unfocus.color:          rgb:D9/D9/D9
+window.title.unfocus.colorTo:        white
+
+
+window.label.unfocus:                raised gradient vertical
+window.label.unfocus.color:          rgb:C6/C5/C6
+window.label.unfocus.colorTo:        rgb:A7/A6/A7
+window.label.unfocus.textColor:      white
+
+window.button.unfocus:               raised gradient vertical
+window.button.unfocus.color:         rgb:EA/EA/EA
+window.button.unfocus.colorTo:       rgb:94/9B/99
+window.button.unfocus.picColor:      rgb:35/35/35
+
+window.handle.unfocus:               raised solid
+window.handle.unfocus.color:         rgb:EA/EA/EA
+
+window.grip.unfocus:                 raised solid
+window.grip.unfocus.color:           rgb:EA/EA/EA
+
+window.frame.unfocusColor:           black
+
+! ----------- tab - explicit for fluxbox, the best wm out there[tm] (;
+window.tab.justify:                  left
+
+window.tab.label.unfocus:            raised gradient vertical
+window.tab.label.unfocus.color:      rgb:C6/C5/C6
+window.tab.label.unfocus.colorTo:    rgb:A7/A6/A7
+window.tab.label.unfocus.textColor:  white
+
+window.tab.label.focus:              raised gradient vertical
+window.tab.label.focus.color:        rgb:68/95/E3
+window.tab.label.focus.colorTo:      rgb:31/59/9C
+window.tab.label.focus.textColor:    white
+
+window.tab.borderWidth:              1
+window.tab.borderColor:              black
+! ----------- (fluxbox.sourceforge.net)
+
+! fonts
+window.tab.font:                     -*-gamow-medium-r-*-*-7-*-*-*-*-60-*-*
+! ^ change this to lucidasans-10 if you don't have gamow
+
+
+*.font:                              lucidasans-10
+
+toolbar.justify:                     left
+window.justify:                      left
+menu.title.justify:                  left
+menu.frame.justify:                  left
+
+! borders n stuff
+borderColor:                         black
+borderWidth:                         1
+bevelWidth:                          2
+handleWidth:                         4
+frameWidth:                          0
+
+background: flat
+background.color: white

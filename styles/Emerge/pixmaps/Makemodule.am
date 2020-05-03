@@ -1,0 +1,21 @@
+emerge_pixmaps_styledir = $(pkgdatadir)/styles/Emerge/pixmaps
+
+dist_emerge_pixmaps_style_DATA = \
+	data/styles/Emerge/pixmaps/bullet.xpm \
+	data/styles/Emerge/pixmaps/close-pressed.xpm \
+	data/styles/Emerge/pixmaps/close-unfocus.xpm \
+	data/styles/Emerge/pixmaps/close.xpm \
+	data/styles/Emerge/pixmaps/icon-pressed.xpm \
+	data/styles/Emerge/pixmaps/icon-unfocus.xpm \
+	data/styles/Emerge/pixmaps/icon.xpm \
+	data/styles/Emerge/pixmaps/max-pressed.xpm \
+	data/styles/Emerge/pixmaps/max-unfocus.xpm \
+	data/styles/Emerge/pixmaps/max.xpm \
+	data/styles/Emerge/pixmaps/selected.xpm \
+	data/styles/Emerge/pixmaps/stick-pressed.xpm \
+	data/styles/Emerge/pixmaps/stick-unfocus.xpm \
+	data/styles/Emerge/pixmaps/stick.xpm \
+	data/styles/Emerge/pixmaps/stuck-pressed.xpm \
+	data/styles/Emerge/pixmaps/stuck-unfocus.xpm \
+	data/styles/Emerge/pixmaps/stuck.xpm \
+	data/styles/Emerge/pixmaps/unselected.xpm

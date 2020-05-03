@@ -1,0 +1,129 @@
+! LemonSpace was made by xlife@zuavra.net.
+! The official home of the theme is this:
+! http://xlife.zuavra.net/blackbox/styles/
+! If you make other themes inspired or
+! derived from this one please send them
+! to me so I can enjoy them as well.
+! You need the Snap font from the Artwiz
+! pack for this, see the site for details.
+
+toolbar:                             raised gradient vertical
+! toolbar.color:                     rgb:e3/cd/a6
+toolbar.color:                       rgb:cb/ac/73
+toolbar.colorTo:                     rgb:40/40/40
+
+toolbar.button:                      raised gradient vertical
+toolbar.button.picColor:             rgb:1a/04/08
+toolbar.button.color:                rgb:dd/dd/d
+toolbar.button.colorTo:              rgb:c0/c0/c0
+toolbar.button.pressed:              sunken gradient vertical
+toolbar.button.pressed.color:        rgb:dd/dd/dd
+toolbar.button.pressed.colorTo:      rgb:c0/c0/c0
+
+toolbar.label:                       raised gradient vertical
+toolbar.label.color:                 rgb:f6/df/93
+toolbar.label.colorTo:               rgb:ee/b9/6b
+toolbar.label.textColor:             rgb:1a/04/08
+
+toolbar.windowLabel:                 raised gradient vertical
+toolbar.windowLabel.color:           rgb:f6/df/93
+toolbar.windowLabel.colorTo:         rgb:ee/b9/6b
+toolbar.windowLabel.textColor:       rgb:1a/04/08
+
+toolbar.clock:                       raised gradient vertical
+toolbar.clock.color:                 rgb:f6/df/93
+toolbar.clock.colorTo:               rgb:ee/b9/6b
+toolbar.clock.textColor:             rgb:1a/04/08
+
+toolbar.justify:                     Center
+
+menu.title:                          raised gradient vertical
+menu.title.color:                    rgb:f6/df/93
+menu.title.colorTo:                  rgb:ee/b9/6b
+menu.title.textColor:                rgb:0/0/0
+menu.title.justify:                  center
+
+menu.frame:                          raised gradient vertical
+menu.frame.color:                    rgb:dd/dd/dd
+menu.frame.colorTo:                  rgb:c0/c0/c0
+menu.frame.textColor:                rgb:0/0/0
+menu.frame.justify:                  left
+
+menu.hilite:                         flat solid
+menu.hilite.textColor:               rgb:f/f/f
+menu.hilite.color:                   rgb:30/30/30
+
+menu.bullet:                         triangle
+menu.bullet.position:                right
+
+! window.title.focus:                flat solid
+! window.title.focus.color:          rgb:e3/cd/a6
+
+window.title.focus:                  raised gradient vertical
+window.title.focus.color:            rgb:cb/ac/73
+window.title.focus.colorTo:          rgb:40/40/40
+window.title.unfocus:                raised gradient vertical
+window.title.unfocus.color:          rgb:b0/b0/b0
+window.title.unfocus.colorTo:        rgb:50/50/50
+
+window.label.focus:                  raised gradient vertical
+window.label.focus.color:            rgb:f6/df/93
+window.label.focus.colorTo:          rgb:ee/b9/6b
+window.label.focus.textColor:        rgb:1a/04/08
+window.label.unfocus:                raised gradient vertical
+window.label.unfocus.color:          rgb:dd/dd/dd
+window.label.unfocus.colorTo:        rgb:c0/c0/c0
+window.label.unfocus.textColor:      rgb:5a/5a/5a
+
+window.handle.focus:                 raised gradient vertical
+window.handle.focus.color:           rgb:cc/cc/cc
+window.handle.focus.colorTo:         rgb:d0/d0/d0
+window.handle.unfocus:               raised gradient vertical
+window.handle.unfocus.color:         rgb:d0/d0/d0
+window.handle.unfocus.colorTo:       rgb:cc/cc/cc
+
+window.grip.focus:                   raised gradient vertical
+window.grip.focus.color:             rgb:f6/df/93
+window.grip.focus.colorTo:           rgb:ee/b9/6b
+window.grip.unfocus:                 raised gradient vertical
+window.grip.unfocus.color:           rgb:dd/dd/dd
+window.grip.unfocus.colorTo:         rgb:c0/c0/c0
+
+window.button.focus:                 raised gradient vertical
+window.button.focus.color:           rgb:dd/dd/dd
+window.button.focus.colorTo:         rgb:c0/c0/c0
+! window.button.focus.color:         rgb:f6/df/93
+! window.button.focus.colorTo:       rgb:ee/b9/6b
+window.button.focus.picColor:        rgb:0/0/0
+window.button.unfocus:               raised gradient vertical
+window.button.unfocus.color:         rgb:dd/dd/dd
+window.button.unfocus.colorTo:       rgb:c0/c0/c0
+window.button.unfocus.picColor:      rgb:0/0/0
+
+window.button.pressed:               sunken gradient diagonal
+window.button.pressed.color:         rgb:f6/df/93
+window.button.pressed.colorTo:       rgb:ee/b9/6b
+
+window.frame.focusColor:             rgb:e3/cd/a6
+window.frame.unfocusColor:           rgb:6/6/6
+
+window.justify:                      center
+
+borderColor:                         rgb:0/0/0
+
+borderWidth:                         1
+bevelWidth:                          1
+handleWidth:                         4
+
+*font:                               gelly2
+menu*font:                           glisp
+toolbar*font:                        glisp
+
+*textColor:                          rgb:c/c/c
+! - for fluxbox
+window.tab.label.unfocus.textColor:  rgb:5a/5a/5a
+window.tab.label.focus.textColor:    rgb:1a/04/08
+! -
+
+background: flat
+background.color: rgb:db/bc/83

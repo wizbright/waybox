@@ -5,12 +5,19 @@ wb_src = files(
   'seat.c',
   'server.c',
   'xdg_shell.c',
+  'stringop.c',
+  'util.c',
+  'style.c'
   )
 
 wb_dep = [
   wayland_server,
   wlroots,
   xkbcommon,
+  cairo,
+  pango,
+  pangocairo,
+  glesv2
   ]
 
 executable(

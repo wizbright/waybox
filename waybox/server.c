@@ -1,5 +1,8 @@
 #include "waybox/server.h"
 #include "waybox/xdg_shell.h"
+#include "waybox/style_defaults.h"
+
+#include <string.h>
 
 bool wb_create_backend(struct wb_server* server) {
 	// create display
@@ -8,6 +11,9 @@ bool wb_create_backend(struct wb_server* server) {
 		fprintf(stderr, "Failed to connect to a Wayland display\n");
 		return false;
 	}
+
+	// style
+	memcpy(&server->style, style_bin, sizeof(style_bin));
 
 	// create backend
 	server->backend = wlr_backend_autocreate(server->wl_display, NULL);
@@ -23,7 +29,11 @@ bool wb_create_backend(struct wb_server* server) {
 	server->layout = wlr_output_layout_create();
 	server->seat = wb_seat_create(server);
 	server->cursor = wb_cursor_create(server);
+	server->server_decoration = wlr_server_decoration_manager_create(server->wl_display);
 
+	wlr_server_decoration_manager_set_default_mode(
+		server->server_decoration,
+		WLR_SERVER_DECORATION_MANAGER_MODE_SERVER);
 	return true;
 }
 
@@ -67,6 +77,7 @@ bool wb_terminate(struct wb_server* server) {
 	wb_seat_destroy(server->seat);
 	wlr_output_layout_destroy(server->layout);
 	wl_display_destroy(server->wl_display);
+
 
 	printf("Display destroyed.\n");
 

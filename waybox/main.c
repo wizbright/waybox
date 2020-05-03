@@ -4,9 +4,13 @@
 #include <wayland-server.h>
 
 #include "waybox/server.h"
+#include "waybox/style.h"
+
+struct wb_server server = {0};
 
 int main(int argc, char **argv) {
 	char *startup_cmd = NULL;
+	char *style_path = NULL;
 	if (argc > 0) {
 		int i;
 		for (i = 0; i < argc; i++) {
@@ -14,6 +18,8 @@ int main(int argc, char **argv) {
 				printf("Warning: option %s is currently unimplemented\n", argv[i]);
 			} else if ((!strcmp("--startup", argv[i]) || !strcmp("-s", argv[i])) && i < argc) {
 				startup_cmd = argv[i + 1];
+			} else if ((!strcmp("--style", argv[i]) || !strcmp("-s", argv[i])) && i < argc) {
+				style_path = argv[i + 1];
 			} else if (!strcmp("--version", argv[i]) || !strcmp("-V", argv[i])) {
 				printf(PACKAGE_NAME " " PACKAGE_VERSION "\n");
 				return 0;
@@ -24,7 +30,7 @@ int main(int argc, char **argv) {
 		}
 	}
 
-	struct wb_server server = {0};
+	// struct wb_server server = {0};
 
 	if (!wb_create_backend(&server)) {
 		printf("Failed to create backend\n");
@@ -35,6 +41,11 @@ int main(int argc, char **argv) {
 		printf("Failed to start server\n");
 		wb_terminate(&server);
 		exit(EXIT_FAILURE);
+	}
+
+	// read style
+	if (style_path) {
+		load_style(&server.style, style_path);
 	}
 
 	if (startup_cmd) {

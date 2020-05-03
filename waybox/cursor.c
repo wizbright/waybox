@@ -1,6 +1,84 @@
 #include <stdlib.h>
 #include "waybox/cursor.h"
+#include "waybox/server.h"
 #include "waybox/xdg_shell.h"
+
+#include <wlr/types/wlr_xdg_shell.h>
+
+int border_thickness = 4;
+int title_bar_height = 28;
+
+static bool in_titlebar(struct wb_view *view, struct wlr_surface *surface, struct wb_cursor *cursor) {
+	if (!surface) {
+		return false;
+	}
+
+	struct wlr_xdg_surface *xdg_surface = wlr_xdg_surface_from_wlr_surface(surface);
+	struct wlr_box box;
+	wlr_xdg_surface_get_geometry(xdg_surface, &box);
+
+	int x = view->x;
+	int y = view->y;
+	int width = surface->current.width;
+	int height = title_bar_height + (border_thickness * 2);
+
+	x -= border_thickness;
+	y -= (border_thickness + title_bar_height);
+	width += border_thickness * 2;
+	
+	if (cursor->cursor->x > x &&
+		cursor->cursor->x < x + width &&
+		cursor->cursor->y > y &&
+		cursor->cursor->y < y + height) {
+		return true;
+	}
+
+	return false;
+}
+
+static enum wlr_edges find_edge(struct wb_view *view, struct wlr_surface *surface, struct wb_cursor *cursor) {
+	if (!surface) {
+		return WLR_EDGE_NONE;
+	}
+
+	struct wlr_xdg_surface *xdg_surface = wlr_xdg_surface_from_wlr_surface(surface);
+	struct wlr_box box;
+	wlr_xdg_surface_get_geometry(xdg_surface, &box);
+
+	int x = view->x;
+	int y = view->y;
+	int width = box.width; // surface->current.width;
+	int height = box.height; // surface->current.height;
+
+	enum wlr_edges edge = 0;
+	if (cursor->cursor->x < x + border_thickness) {
+		edge |= WLR_EDGE_LEFT;
+	}
+	if (cursor->cursor->y < y + border_thickness - 10) {
+		edge |= WLR_EDGE_TOP;
+	}
+	if (cursor->cursor->x >= x + width - border_thickness) {
+		edge |= WLR_EDGE_RIGHT;
+	}
+	if (cursor->cursor->y >= y + height - border_thickness) {
+		edge |= WLR_EDGE_BOTTOM;
+	}
+
+	x -= border_thickness;
+	y -= border_thickness;
+	y -= title_bar_height;
+	width += border_thickness * 2;
+	height += border_thickness * 2;
+	height += title_bar_height; 
+	height += 8; // footer 
+
+	if (cursor->cursor->x < x || cursor->cursor->x > x + width || cursor->cursor->y < y - 14 || cursor->cursor->y > y + height) {
+		return WLR_EDGE_NONE;
+	}
+
+	return edge;
+}
+
 
 static void process_cursor_move(struct wb_server *server) {
 	/* Move the grabbed view to the new position. */
@@ -44,7 +122,7 @@ static void process_cursor_resize(struct wb_server *server) {
 	wlr_xdg_surface_get_geometry(view->xdg_surface, &geo_box);
 	view->x = new_left - geo_box.x;
 	view->y = new_top - geo_box.y;
-
+	
 	int new_width = new_right - new_left;
 	int new_height = new_bottom - new_top;
 	wlr_xdg_toplevel_set_size(view->xdg_surface, new_width, new_height);
@@ -73,6 +151,7 @@ static void process_cursor_motion(struct wb_server *server, uint32_t time) {
 		wlr_xcursor_manager_set_cursor_image(
 				server->cursor->xcursor_manager, "left_ptr", server->cursor->cursor);
 	}
+
 	if (surface) {
 		bool focus_changed = seat->pointer_state.focused_surface != surface;
 		/*
@@ -122,10 +201,45 @@ static void handle_cursor_button(struct wl_listener *listener, void *data) {
 	if (event->state == WLR_BUTTON_RELEASED) {
 		/* If you released any buttons, we exit interactive move/resize mode. */
 		cursor->cursor_mode = WB_CURSOR_PASSTHROUGH;
+		return;
 	} else {
 		/* Focus that client if the button was _pressed_ */
 		focus_view(view, surface);
 	}
+	
+	if (server.active_view) {
+		view = desktop_view_at(cursor->server,
+			server.active_view->x, server.active_view->y, &surface, &sx, &sy);
+	}
+
+	if (view && surface && in_titlebar(view, surface, cursor->server->cursor)) {
+			server.cursor->cursor_mode = WB_CURSOR_MOVE;
+			server.grabbed_view = view;
+			server.grab_x = cursor->server->cursor->cursor->x - view->x;
+			server.grab_y = cursor->server->cursor->cursor->y - view->y;
+			struct wlr_xdg_surface *xdg_surface = wlr_xdg_surface_from_wlr_surface(surface);
+			wlr_xdg_surface_get_geometry(xdg_surface, &server.grab_geo_box);
+			server.grab_geo_box.x = view->x;
+			server.grab_geo_box.y = view->y;
+			return;
+	}
+
+	if (view && surface) {
+		enum wlr_edges edges = find_edge(view, surface, cursor->server->cursor);
+		if (edges != WLR_EDGE_NONE) {
+			server.cursor->cursor_mode = WB_CURSOR_RESIZE;
+			server.grabbed_view = view;
+			server.resize_edges = edges;
+			server.grab_x = 0;
+			server.grab_y = 0;
+			struct wlr_xdg_surface *xdg_surface = wlr_xdg_surface_from_wlr_surface(surface);
+			wlr_xdg_surface_get_geometry(xdg_surface, &server.grab_geo_box);
+			server.grab_geo_box.x = view->x;
+			server.grab_geo_box.y = view->y;
+			return;
+		}
+	}
+
 }
 
 static void handle_cursor_axis(struct wl_listener *listener, void *data) {

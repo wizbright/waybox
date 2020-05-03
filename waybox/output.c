@@ -1,4 +1,10 @@
 #include "waybox/output.h"
+#include "waybox/util.h"
+
+#include <wlr/render/gles2.h>
+#include <wlr/render/wlr_renderer.h>
+#include <GLES2/gl2.h>
+#include <cairo.h>
 
 struct render_data {
 	struct wlr_output *output;
@@ -6,6 +12,220 @@ struct render_data {
 	struct wb_view *view;
 	struct timespec *when;
 };
+
+struct wlr_texture *textCache[16] = {
+	NULL, NULL, NULL, NULL,
+	NULL, NULL, NULL, NULL,
+	NULL, NULL, NULL, NULL,
+	NULL, NULL, NULL, NULL
+};
+
+static int lastCacheHash = 0;
+
+enum {
+	tx_window_title_focus,
+	tx_window_title_unfocus,
+	tx_window_label_focus,
+	tx_window_label_unfocus,
+	tx_window_handle_focus,
+	tx_window_handle_unfocus,
+	tx_window_grip_focus,
+	tx_window_grip_unfocus,
+};
+
+static void generate_texture(struct wlr_renderer *renderer, int idx, int flags, int w, int h, float color[static 4], float colorTo[static 4]) {
+	// printf("generate texture %d\n", idx);
+
+	if (flags == 0) {
+		return;
+
+	}
+	if (textCache[idx]) {
+		wlr_texture_destroy(textCache[idx]);
+		textCache[idx] = NULL;
+	}
+
+	cairo_surface_t *surf = cairo_image_surface_create(
+			CAIRO_FORMAT_ARGB32, w, h); // numbers pulled from ass
+	cairo_t *cx = cairo_create(surf);
+
+	draw_gradient_rect(cx, flags, w, h, color, colorTo);
+
+	unsigned char *data = cairo_image_surface_get_data(surf);
+	textCache[idx] = wlr_texture_from_pixels(renderer,
+			WL_SHM_FORMAT_ARGB8888,
+			cairo_image_surface_get_stride(surf),
+			w, h, data);
+
+	// char fname[255] = "";
+	// sprintf(fname, "/tmp/text_%d.png", idx);
+	// cairo_surface_write_to_png(surf, fname);
+
+	cairo_destroy(cx);
+	cairo_surface_destroy(surf);
+};
+
+static void generate_textures(struct wlr_renderer *renderer, bool forced) {
+
+	if (textCache[0] != NULL && !(forced || lastCacheHash != server.style.hash)) {
+		return;
+	}
+
+	lastCacheHash = server.style.hash;
+
+	float color[4];
+	float colorTo[4];
+	int flags;
+
+	// titlebar
+	color_to_rgba(color, server.style.window_title_focus_color);
+	color_to_rgba(colorTo, server.style.window_title_focus_colorTo);
+	flags = server.style.window_title_focus;
+	generate_texture(renderer, tx_window_title_focus, flags, 512, 16, color, colorTo);
+
+	color_to_rgba(color, server.style.window_title_unfocus_color);
+	color_to_rgba(colorTo, server.style.window_title_unfocus_colorTo);
+	flags = server.style.window_title_unfocus;
+	generate_texture(renderer, tx_window_title_unfocus, flags, 512, 16, color, colorTo);
+
+	// titlebar/label
+	color_to_rgba(color, server.style.window_label_focus_color);
+	color_to_rgba(colorTo, server.style.window_label_focus_colorTo);
+	flags = server.style.window_label_focus;
+	generate_texture(renderer, tx_window_label_focus, flags, 512, 16, color, colorTo);
+
+	color_to_rgba(color, server.style.window_label_unfocus_color);
+	color_to_rgba(colorTo, server.style.window_label_unfocus_colorTo);
+	flags = server.style.window_label_unfocus;
+	generate_texture(renderer, tx_window_label_unfocus, flags, 512, 16, color, colorTo);
+
+	// handle
+	color_to_rgba(color, server.style.window_handle_focus_color);
+	color_to_rgba(colorTo, server.style.window_handle_focus_colorTo);
+	flags = server.style.window_handle_focus;
+	generate_texture(renderer, tx_window_handle_focus, flags, 512, 16, color, colorTo);
+
+	color_to_rgba(color, server.style.window_handle_unfocus_color);
+	color_to_rgba(colorTo, server.style.window_handle_unfocus_colorTo);
+	flags = server.style.window_handle_unfocus;
+	generate_texture(renderer, tx_window_handle_unfocus, flags, 512, 16, color, colorTo);
+
+	// grip
+	color_to_rgba(color, server.style.window_grip_focus_color);
+	color_to_rgba(colorTo, server.style.window_grip_focus_colorTo);
+	flags = server.style.window_grip_focus;
+	generate_texture(renderer, tx_window_grip_focus, flags, 30, 16, color, colorTo);
+
+	color_to_rgba(color, server.style.window_grip_unfocus_color);
+	color_to_rgba(colorTo, server.style.window_grip_unfocus_colorTo);
+	flags = server.style.window_grip_unfocus;
+	generate_texture(renderer, tx_window_grip_unfocus, flags, 30, 16, color, colorTo);
+}
+
+static void render_rect(struct wlr_output *output, struct wlr_box *box, float color[4]) {
+	struct wlr_renderer *renderer = wlr_backend_get_renderer(output->backend);
+	wlr_render_rect(renderer, box, color, output->transform_matrix);
+}
+
+
+static void render_texture(struct wlr_output *output, struct wlr_box *box, struct wlr_texture *texture) {
+	if (!texture) {
+		return;
+	}
+	
+	struct wlr_renderer *renderer = wlr_backend_get_renderer(output->backend);
+
+	struct wlr_gles2_texture_attribs attribs;
+	wlr_gles2_texture_get_attribs(texture, &attribs);
+	glBindTexture(attribs.target, attribs.tex);
+	glTexParameteri(attribs.target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	float matrix[9];
+	wlr_matrix_project_box(matrix, box,
+		WL_OUTPUT_TRANSFORM_NORMAL,
+		0.0, output->transform_matrix);
+
+	wlr_render_texture_with_matrix(renderer, texture, matrix, 1.0);
+}
+
+static void render_view_frame(struct wlr_surface *surface, int sx, int sy, void *data) {
+	/* This function is called for every surface that needs to be rendered. */
+	struct render_data *rdata = data;
+	struct wb_view *view = rdata->view;
+	struct wlr_output *output = rdata->output;
+	// struct wlr_renderer *renderer = wlr_backend_get_renderer(output->backend);
+
+	/* The view has a position in layout coordinates. If you have two displays,
+	 * one next to the other, both 1080p, a view on the rightmost display might
+	 * have layout coordinates of 2000,100. We need to translate that to
+	 * output-local coordinates, or (2000 - 1920). */
+	double ox = 0, oy = 0;
+	wlr_output_layout_output_coords(
+			view->server->layout, output, &ox, &oy);
+	ox += view->x + sx, oy += view->y + sy;
+
+	// ox += 40;
+	// oy += 40;
+
+	int border = 2;
+
+	/* We also have to apply the scale factor for HiDPI outputs. This is only
+	 * part of the puzzle, Waybox does not fully support HiDPI. */
+	struct wlr_box box = {
+		.x = (ox - border) * output->scale,
+		.y = (oy - border) * output->scale,
+		.width = (surface->current.width + border * 2) * output->scale,
+		.height = (surface->current.height + border * 2) * output->scale,
+	};
+
+	struct wb_view *active_view = server.active_view;
+	int focusTextureOffset = (active_view == view) ? 0 : 1;
+
+	float color[4];
+	color_to_rgba(color, server.style.borderColor);
+	color[3] = 1.0;
+
+	// lazy borders
+	render_rect(output, &box, color);
+
+	// titlebar
+	int border_thickness = 2;
+	int title_bar_height = 28;
+	box.y = box.y - title_bar_height;
+	box.height = title_bar_height;
+	render_rect(output, &box, color);
+
+	box.x += border_thickness;
+	box.y += border_thickness;
+	box.width -= (border_thickness*2);
+	box.height -= (border_thickness*2);
+	render_texture(output, &box, textCache[tx_window_title_focus + focusTextureOffset]);
+
+	// label
+	box.x += border_thickness;
+	box.y += border_thickness;
+	box.width -= (border_thickness*2);
+	box.height -= (border_thickness*2);
+	render_texture(output, &box, textCache[tx_window_label_focus + focusTextureOffset]);
+
+	// footer
+	int footer_height = 8;
+	box.x = (ox - border) * output->scale;
+	box.y = (oy - border) * output->scale;
+	box.width = (surface->current.width + border * 2) * output->scale;
+	box.height = (surface->current.height + border * 2) * output->scale;
+
+	box.y += box.height;
+	box.height = footer_height + border_thickness;
+	render_rect(output, &box, color);
+
+	// handle
+	box.x += border_thickness;
+	box.y += border_thickness;
+	box.width -= (border_thickness * 2);
+	box.height -= (border_thickness * 2);
+	render_texture(output, &box, textCache[tx_window_handle_focus + focusTextureOffset]);
+}
 
 static void render_surface(struct wlr_surface *surface, int sx, int sy, void *data) {
 	/* This function is called for every surface that needs to be rendered. */
@@ -71,6 +291,8 @@ void output_frame_notify(struct wl_listener *listener, void *data) {
 	struct wb_output *output = wl_container_of(listener, output, frame);
 	struct wlr_renderer *renderer = output->server->renderer;
 
+	generate_textures(renderer, false);
+
 	struct timespec now;
 	clock_gettime(CLOCK_MONOTONIC, &now);
 
@@ -97,6 +319,7 @@ void output_frame_notify(struct wl_listener *listener, void *data) {
 			.when = &now,
 		};
 
+		wlr_xdg_surface_for_each_surface(view->xdg_surface, render_view_frame, &rdata);
 		wlr_xdg_surface_for_each_surface(view->xdg_surface, render_surface, &rdata);
 	}
 

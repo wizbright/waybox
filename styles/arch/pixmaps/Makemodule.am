@@ -1,0 +1,33 @@
+arch_pixmaps_styledir = $(pkgdatadir)/styles/arch/pixmaps
+
+dist_arch_pixmaps_style_DATA = \
+	data/styles/arch/pixmaps/bullet.xpm \
+	data/styles/arch/pixmaps/closefcs.xpm \
+	data/styles/arch/pixmaps/closepr.xpm \
+	data/styles/arch/pixmaps/closeufcs.xpm \
+	data/styles/arch/pixmaps/frame.xpm \
+	data/styles/arch/pixmaps/gripfcs.xpm \
+	data/styles/arch/pixmaps/maxfcs.xpm \
+	data/styles/arch/pixmaps/maxpr.xpm \
+	data/styles/arch/pixmaps/maxufcs.xpm \
+	data/styles/arch/pixmaps/menuiconfcs.xpm \
+	data/styles/arch/pixmaps/menuiconpr.xpm \
+	data/styles/arch/pixmaps/menuiconufcs.xpm \
+	data/styles/arch/pixmaps/minfcs.xpm \
+	data/styles/arch/pixmaps/minpr.xpm \
+	data/styles/arch/pixmaps/minufcs.xpm \
+	data/styles/arch/pixmaps/selected.xpm \
+	data/styles/arch/pixmaps/shadefcs.xpm \
+	data/styles/arch/pixmaps/shadepr.xpm \
+	data/styles/arch/pixmaps/shadeufcs.xpm \
+	data/styles/arch/pixmaps/stickfcs.xpm \
+	data/styles/arch/pixmaps/stickpr.xpm \
+	data/styles/arch/pixmaps/stickufcs.xpm \
+	data/styles/arch/pixmaps/stuckfcs.xpm \
+	data/styles/arch/pixmaps/stuckufcs.xpm \
+	data/styles/arch/pixmaps/tbarfcs.xpm \
+	data/styles/arch/pixmaps/tbarufcs.xpm \
+	data/styles/arch/pixmaps/unselected.xpm \
+	data/styles/arch/pixmaps/unshadefcs.xpm \
+	data/styles/arch/pixmaps/unshadepr.xpm \
+	data/styles/arch/pixmaps/unshadeufcs.xpm

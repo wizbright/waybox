@@ -1,0 +1,34 @@
+pixmaps_styledir = $(pkgdatadir)/styles/bloe/pixmaps
+
+dist_pixmaps_style_DATA = \
+	data/styles/bloe/pixmaps/bullet.xpm \
+	data/styles/bloe/pixmaps/closefcs.xpm \
+	data/styles/bloe/pixmaps/closepr.xpm \
+	data/styles/bloe/pixmaps/closeufcs.xpm \
+	data/styles/bloe/pixmaps/frame.xpm \
+	data/styles/bloe/pixmaps/maxfcs.xpm \
+	data/styles/bloe/pixmaps/maxpr.xpm \
+	data/styles/bloe/pixmaps/maxufcs.xpm \
+	data/styles/bloe/pixmaps/menuiconfcs.xpm \
+	data/styles/bloe/pixmaps/menuiconpr.xpm \
+	data/styles/bloe/pixmaps/menuiconufcs.xpm \
+	data/styles/bloe/pixmaps/minfcs.xpm \
+	data/styles/bloe/pixmaps/minpr.xpm \
+	data/styles/bloe/pixmaps/minufcs.xpm \
+	data/styles/bloe/pixmaps/selected.xpm \
+	data/styles/bloe/pixmaps/shadefcs.xpm \
+	data/styles/bloe/pixmaps/shadepr.xpm \
+	data/styles/bloe/pixmaps/shadeufcs.xpm \
+	data/styles/bloe/pixmaps/stickfcs.xpm \
+	data/styles/bloe/pixmaps/stickpr.xpm \
+	data/styles/bloe/pixmaps/stickufcs.xpm \
+	data/styles/bloe/pixmaps/stuckfcs.xpm \
+	data/styles/bloe/pixmaps/stuckufcs.xpm \
+	data/styles/bloe/pixmaps/tbarfcs.xpm \
+	data/styles/bloe/pixmaps/tbarufcs.xpm \
+	data/styles/bloe/pixmaps/unselected.xpm \
+	data/styles/bloe/pixmaps/unshadefcs.xpm \
+	data/styles/bloe/pixmaps/unshadepr.xpm \
+	data/styles/bloe/pixmaps/unshadeufcs.xpm \
+	data/styles/bloe/pixmaps/windowlabelfcs.xpm \
+	data/styles/bloe/pixmaps/windowlabelufcs.xpm

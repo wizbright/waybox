@@ -11,6 +11,11 @@ project(
   ],
 )
 
+cairo          = dependency('cairo')
+pango          = dependency('pango')
+pangocairo     = dependency('pangocairo')
+glesv2         = dependency('glesv2')
+
 add_project_arguments(
   '-Wno-unused-parameter',
   '-DWLR_USE_UNSTABLE',

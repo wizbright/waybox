@@ -28,6 +28,8 @@ void focus_view(struct wb_view *view, struct wlr_surface *surface) {
 	wl_list_insert(&server->views, &view->link);
 	/* Activate the new surface */
 	wlr_xdg_toplevel_set_activated(view->xdg_surface, true);
+	server->active_view = view;
+
 	/*
 	 * Tell the seat to have the keyboard enter this surface. wlroots will keep
 	 * track of this and automatically send key events to the appropriate
@@ -66,6 +68,9 @@ static void xdg_surface_unmap(struct wl_listener *listener, void *data) {
 static void xdg_surface_destroy(struct wl_listener *listener, void *data) {
 	/* Called when the surface is destroyed and should never be shown again. */
 	struct wb_view *view = wl_container_of(listener, view, destroy);
+	
+	server.active_view = NULL;
+
 	wl_list_remove(&view->link);
 	free(view);
 }
@@ -139,6 +144,9 @@ static void handle_new_xdg_surface(struct wl_listener *listener, void *data) {
 		calloc(1, sizeof(struct wb_view));
 	view->server = server;
 	view->xdg_surface = xdg_surface;
+
+	view->x = 100;
+	view->y = 100;
 
 	/* Listen to the various events it can emit */
 	view->map.notify = xdg_surface_map;

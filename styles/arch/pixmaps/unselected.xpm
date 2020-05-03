@@ -1,0 +1,26 @@
+/* XPM */
+static char *unselected[] = {
+/* columns rows colors chars-per-pixel */
+"16 16 4 1",
+"  c black",
+". c #E7E7E7",
+"X c gray100",
+"o c None",
+/* pixels */
+"oooooooooooooooo",
+"oooooooooooooooo",
+"oooooooooooooooo",
+"o.........oooooo",
+"o.ooooooo.oooooo",
+"o.ooooooo.oooooo",
+"o.ooooooo.oooooo",
+"o.ooooooo.oooooo",
+"o.ooooooo.oooooo",
+"o.ooooooo.oooooo",
+"o.ooooooo.oooooo",
+"o.ooooooo.oooooo",
+"o.ooooooo.oooooo",
+"o.........oooooo",
+"oooooooooooooooo",
+"oooooooooooooooo"
+};
