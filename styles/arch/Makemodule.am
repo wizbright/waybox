@@ -1,0 +1,3 @@
+arch_styledir = $(pkgdatadir)/styles/arch
+
+dist_arch_style_DATA = data/styles/arch/theme.cfg

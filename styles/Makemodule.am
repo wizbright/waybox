@@ -1,0 +1,19 @@
+styledir = $(pkgdatadir)/styles
+
+style_DATA = \
+	data/styles/Artwiz \
+	data/styles/BlueNight \
+	data/styles/Flux \
+	data/styles/LemonSpace \
+	data/styles/Makro \
+	data/styles/MerleyKay \
+	data/styles/Meta \
+	data/styles/Nyz \
+	data/styles/Operation \
+	data/styles/Outcomes \
+	data/styles/Results \
+	data/styles/Shade \
+	data/styles/Twice \
+	data/styles/qnx-photon
+
+EXTRA_DIST += $(style_DATA)

@@ -1,0 +1,26 @@
+/* XPM */
+static char *bullet[] = {
+/* columns rows colors chars-per-pixel */
+"16 16 4 1",
+"  c black",
+". c #A0A0A0",
+"X c #E7E7E7",
+"o c None",
+/* pixels */
+"oooooooooooooooo",
+"oooooooooooooooo",
+"oooooooooooooooo",
+"oooooooooooooooo",
+"oooooooooooooooo",
+"oooooooooooooooo",
+"ooooooooXooooooo",
+"ooooooooXXoooooo",
+"oooooXXXXXXooooo",
+"oooooXXXXXXXoooo",
+"oooooXXXXXX.oooo",
+"ooooo...XX.ooooo",
+"ooooooooX.oooooo",
+"oooooooo.ooooooo",
+"oooooooooooooooo",
+"oooooooooooooooo"
+};

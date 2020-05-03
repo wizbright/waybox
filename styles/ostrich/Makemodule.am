@@ -1,0 +1,3 @@
+ostrich_styledir = $(pkgdatadir)/styles/ostrich
+
+dist_ostrich_style_DATA = data/styles/ostrich/theme.cfg

@@ -1,0 +1,138 @@
+# Merely Kay
+# A Fluxbox theme by: skypher of perplexity
+# 2001
+# (Not created from scratch, basicly a modification of "Simple Elegance"
+# by Pax, thanks!)
+# update: added *.tab.* stuff to make fluxbox look real cool :)
+
+toolbar:                             Raised Gradient Vertical
+toolbar.color:                       rgb:62/70/85
+toolbar.colorTo:                     rgb:56/66/75
+
+toolbar.button:                      Raised Gradient Horizontal Interlaced
+toolbar.button.color:                rgb:62/70/85
+toolbar.button.colorTo:              rgb:56/66/75
+toolbar.button.picColor:             rgb:FF/FF/FF
+
+toolbar.button.pressed:              Sunken Gradient Horizontal
+toolbar.button.pressed.color:        rgb:42/50/65
+toolbar.button.pressed.colorTo:      rgb:36/46/55
+
+toolbar.clock:                       Sunken Gradient Vertical Interlaced
+toolbar.clock.color:                 rgb:62/70/85
+toolbar.clock.colorTo:               rgb:56/66/75
+toolbar.clock.textColor:             rgb:FF/FF/FF
+
+toolbar.label:                       Sunken Gradient Vertical Interlaced
+toolbar.label.color:                 rgb:62/70/85
+toolbar.label.colorTo:               rgb:56/66/75
+toolbar.label.textColor:             rgb:FF/FF/FF
+
+toolbar.windowLabel:                 Raised Gradient Vertical Interlaced
+toolbar.windowLabel.color:           rgb:62/70/85
+toolbar.windowLabel.colorTo:         rgb:56/66/75
+toolbar.windowLabel.textColor:       rgb:FF/FF/FF
+
+toolbar.justify:                     center
+
+menu.title:                          Raised Gradient Horizontal Interlaced
+menu.title.color:                    rgb:62/66/70
+menu.title.colorTo:                  rgb:56/60/68
+menu.title.textColor:                rgb:E9/E9/E9
+menu.title.justify:                  Center
+
+menu.frame:                          Sunken Gradient PipeCross
+menu.frame.color:                    rgb:62/70/85
+menu.frame.colorTo:                  rgb:56/66/75
+menu.frame.textColor:                rgb:E2/E2/E2
+menu.frame.justify:                  Left
+
+menu.hilite:                         Raised Gradient PipeCross
+menu.hilite.color:                   rgb:50/50/50
+menu.hilite.colorTo:                 rgb:42/42/42
+menu.hilite.textColor:               rgb:FF/FF/FF
+
+menu.bullet:                         Triangle
+menu.bullet.position:                Right
+
+window.title.focus:                  Raised Gradient Vertical Interlaced
+window.title.focus.color:            rgb:62/70/85
+window.title.focus.colorTo:          rgb:56/66/75
+window.title.unfocus:                Raised Gradient Vertical
+window.title.unfocus.color:          rgb:60/66/70
+window.title.unfocus.colorTo:        rgb:54/60/68
+
+window.label.focus:                  Flat Gradient Vertical Interlaced
+window.label.focus.color:            rgb:62/70/85
+window.label.focus.colorTo:          rgb:56/66/75
+window.label.focus.textColor:        rgb:FF/FF/FF
+window.label.unfocus:                Flat Gradient Vertical
+window.label.unfocus.color:          rgb:60/66/70
+window.label.unfocus.colorTo:        rgb:54/60/68
+window.label.unfocus.textColor:      rgb:C1/C1/C1
+
+window.button.focus:                 Raised Gradient Diagonal Bevel1
+window.button.focus.color:           rgb:9B/9B/9B
+window.button.focus.colorTo:         rgb:42/42/42
+window.button.focus.picColor:        rgb:E2/E2/E2
+window.button.unfocus:               Raised Gradient Diagonal Bevel1
+window.button.unfocus.color:         rgb:9B/9B/9B
+window.button.unfocus.colorTo:       rgb:42/42/42
+window.button.unfocus.picColor:      rgb:C1/C1/C1
+window.button.pressed:               Sunken Gradient Diagonal Bevel1
+window.button.pressed.color:         rgb:9B/9B/9B
+window.button.pressed.colorTo:       rgb:42/42/42
+
+window.frame.focus:                  Sunken
+window.frame.focus.color:            rgb:87/99/9F
+window.frame.unfocus:                Sunken
+window.frame.unfocus.color:          rgb:87/99/9F
+
+window.handle.focus:                 Raised Gradient Diagonal
+window.handle.focus.color:           rgb:62/70/85
+window.handle.focus.colorTo:         rgb:56/66/75
+window.handle.unfocus:               Raised Gradient Diagonal
+window.handle.unfocus.color:         rgb:60/66/70
+window.handle.unfocus.colorTo:       rgb:54/60/68
+
+window.grip.focus:                   Raised Gradient Diagonal Interlaced
+window.grip.focus.color:             rgb:9B/9B/9B
+window.grip.focus.colorTo:           rgb:42/42/42
+window.grip.unfocus:                 Raised Gradient Diagonal
+window.grip.unfocus.color:           rgb:9B/9B/9B
+window.grip.unfocus.colorTo:         rgb:42/42/42
+
+! ----------- tab - explicit for fluxbox, the best wm out there[tm] (;
+window.tab.justify:                  Left
+window.tab.label.unfocus:            Sunken Gradient Vertical
+window.tab.label.unfocus.color:      rgb:50/50/50
+window.tab.label.unfocus.colorTo:    rgb:54/60/68
+window.tab.label.unfocus.textColor:  rgb:AA/AA/AA
+window.tab.label.focus:              Raised Gradient Vertical
+window.tab.label.focus.color:        rgb:62/70/85
+window.tab.label.focus.colorTo:      rgb:556/66/75
+window.tab.label.focus.textColor:    #FFFFFF
+window.tab.borderWidth:              2
+window.tab.borderColor:              black
+! ----------- (fluxbox.sourceforge.net)
+
+window.justify:                      Center
+
+window.tab.font:                     -*-clean-medium-r-*-*-12-*-*-*-*-60-iso8859-*
+toolbar.font:                        -*-lucida-bold-r-*-*-*-100-*-*-*-*-*-*
+window.font:                         -*-helvetica-medium-r-normal-*-12-*-*-*-*-*-iso8859-*
+#menu.title.font:                    -*-lucida-bold-r-*-*-*-100-*-*-*-*-*-*
+menu.title.font:                     -*-lucida-bold-r-*-*-*-100-*-*-*-*-*-*
+menu.frame.font:                     -*-lucida-medium-r-*-*-*-100-*-*-*-*-*-*
+
+borderColor:                         rgb:00/00/00
+
+bevelWidth:                          2
+borderWidth:                         2
+handleWidth:                         3
+
+background:                          mod
+background.modX:                     5
+background.modY:                     5
+background.color:                    rgb:52/60/75
+background.colorTo:                  rgb:62/70/85

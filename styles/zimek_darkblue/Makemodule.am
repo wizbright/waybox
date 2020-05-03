@@ -1,0 +1,3 @@
+zimek_darkblue_styledir = $(pkgdatadir)/styles/zimek_darkblue
+
+dist_zimek_darkblue_style_DATA = data/styles/zimek_darkblue/theme.cfg

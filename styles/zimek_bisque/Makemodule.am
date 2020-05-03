@@ -1,0 +1,3 @@
+zimek_bisque_styledir = $(pkgdatadir)/styles/zimek_bisque
+
+dist_zimek_bisque_style_DATA = data/styles/zimek_bisque/theme.cfg

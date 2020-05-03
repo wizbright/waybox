@@ -1,0 +1,3 @@
+zimek_green_styledir = $(pkgdatadir)/styles/zimek_green
+
+dist_zimek_green_style_DATA = data/styles/zimek_green/theme.cfg

@@ -1,0 +1,3 @@
+green_tea_styledir = $(pkgdatadir)/styles/green_tea
+
+dist_green_tea_style_DATA = data/styles/green_tea/theme.cfg

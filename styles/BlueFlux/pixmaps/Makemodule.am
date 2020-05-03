@@ -1,0 +1,24 @@
+blueflux_pixmaps_styledir = $(pkgdatadir)/styles/BlueFlux/pixmaps
+
+dist_blueflux_pixmaps_style_DATA = \
+	data/styles/BlueFlux/pixmaps/button_close_active.xpm \
+	data/styles/BlueFlux/pixmaps/button_close_pressed.xpm \
+	data/styles/BlueFlux/pixmaps/button_close_unfocus.xpm \
+	data/styles/BlueFlux/pixmaps/button_max_active.xpm \
+	data/styles/BlueFlux/pixmaps/button_max_pressed.xpm \
+	data/styles/BlueFlux/pixmaps/button_max_unfocus.xpm \
+	data/styles/BlueFlux/pixmaps/button_min_active.xpm \
+	data/styles/BlueFlux/pixmaps/button_min_pressed.xpm \
+	data/styles/BlueFlux/pixmaps/button_min_unfocus.xpm \
+	data/styles/BlueFlux/pixmaps/button_stick_active.xpm \
+	data/styles/BlueFlux/pixmaps/button_stick_pressed.xpm \
+	data/styles/BlueFlux/pixmaps/button_stick_unfocus.xpm \
+	data/styles/BlueFlux/pixmaps/button_stuck.xpm \
+	data/styles/BlueFlux/pixmaps/button_stuck_unfocus.xpm \
+	data/styles/BlueFlux/pixmaps/button_toolbar.xpm \
+	data/styles/BlueFlux/pixmaps/button_toolbar_pressed.xpm \
+	data/styles/BlueFlux/pixmaps/menu_frame.xpm \
+	data/styles/BlueFlux/pixmaps/title_bar.xpm \
+	data/styles/BlueFlux/pixmaps/title_bar_unfocus.xpm \
+	data/styles/BlueFlux/pixmaps/toolbar.xpm \
+	data/styles/BlueFlux/pixmaps/toolbar_label.xpm

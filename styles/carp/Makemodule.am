@@ -1,0 +1,3 @@
+carp_styledir = $(pkgdatadir)/styles/carp
+
+dist_carp_style_DATA = data/styles/carp/theme.cfg
