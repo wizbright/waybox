@@ -2,6 +2,8 @@
 #define _WB_SEAT_H
 
 #include <wlr/types/wlr_keyboard.h>
+#include <wlr/types/wlr_primary_selection.h>
+#include <wlr/types/wlr_primary_selection_v1.h>
 #include <wlr/types/wlr_seat.h>
 
 #include "waybox/server.h"
@@ -10,6 +12,9 @@ struct wb_seat {
 	struct wlr_seat *seat;
 
 	struct wl_list keyboards;
+
+	struct wl_listener request_set_primary_selection;
+	struct wl_listener request_set_selection;
 };
 
 struct wb_keyboard {

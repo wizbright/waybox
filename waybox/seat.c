@@ -147,6 +147,22 @@ static void new_input_notify(struct wl_listener *listener, void *data) {
 	wlr_seat_set_capabilities(server->seat->seat, caps);
 }
 
+static void handle_request_set_primary_selection(struct wl_listener *listener,
+		void *data) {
+	struct wb_seat *seat =
+		wl_container_of(listener, seat, request_set_primary_selection);
+	struct wlr_seat_request_set_primary_selection_event *event = data;
+	wlr_seat_set_primary_selection(seat->seat, event->source, event->serial);
+}
+
+static void handle_request_set_selection(struct wl_listener *listener, void
+		*data) {
+	struct wb_seat *seat =
+		wl_container_of(listener, seat, request_set_selection);
+	struct wlr_seat_request_set_selection_event *event = data;
+	wlr_seat_set_selection(seat->seat, event->source, event->serial);
+}
+
 struct wb_seat *wb_seat_create(struct wb_server *server) {
 	struct wb_seat *seat = malloc(sizeof(struct wb_seat));
 
@@ -155,10 +171,21 @@ struct wb_seat *wb_seat_create(struct wb_server *server) {
 	wl_signal_add(&server->backend->events.new_input, &server->new_input);
 	seat->seat = wlr_seat_create(server->wl_display, "seat0");
 
+	wlr_primary_selection_v1_device_manager_create(server->wl_display);
+	seat->request_set_primary_selection.notify =
+		handle_request_set_primary_selection;
+	wl_signal_add(&seat->seat->events.request_set_primary_selection,
+			&seat->request_set_primary_selection);
+	seat->request_set_selection.notify = handle_request_set_selection;
+	wl_signal_add(&seat->seat->events.request_set_selection,
+			&seat->request_set_selection);
+
 	return seat;
 }
 
 void wb_seat_destroy(struct wb_seat *seat) {
+	wl_list_remove(&seat->request_set_primary_selection.link);
+	wl_list_remove(&seat->request_set_selection.link);
 	wlr_seat_destroy(seat->seat);
 	free(seat);
 }
