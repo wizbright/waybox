@@ -26,6 +26,7 @@ protocols = [
   [wl_protocol_dir, 'unstable/linux-dmabuf/linux-dmabuf-unstable-v1.xml'],
   [wl_protocol_dir, 'unstable/primary-selection/primary-selection-unstable-v1.xml'],
   [wl_protocol_dir, 'unstable/xdg-decoration/xdg-decoration-unstable-v1.xml'],
+  [wl_protocol_dir, 'unstable/xdg-output/xdg-output-unstable-v1.xml'],
   'wlr-gamma-control-unstable-v1.xml',
   'idle.xml',
   'wlr-screencopy-unstable-v1.xml',

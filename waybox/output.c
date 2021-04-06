@@ -7,7 +7,8 @@ struct render_data {
 	struct timespec *when;
 };
 
-static void render_surface(struct wlr_surface *surface, int sx, int sy, void *data) {
+static void render_surface(struct wlr_surface *surface,
+				int sx, int sy, void *data) {
 	/* This function is called for every surface that needs to be rendered. */
 	struct render_data *rdata = data;
 	struct wb_view *view = rdata->view;
@@ -50,8 +51,7 @@ static void render_surface(struct wlr_surface *surface, int sx, int sy, void *da
 	 * prepares an orthographic projection and multiplies the necessary
 	 * transforms to produce a model-view-projection matrix.
 	 *
-	 * Naturally you can do this any way you like, for example to make a 3D
-	 * compositor.
+	 * Naturally you can do this any way you like.
 	 */
 	float matrix[9];
 	enum wl_output_transform transform =
@@ -99,7 +99,8 @@ void output_frame_notify(struct wl_listener *listener, void *data) {
 			.when = &now,
 		};
 
-		wlr_xdg_surface_for_each_surface(view->xdg_surface, render_surface, &rdata);
+		wlr_xdg_surface_for_each_surface(view->xdg_surface,
+						render_surface, &rdata);
 	}
 
 	wlr_output_render_software_cursors(output->wlr_output, NULL);
@@ -146,4 +147,7 @@ void new_output_notify(struct wl_listener *listener, void *data) {
 
 	wlr_output_layout_add_auto(server->layout, wlr_output);
 	wlr_output_create_global(wlr_output);
+
+	output->manager = wlr_xdg_output_manager_v1_create(server->wl_display,
+				server->layout);
 }
