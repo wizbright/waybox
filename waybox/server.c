@@ -61,11 +61,11 @@ bool wb_start_server(struct wb_server* server) {
 }
 
 bool wb_terminate(struct wb_server* server) {
-	wl_display_destroy_clients(server->wl_display);
 	wb_cursor_destroy(server->cursor);
 	wb_seat_destroy(server->seat);
-	wlr_output_layout_destroy(server->layout);
+	wl_display_destroy_clients(server->wl_display);
 	wl_display_destroy(server->wl_display);
+	wlr_output_layout_destroy(server->layout);
 
 	wlr_log(WLR_INFO, "%s", _("Display destroyed"));
 
