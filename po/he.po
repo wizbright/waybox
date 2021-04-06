@@ -1,0 +1,404 @@
+# Hebrew translation for openbox.
+# Copyright (C) 2002 Dana Jansens
+# Copyright (C) 2004 Mikael Magnusson
+# This file is distributed under the same license as the Waybox package.
+# Isratine Citizen <genghiskhan@gmx.ca>, 2012.
+# Eli Zaretskii <eliz@gnu.org>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Waybox 0.0.1\n"
+"Report-Msgid-Bugs-To: https://github.com/wizbright/waybox/issues\n"
+"POT-Creation-Date: 2008-11-15 22:28+0100\n"
+"PO-Revision-Date: 2020-03-10 10:30-0400\n"
+"Last-Translator: Eli Zaretskii <eliz@gnu.org>\n"
+"Language-Team: Rahut <genghiskhan@gmx.ca>\n"
+"Language: he\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.5.4\n"
+
+# אין פעולה כזו קיימת
+#: openbox/actions.c:149
+#, c-format
+msgid "Invalid action \"%s\" requested. No such action exists."
+msgstr "התבקשה פעולה שגויה ‫\"%s\". פעולה שכזו לא קיימת."
+
+#: openbox/actions/execute.c:128
+msgid "No"
+msgstr "לא"
+
+#: openbox/actions/execute.c:129
+msgid "Yes"
+msgstr "כן"
+
+#: openbox/actions/execute.c:133
+msgid "Execute"
+msgstr "הרצה"
+
+#: openbox/actions/execute.c:142
+#, c-format
+msgid "Failed to convert the path \"%s\" from utf8"
+msgstr "כשל בהמרת הנתיב ‫\"%s\" מן ‫utf8"
+
+#: openbox/actions/exit.c:52 openbox/actions/session.c:64 openbox/client.c:3465
+msgid "Cancel"
+msgstr "ביטול"
+
+#: openbox/actions/exit.c:53
+msgid "Exit"
+msgstr "יציאה"
+
+#: openbox/actions/exit.c:56
+msgid "Are you sure you want to exit Waybox?"
+msgstr "האם אכן ברצונך לצאת מן ‫Waybox?"
+
+#: openbox/actions/exit.c:57
+msgid "Exit Waybox"
+msgstr "יציאה מן ‫Waybox"
+
+#. TRANSLATORS: Don't translate the word "SessionLogout" as it's the
+#. name of the action you write in rc.xml
+#: openbox/actions/session.c:43
+msgid ""
+"The SessionLogout action is not available since Waybox was built without "
+"session management support"
+msgstr ""
+
+# התנתקות
+#: openbox/actions/session.c:65 openbox/actions/session.c:70
+msgid "Log Out"
+msgstr "יציאה"
+
+#: openbox/actions/session.c:69
+msgid "Are you sure you want to log out?"
+msgstr "האם אכן ברצונך להתנתק?"
+
+#: openbox/client.c:2012
+msgid "Unnamed Window"
+msgstr "חלון ללא שם"
+
+#: openbox/client.c:2026 openbox/client.c:2058
+msgid "Killing..."
+msgstr "הורג כעת..."
+
+#: openbox/client.c:3462
+msgid "Disconnect"
+msgstr "ניתוק"
+
+#: openbox/client_list_combined_menu.c:87 openbox/client_list_menu.c:91
+msgid "Go there..."
+msgstr "לך אל מרחב זה..."
+
+#: openbox/client_list_combined_menu.c:94
+msgid "Manage desktops"
+msgstr "ניהול שולחנות"
+
+#: openbox/client_list_combined_menu.c:95 openbox/client_list_menu.c:155
+msgid "_Add new desktop"
+msgstr "הוסף מרחב חדש (_A)"
+
+#: openbox/client_list_combined_menu.c:96 openbox/client_list_menu.c:156
+msgid "_Remove last desktop"
+msgstr "הסר מרחב אחרון (_R)"
+
+#: openbox/client_list_combined_menu.c:149
+msgid "Windows"
+msgstr "חלונות"
+
+#: openbox/client_list_menu.c:203
+msgid "Desktops"
+msgstr "שולחנות עבודה"
+
+#: openbox/client_menu.c:258
+msgid "All desktops"
+msgstr "כל השולחנות"
+
+#: openbox/client_menu.c:370
+msgid "_Layer"
+msgstr "רובד (_L)"
+
+#: openbox/client_menu.c:375
+msgid "Always on _top"
+msgstr "תמיד עליון (_T)"
+
+#: openbox/client_menu.c:376
+msgid "_Normal"
+msgstr "רגיל (_N)"
+
+#: openbox/client_menu.c:377
+msgid "Always on _bottom"
+msgstr "תמיד תחתון (_B)"
+
+#: openbox/client_menu.c:379
+msgid "_Send to desktop"
+msgstr "שלח אל מרחב (_S)"
+
+#: openbox/client_menu.c:383
+msgid "Client menu"
+msgstr "תפריט לקוח"
+
+#: openbox/client_menu.c:393
+msgid "R_estore"
+msgstr "שחזר (_E)"
+
+#: openbox/client_menu.c:397
+msgid "_Move"
+msgstr "הזז (_M)"
+
+# מידה
+#: openbox/client_menu.c:399
+msgid "Resi_ze"
+msgstr "שנה גודל (_Z)"
+
+#: openbox/client_menu.c:401
+msgid "Ico_nify"
+msgstr "מזער (_N)"
+
+#: openbox/client_menu.c:405
+msgid "Ma_ximize"
+msgstr "הגדל (_X)"
+
+#: openbox/client_menu.c:409
+msgid "_Roll up/down"
+msgstr "גלול מעלה/מטה (_R)"
+
+#: openbox/client_menu.c:411
+msgid "Un/_Decorate"
+msgstr "אי/עיטור (_D)"
+
+#: openbox/client_menu.c:415
+msgid "_Close"
+msgstr "סגור (_C)"
+
+#: openbox/config.c:781
+#, c-format
+msgid "Invalid button \"%s\" specified in config file"
+msgstr "לחצן שגוי ‫\"%s\" צוין בקובץ תצורה"
+
+#: openbox/config.c:956
+msgid ""
+"Waybox was compiled without image loading support. Icons in menus will not "
+"be loaded."
+msgstr "‫Waybox הודר ללא תמיכת הטענת תמונות. צלמיות בתפריטים לא יוטענו."
+
+# קליד
+#: openbox/keyboard.c:157
+msgid "Conflict with key binding in config file"
+msgstr "התנגשות עם כריכת מקש בקובץ תצורה"
+
+#: openbox/menu.c:102 openbox/menu.c:110
+#, c-format
+msgid "Unable to find a valid menu file \"%s\""
+msgstr "לא ניתן למצוא קובץ תפריט תקף ‫\"%s\""
+
+# קנה
+#: openbox/menu.c:170
+#, c-format
+msgid "Failed to execute command for pipe-menu \"%s\": %s"
+msgstr "כשל בהרצת פקודה עבור תפריט-צינור ‫\"%s\": ‫%s"
+
+#: openbox/menu.c:184
+#, c-format
+msgid "Invalid output from pipe-menu \"%s\""
+msgstr "פלט שגוי מן תפריט-צינור ‫\"%s\""
+
+#: openbox/menu.c:197
+#, c-format
+msgid "Attempted to access menu \"%s\" but it does not exist"
+msgstr "מנסה לגשת אל תפריט ‫\"%s\" אך הוא לא קיים"
+
+#: openbox/menu.c:367 openbox/menu.c:368
+msgid "More..."
+msgstr "עוד..."
+
+#: openbox/mouse.c:373
+#, c-format
+msgid "Invalid button \"%s\" in mouse binding"
+msgstr "לחצן שגוי ‫\"%s\" בכריכת עכבר"
+
+#: openbox/mouse.c:379
+#, c-format
+msgid "Invalid context \"%s\" in mouse binding"
+msgstr "הקשר שגוי ‫\"%s\" בכריכת עכבר"
+
+#: openbox/openbox.c:133
+#, c-format
+msgid "Unable to change to home directory \"%s\": %s"
+msgstr "לא ניתן לשנות מדור בית ‫\"%s\": ‫%s"
+
+#: openbox/openbox.c:263
+msgid "Unable to find a valid config file, using some simple defaults"
+msgstr "לא ניתן למצוא קובץ תצורה תקף, עושה שימוש כעת בהגדרות משתמטות פשוטות"
+
+#: openbox/openbox.c:297
+msgid "Unable to load a theme."
+msgstr "לא ניתן להטעין מוטיב."
+
+#: openbox/openbox.c:377
+#, c-format
+msgid ""
+"One or more XML syntax errors were found while parsing the Waybox "
+"configuration files.  See stdout for more information.  The last error seen "
+"was in file \"%s\" line %d, with message: %s"
+msgstr ""
+"שגיאות תחביר ‫XML אחת או יותר נמצאו בשעת ניתוח קובצי התצורה של Waybox.  ראה ‫"
+"stdout עבור מידע נוסף.  השגיאה האחרונה שנראתה הייתה בקובץ ‫\"%s\" שורה %d, עם "
+"הודעה: %s"
+
+#: openbox/openbox.c:379
+msgid "Waybox Syntax Error"
+msgstr "שגיאת תחביר ‫Waybox"
+
+#: openbox/openbox.c:379
+msgid "Close"
+msgstr "סגור"
+
+#: openbox/openbox.c:448
+#, c-format
+msgid "Restart failed to execute new executable \"%s\": %s"
+msgstr ""
+
+#: openbox/openbox.c:518 openbox/openbox.c:520
+msgid "Copyright (c)"
+msgstr ""
+
+#: openbox/openbox.c:529
+msgid "Syntax: openbox [options]\n"
+msgstr ""
+
+#: openbox/openbox.c:530
+msgid ""
+"\n"
+"Options:\n"
+msgstr ""
+
+#: openbox/openbox.c:531
+msgid "  --help              Display this help and exit\n"
+msgstr ""
+
+#: openbox/openbox.c:532
+msgid "  --version           Display the version and exit\n"
+msgstr ""
+
+#. TRANSLATORS: if you translate "FILE" here, make sure to keep the "Specify..."
+#. aligned still, if you have to, make a new line with \n and 22 spaces. It's
+#. fine to leave it as FILE though.
+#: openbox/openbox.c:537
+msgid "  --config-file FILE  Specify the path to the config file to use\n"
+msgstr ""
+
+#: openbox/openbox.c:538
+msgid "  --sm-disable        Disable connection to the session manager\n"
+msgstr ""
+
+#: openbox/openbox.c:543
+msgid ""
+"\n"
+"Debugging options:\n"
+msgstr ""
+
+#: openbox/openbox.c:544
+msgid "  --sync              Run in synchronous mode\n"
+msgstr ""
+
+#: openbox/openbox.c:545
+msgid "  --debug             Display debugging output\n"
+msgstr ""
+
+#: openbox/openbox.c:546
+msgid "  --debug-focus       Display debugging output for focus handling\n"
+msgstr ""
+
+#: openbox/openbox.c:548
+msgid "  --startup CMD       Run CMD after starting\n"
+msgstr ""
+
+#: openbox/openbox.c:551
+msgid "  --debug-session     Display debugging output for session management\n"
+msgstr ""
+
+#: openbox/openbox.c:548
+#, c-format
+msgid ""
+"\n"
+"Please report bugs at %s\n"
+msgstr ""
+
+#: openbox/openbox.c:617
+msgid "%s requires an argument\n"
+msgstr ""
+
+#: openbox/openbox.c:660
+#, c-format
+msgid "Invalid command line argument \"%s\"\n"
+msgstr ""
+
+#. TRANSLATORS: If you need to specify a different order of the
+#. arguments, you can use %1$d for the first one and %2$d for the
+#. second one. For example,
+#. "The current session has %2$d desktops, but Waybox is configured for %1$d ..."
+#: openbox/screen.c:412
+#, c-format
+msgid ""
+"Waybox is configured for %d desktop, but the current session has %d.  "
+"Overriding the Waybox configuration."
+msgid_plural ""
+"Waybox is configured for %d desktops, but the current session has %d.  "
+"Overriding the Waybox configuration."
+msgstr[0] ""
+"‫Waybox הינו מוגדר עבור מרחב %d, אולם לסשן הנוכחי יש %d.  עוקף כעת את התצורה "
+"של ‫Waybox."
+msgstr[1] ""
+"‫Waybox הינו מוגדר עבור %d מרחבים, אולם לסשן הנוכחי יש %d.  עוקף כעת את "
+"התצורה של ‫Waybox."
+
+#: openbox/screen.c:1180
+#, c-format
+msgid "desktop %i"
+msgstr "מרחב ‫%i"
+
+#: openbox/session.c:104
+#, fuzzy, c-format
+msgid "Unable to make directory \"%s\": %s"
+msgstr "לא ניתן ליצור מדור ‫'%s': ‫%s"
+
+#: openbox/session.c:466
+#, fuzzy, c-format
+msgid "Unable to save the session to \"%s\": %s"
+msgstr "לא ניתן לשנות מדור בית ‫\"%s\": ‫%s"
+
+#: openbox/session.c:605
+#, c-format
+msgid "Error while saving the session to \"%s\": %s"
+msgstr ""
+
+#: openbox/session.c:842
+msgid "Not connected to a session manager"
+msgstr ""
+
+#: openbox/startupnotify.c:243
+#, c-format
+msgid "Running %s"
+msgstr "מריץ כעת ‫%s"
+
+#: openbox/translate.c:59
+#, c-format
+msgid "Invalid modifier key \"%s\" in key/mouse binding"
+msgstr "משתני מקשים שגויים ‫\"%s\" בכריכת מקש/עכבר"
+
+#: openbox/translate.c:138
+#, c-format
+msgid "Invalid key code \"%s\" in key binding"
+msgstr "קוד מקש שגוי ‫\"%s\" בכריכת מקש"
+
+#: openbox/translate.c:145
+#, c-format
+msgid "Invalid key name \"%s\" in key binding"
+msgstr "שם מקש שגוי ‫\"%s\" בכריכת מקש"
+
+#: openbox/prompt.c:200
+msgid "OK"
+msgstr "אישור"

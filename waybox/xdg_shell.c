@@ -1,6 +1,8 @@
 #include "waybox/xdg_shell.h"
 
 void focus_view(struct wb_view *view, struct wlr_surface *surface) {
+	wlr_log(WLR_INFO, "%s: %s", _("Keyboard focus is now on surface"),
+			wlr_xdg_surface_from_wlr_surface(surface)->toplevel->app_id);
 	/* Note: this function only deals with keyboard focus. */
 	if (view == NULL) {
 		return;
@@ -54,11 +56,15 @@ static void xdg_surface_unmap(struct wl_listener *listener, void *data) {
 
 	/* If the current view is mapped, focus it. */
 	if (current_view->mapped) {
+		wlr_log(WLR_INFO, "%s: %s", _("Focusing current view"),
+				current_view->xdg_surface->toplevel->app_id);
 		focus_view(current_view, current_view->xdg_surface->surface);
 	}
 	/* Otherwise, focus the next view, if any. */
 	else if (next_view->xdg_surface->surface &&
 			wlr_surface_is_xdg_surface(next_view->xdg_surface->surface)) {
+		wlr_log(WLR_INFO, "%s: %s", _("Focusing next view"),
+				next_view->xdg_surface->toplevel->app_id);
 		focus_view(next_view, next_view->xdg_surface->surface);
 	}
 }

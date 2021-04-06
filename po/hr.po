@@ -1,0 +1,409 @@
+# Croatian messages for openbox.
+# Copyright (C) 2020 Joe Wisdom
+# This file is distributed under the same license as the Waybox package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Waybox 0.0.1\n"
+"Report-Msgid-Bugs-To: https://github.com/wizbright/waybox/issues\n"
+"POT-Creation-Date: 2008-11-15 22:28+0100\n"
+"PO-Revision-Date: 2020-03-10 14:07-0400\n"
+"Last-Translator: boljsa <asjlob AT vip.hr>\n"
+"Language-Team:  <asjlob AT vip.hr>\n"
+"Language: hr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n == 1 ? 0 : 1;\n"
+
+#: openbox/actions.c:149
+#, c-format
+msgid "Invalid action \"%s\" requested. No such action exists."
+msgstr "Nevažeća akcija \"%s\" zatražena. Takva akcija ne postoji."
+
+#: openbox/actions/execute.c:128
+msgid "No"
+msgstr "Ne"
+
+#: openbox/actions/execute.c:129
+msgid "Yes"
+msgstr "Da"
+
+#: openbox/actions/execute.c:133
+msgid "Execute"
+msgstr "Izvrši"
+
+#: openbox/actions/execute.c:142
+#, c-format
+msgid "Failed to convert the path \"%s\" from utf8"
+msgstr "Neuspio pokušaj pretvorbe putanje \"%s\" iz utf8"
+
+#: openbox/actions/exit.c:52 openbox/actions/session.c:64 openbox/client.c:3465
+msgid "Cancel"
+msgstr "Odustani"
+
+#: openbox/actions/exit.c:53
+msgid "Exit"
+msgstr "Izađi"
+
+#: openbox/actions/exit.c:56
+msgid "Are you sure you want to exit Waybox?"
+msgstr "Jeste li sigurni da želite zatvoriti Waybox?"
+
+#: openbox/actions/exit.c:57
+msgid "Exit Waybox"
+msgstr "Zatvori Waybox"
+
+#. TRANSLATORS: Don't translate the word "SessionLogout" as it's the
+#. name of the action you write in rc.xml
+#: openbox/actions/session.c:43
+msgid ""
+"The SessionLogout action is not available since Waybox was built without "
+"session management support"
+msgstr ""
+
+#: openbox/actions/session.c:65 openbox/actions/session.c:70
+msgid "Log Out"
+msgstr "Odjava"
+
+#: openbox/actions/session.c:69
+msgid "Are you sure you want to log out?"
+msgstr "Jeste li sigurni da se želite odjaviti?"
+
+#: openbox/client.c:2012
+msgid "Unnamed Window"
+msgstr "Neimenovan Prozor"
+
+#: openbox/client.c:2026 openbox/client.c:2058
+msgid "Killing..."
+msgstr "Ubijanje..."
+
+#: openbox/client.c:3462
+msgid "Disconnect"
+msgstr "Prekid veze"
+
+#: openbox/client_list_combined_menu.c:87 openbox/client_list_menu.c:91
+msgid "Go there..."
+msgstr "Idi tamo..."
+
+#: openbox/client_list_combined_menu.c:94
+msgid "Manage desktops"
+msgstr "Upravljanje radnim površinama"
+
+#: openbox/client_list_combined_menu.c:95 openbox/client_list_menu.c:155
+msgid "_Add new desktop"
+msgstr "_Dodaj novu radnu površinu"
+
+#: openbox/client_list_combined_menu.c:96 openbox/client_list_menu.c:156
+msgid "_Remove last desktop"
+msgstr "_Ukloni zadnju radnu površinu"
+
+#: openbox/client_list_combined_menu.c:149
+msgid "Windows"
+msgstr "Prozori"
+
+#: openbox/client_list_menu.c:203
+msgid "Desktops"
+msgstr "Radne Površine"
+
+#: openbox/client_menu.c:258
+msgid "All desktops"
+msgstr "Sve radne površine"
+
+#: openbox/client_menu.c:370
+msgid "_Layer"
+msgstr "_Sloj"
+
+#: openbox/client_menu.c:375
+msgid "Always on _top"
+msgstr "Uvijek na _vrhu"
+
+#: openbox/client_menu.c:376
+msgid "_Normal"
+msgstr "_Normalno"
+
+#: openbox/client_menu.c:377
+msgid "Always on _bottom"
+msgstr "Uvijek na _dnu"
+
+#: openbox/client_menu.c:379
+msgid "_Send to desktop"
+msgstr "Pošalji na _radnu površinu"
+
+#: openbox/client_menu.c:383
+msgid "Client menu"
+msgstr "Izbornik klijenta"
+
+#: openbox/client_menu.c:393
+msgid "R_estore"
+msgstr "O_bnovi"
+
+#: openbox/client_menu.c:397
+msgid "_Move"
+msgstr "_Pomicanje"
+
+#: openbox/client_menu.c:399
+msgid "Resi_ze"
+msgstr "Prom_jena veličine"
+
+#: openbox/client_menu.c:401
+msgid "Ico_nify"
+msgstr "Mi_nimizacija"
+
+#: openbox/client_menu.c:405
+msgid "Ma_ximize"
+msgstr "M_aksimizacija"
+
+#: openbox/client_menu.c:409
+msgid "_Roll up/down"
+msgstr "_Okretanje gore/dolje"
+
+#: openbox/client_menu.c:411
+msgid "Un/_Decorate"
+msgstr "Ne/_Dekoriranje"
+
+#: openbox/client_menu.c:415
+msgid "_Close"
+msgstr "_Zatvori"
+
+#: openbox/config.c:781
+#, c-format
+msgid "Invalid button \"%s\" specified in config file"
+msgstr "Nevažeće dugme \"%s\" specificirano u konfiguracijskoj datoteci"
+
+#: openbox/config.c:956
+msgid ""
+"Waybox was compiled without image loading support. Icons in menus will not "
+"be loaded."
+msgstr ""
+
+#: openbox/keyboard.c:157
+msgid "Conflict with key binding in config file"
+msgstr "Konflikt sa povezivanjem tipki u konfiguracijskoj datoteci"
+
+#: openbox/menu.c:102 openbox/menu.c:110
+#, c-format
+msgid "Unable to find a valid menu file \"%s\""
+msgstr "Ne mogu pronaći važeću datoteku izbornika \"%s\""
+
+#: openbox/menu.c:170
+#, c-format
+msgid "Failed to execute command for pipe-menu \"%s\": %s"
+msgstr "Neuspio pokušaj izvršavanja naredbe za cijev-izbornik \"%s\": %s"
+
+#: openbox/menu.c:184
+#, c-format
+msgid "Invalid output from pipe-menu \"%s\""
+msgstr "Nevažeći izlaz za cijev-izbornik \"%s\""
+
+#: openbox/menu.c:197
+#, c-format
+msgid "Attempted to access menu \"%s\" but it does not exist"
+msgstr "Pokušavam pristupiti izborniku \"%s\" ali on ne postoji"
+
+#: openbox/menu.c:367 openbox/menu.c:368
+msgid "More..."
+msgstr "Više..."
+
+#: openbox/mouse.c:373
+#, c-format
+msgid "Invalid button \"%s\" in mouse binding"
+msgstr "Nevažeće dugme \"%s\" u povezivanju miša"
+
+#: openbox/mouse.c:379
+#, c-format
+msgid "Invalid context \"%s\" in mouse binding"
+msgstr "Nevažeći kontekst \"%s\" u povezivanju miša"
+
+#: openbox/openbox.c:133
+#, c-format
+msgid "Unable to change to home directory \"%s\": %s"
+msgstr "Ne mogu doći u home direktorij \"%s\": %s"
+
+#: openbox/openbox.c:263
+msgid "Unable to find a valid config file, using some simple defaults"
+msgstr ""
+"Ne mogu pronaći važeću konfiguracijsku datoteku, koriteći neke jednostavne "
+"standarde"
+
+#: openbox/openbox.c:297
+msgid "Unable to load a theme."
+msgstr "Ne mogu pokrenuti temu."
+
+#: openbox/openbox.c:377
+#, c-format
+msgid ""
+"One or more XML syntax errors were found while parsing the Waybox "
+"configuration files.  See stdout for more information.  The last error seen "
+"was in file \"%s\" line %d, with message: %s"
+msgstr ""
+"Jedna ili više XML pogreški u sintaksi su pronađene prilikom analize Waybox "
+"konfiguracijskih datoteka. Pogledajte stdout za više informacija. Zadnja "
+"pogreška je u datoteci \"%s\" u liniji %d, sa porukom: %s"
+
+#: openbox/openbox.c:379
+msgid "Waybox Syntax Error"
+msgstr "Waybox Pogreška u Sintaksi"
+
+#: openbox/openbox.c:379
+msgid "Close"
+msgstr "Zatvori"
+
+#: openbox/openbox.c:448
+#, c-format
+msgid "Restart failed to execute new executable \"%s\": %s"
+msgstr "Restart je bio neusješan za izvršenje novog izvršnog \"%s\": %s"
+
+#: openbox/openbox.c:518 openbox/openbox.c:520
+msgid "Copyright (c)"
+msgstr "Copyright (c)"
+
+#: openbox/openbox.c:529
+msgid "Syntax: openbox [options]\n"
+msgstr "Sintaksa: openbox [opcije]\n"
+
+#: openbox/openbox.c:530
+msgid ""
+"\n"
+"Options:\n"
+msgstr ""
+"\n"
+"Opcije:\n"
+
+#: openbox/openbox.c:531
+msgid "  --help              Display this help and exit\n"
+msgstr "  --help              Prikazuje ovu pomoć i izlazi\n"
+
+#: openbox/openbox.c:532
+msgid "  --version           Display the version and exit\n"
+msgstr "  --version           Prikazuje verziju i izlazi\n"
+
+#. TRANSLATORS: if you translate "FILE" here, make sure to keep the "Specify..."
+#. aligned still, if you have to, make a new line with \n and 22 spaces. It's
+#. fine to leave it as FILE though.
+#: openbox/openbox.c:537
+msgid "  --config-file FILE  Specify the path to the config file to use\n"
+msgstr ""
+"  --config-file FILE  Specificira putanju do konfiguracijske datoteke koja "
+"se koristi\n"
+
+#: openbox/openbox.c:538
+msgid "  --sm-disable        Disable connection to the session manager\n"
+msgstr "  --sm-disable        Onemogućuje vezu sa upraviteljom sesija\n"
+
+#: openbox/openbox.c:543
+msgid ""
+"\n"
+"Debugging options:\n"
+msgstr ""
+"\n"
+"Opcije traženja pogrešaka:\n"
+
+#: openbox/openbox.c:544
+msgid "  --sync              Run in synchronous mode\n"
+msgstr "  --sync              Pokretanje u sinkronizacijskom modu\n"
+
+#: openbox/openbox.c:545
+msgid "  --debug             Display debugging output\n"
+msgstr "  --debug             Prikazuje izlaz traženja pogrešaka\n"
+
+#: openbox/openbox.c:546
+msgid "  --debug-focus       Display debugging output for focus handling\n"
+msgstr ""
+"  --debug-focus       Prikazuje izlaz traženja pogrešaka za rukovanje "
+"fokusom\n"
+
+#: openbox/openbox.c:548
+msgid "  --startup CMD       Run CMD after starting\n"
+msgstr ""
+
+#: openbox/openbox.c:551
+msgid "  --debug-session     Display debugging output for session management\n"
+msgstr ""
+"  --debug-session     Prikazuje izlaz traženja pogrešaka za rukovanje "
+"sessionom\n"
+
+#: openbox/openbox.c:548
+#, c-format
+msgid ""
+"\n"
+"Please report bugs at %s\n"
+msgstr ""
+"\n"
+"Molimo prijavite pogrešku na %s\n"
+
+#: openbox/openbox.c:617
+msgid "%s requires an argument\n"
+msgstr "%s zahtjeva argument\n"
+
+#: openbox/openbox.c:660
+#, c-format
+msgid "Invalid command line argument \"%s\"\n"
+msgstr "Nevažeći argument komandne linije \"%s\"\n"
+
+#. TRANSLATORS: If you need to specify a different order of the
+#. arguments, you can use %1$d for the first one and %2$d for the
+#. second one. For example,
+#. "The current session has %2$d desktops, but Waybox is configured for %1$d ..."
+#: openbox/screen.c:412
+#, c-format
+msgid ""
+"Waybox is configured for %d desktop, but the current session has %d.  "
+"Overriding the Waybox configuration."
+msgid_plural ""
+"Waybox is configured for %d desktops, but the current session has %d.  "
+"Overriding the Waybox configuration."
+msgstr[0] ""
+"Waybox je konfiguriran za %d radnu površinu, ali trenutna sesija ima %d. "
+"Prepisujem preko Waybox konfiguracije."
+msgstr[1] ""
+"Waybox je konfiguriran za %d radnu površinu, ali trenutna sesija ima %d. "
+"Prepisujem preko Waybox konfiguracije."
+
+#: openbox/screen.c:1180
+#, c-format
+msgid "desktop %i"
+msgstr "radna površina %i"
+
+#: openbox/session.c:104
+#, fuzzy, c-format
+msgid "Unable to make directory \"%s\": %s"
+msgstr "Ne mogu stvoriti direktorij '%s': %s"
+
+#: openbox/session.c:466
+#, fuzzy, c-format
+msgid "Unable to save the session to \"%s\": %s"
+msgstr "Ne mogu doći u home direktorij \"%s\": %s"
+
+#: openbox/session.c:605
+#, c-format
+msgid "Error while saving the session to \"%s\": %s"
+msgstr ""
+
+#: openbox/session.c:842
+msgid "Not connected to a session manager"
+msgstr ""
+
+#: openbox/startupnotify.c:243
+#, c-format
+msgid "Running %s"
+msgstr "Pokrenuto %s"
+
+#: openbox/translate.c:59
+#, c-format
+msgid "Invalid modifier key \"%s\" in key/mouse binding"
+msgstr "Nevažeći modifikacijski ključ \"%s\" u povezivanju tipke/miš"
+
+#: openbox/translate.c:138
+#, c-format
+msgid "Invalid key code \"%s\" in key binding"
+msgstr "Nevažeći kod ključa \"%s\" u povezivanju tipki"
+
+#: openbox/translate.c:145
+#, c-format
+msgid "Invalid key name \"%s\" in key binding"
+msgstr "Nevažeće ime tipke \"%s\" u povezivanju tipki"
+
+#: openbox/prompt.c:200
+msgid "OK"
+msgstr "OK"
