@@ -10,7 +10,7 @@ bool wb_create_backend(struct wb_server* server) {
 	}
 
 	// create backend
-	server->backend = wlr_backend_autocreate(server->wl_display, NULL);
+	server->backend = wlr_backend_autocreate(server->wl_display);
 	if (server->backend == NULL) {
 		return false;
 	}
