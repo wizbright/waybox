@@ -8,7 +8,7 @@ void focus_view(struct wb_view *view, struct wlr_surface *surface) {
 	struct wlr_xdg_surface *xdg_surface = wlr_xdg_surface_from_wlr_surface(surface);
 	if (xdg_surface)
 		wlr_log(WLR_INFO, "%s: %s", _("Keyboard focus is now on surface"),
-				wlr_xdg_surface_from_wlr_surface(surface)->toplevel->app_id);
+				xdg_surface->toplevel->app_id);
 	struct wb_server *server = view->server;
 	struct wlr_seat *seat = server->seat->seat;
 	struct wlr_surface *prev_surface = seat->keyboard_state.focused_surface;

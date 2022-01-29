@@ -1,4 +1,4 @@
-# Contributing to waybox
+# Contributing to Waybox
 
 Contributing just involves sending a pull request. You will probably be more
 successful with your contribution if you visit
@@ -8,7 +8,8 @@ irc.freenode.net upfront and discuss your plans.
 Note: rules are made to be broken. Adjust or ignore any/all of these as you see
 fit, but be prepared to justify it to your peers.
 
-This was amended from [wlroots](https://github.com/swaywm/wlroots) for the most part
+This was amended from [wlroots](https://gitlab.freedesktop.org/wlroots/wlroots)
+for the most part.
 
 ## Pull Requests
 

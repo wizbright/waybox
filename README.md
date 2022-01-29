@@ -11,10 +11,10 @@ contributing.](https://github.com/wizbright/waybox/blob/master/CONTRIBUTING.md)
 
 ### Dependencies
 
-* meson
-* wlroots
-* wayland
-* xkbcommon
+* [Meson](https://mesonbuild.com/)
+* [wlroots](https://gitlab.freedesktop.org/wlroots/wlroots/)
+* [Wayland](https://wayland.freedesktop.org/)
+* [xkbcommon](https://xkbcommon.org/)
 
 ### Build instructions
 

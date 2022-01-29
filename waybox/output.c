@@ -124,6 +124,10 @@ void new_output_notify(struct wl_listener *listener, void *data) {
 	struct wlr_output *wlr_output = data;
 	wlr_log(WLR_INFO, "%s: %s", _("New output device detected"), wlr_output->name);
 
+	/* Configures the output created by the backend to use our allocator
+         * and our renderer */
+	wlr_output_init_render(wlr_output, server->allocator, server->renderer);
+
 	if (!wl_list_empty(&wlr_output->modes)) {
 		struct wlr_output_mode *mode = wlr_output_preferred_mode(wlr_output);
 		wlr_output_set_mode(wlr_output, mode);

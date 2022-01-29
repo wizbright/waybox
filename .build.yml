@@ -9,7 +9,7 @@ packages:
   - libxkbcommon
 sources:
   - https://github.com/wizbright/waybox
-  - https://github.com/swaywm/wlroots
+  - https://gitlab.freedesktop.org/wlroots/wlroots
 tasks:
   - wlroots: |
       cd wlroots

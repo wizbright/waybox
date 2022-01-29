@@ -8,6 +8,7 @@
 #include <stdio.h>
 
 #include <wlr/backend.h>
+#include <wlr/render/allocator.h>
 #include <wlr/render/wlr_renderer.h>
 #include <wlr/render/wlr_texture.h>
 #include <wlr/types/wlr_compositor.h>
@@ -34,6 +35,7 @@ struct wb_server {
 	struct wlr_backend *backend;
 	struct wlr_compositor *compositor;
 	struct wlr_renderer *renderer;
+	struct wlr_allocator *allocator;
 
 	struct wlr_output_layout *layout;
 	struct wb_cursor *cursor;
