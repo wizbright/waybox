@@ -199,7 +199,7 @@ struct wb_cursor *wb_cursor_create(struct wb_server *server) {
 	wl_signal_add(&server->seat->seat->events.request_set_cursor,
 			&cursor->request_cursor);
 
-	wlr_cursor_attach_output_layout(cursor->cursor, server->layout);
+	wlr_cursor_attach_output_layout(cursor->cursor, server->output_layout);
 
 	return cursor;
 }

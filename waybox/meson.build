@@ -1,6 +1,7 @@
 wb_src = files(
   'cursor.c',
   'decoration.c',
+  'layer_shell.c',
   'main.c',
   'output.c',
   'seat.c',

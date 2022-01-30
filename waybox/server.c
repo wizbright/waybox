@@ -34,7 +34,7 @@ bool wb_create_backend(struct wb_server* server) {
 
 	server->compositor = wlr_compositor_create(server->wl_display,
 			server->renderer);
-	server->layout = wlr_output_layout_create();
+	server->output_layout = wlr_output_layout_create();
 	server->seat = wb_seat_create(server);
 	server->cursor = wb_cursor_create(server);
 
@@ -70,6 +70,7 @@ bool wb_start_server(struct wb_server* server) {
 	wlr_data_device_manager_create(server->wl_display);
 	wl_list_init(&server->views);
 	init_xdg_decoration(server);
+	init_layer_shell(server);
 	init_xdg_shell(server);
 
 	return true;
@@ -81,7 +82,7 @@ bool wb_terminate(struct wb_server* server) {
 	wb_seat_destroy(server->seat);
 	wl_display_destroy_clients(server->wl_display);
 	wl_display_destroy(server->wl_display);
-	wlr_output_layout_destroy(server->layout);
+	wlr_output_layout_destroy(server->output_layout);
 
 	wlr_log(WLR_INFO, "%s", _("Display destroyed"));
 

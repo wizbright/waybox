@@ -31,7 +31,7 @@ static void render_surface(struct wlr_surface *surface,
 	 * output-local coordinates, or (2000 - 1920). */
 	double ox = 0, oy = 0;
 	wlr_output_layout_output_coords(
-			view->server->layout, output, &ox, &oy);
+			view->server->output_layout, output, &ox, &oy);
 	ox += view->x + sx, oy += view->y + sy;
 
 	/* We also have to apply the scale factor for HiDPI outputs. This is only
@@ -68,6 +68,43 @@ static void render_surface(struct wlr_surface *surface,
 	wlr_surface_send_frame_done(surface, rdata->when);
 }
 
+static void render_layer_surface(struct wlr_surface *surface,
+		int sx, int sy, void *data) {
+	struct wb_layer_surface *layer_surface = data;
+	struct wlr_texture *texture = wlr_surface_get_texture(surface);
+	if (texture == NULL) {
+		return;
+	}
+	struct wlr_output *output = layer_surface->layer_surface->output;
+	double ox = 0, oy = 0;
+	wlr_output_layout_output_coords(
+			layer_surface->server->output_layout, output, &ox, &oy);
+	ox += layer_surface->geo.x + sx, oy += layer_surface->geo.y + sy;
+	float matrix[9];
+	enum wl_output_transform transform =
+		wlr_output_transform_invert(surface->current.transform);
+	struct wlr_box box;
+	memcpy(&box, &layer_surface->geo, sizeof(struct wlr_box));
+	wlr_matrix_project_box(matrix, &box, transform, 0,
+		output->transform_matrix);
+	wlr_render_texture_with_matrix(layer_surface->server->renderer,
+			texture, matrix, 1);
+	struct timespec now;
+	clock_gettime(CLOCK_MONOTONIC, &now);
+	wlr_surface_send_frame_done(surface, &now);
+}
+
+static void render_layer(
+		struct wb_output *output, struct wl_list *layer_surfaces) {
+	struct wb_layer_surface *layer_surface;
+	wl_list_for_each(layer_surface, layer_surfaces, link) {
+		struct wlr_layer_surface_v1 *wlr_layer_surface_v1 =
+			layer_surface->layer_surface;
+		wlr_surface_for_each_surface(wlr_layer_surface_v1->surface,
+			render_layer_surface, layer_surface);
+	}
+}
+
 void output_frame_notify(struct wl_listener *listener, void *data) {
 	struct wb_output *output = wl_container_of(listener, output, frame);
 	struct wlr_renderer *renderer = output->server->renderer;
@@ -86,6 +123,9 @@ void output_frame_notify(struct wl_listener *listener, void *data) {
 	float color[4] = {0.4f, 0.4f, 0.4f, 1.0f};
 	wlr_renderer_clear(renderer, color);
 
+	render_layer(output, &output->layers[ZWLR_LAYER_SHELL_V1_LAYER_BACKGROUND]);
+	render_layer(output, &output->layers[ZWLR_LAYER_SHELL_V1_LAYER_BOTTOM]);
+
 	struct wb_view *view;
 	wl_list_for_each_reverse(view, &output->server->views, link) {
 		if (!view->mapped)
@@ -103,6 +143,9 @@ void output_frame_notify(struct wl_listener *listener, void *data) {
 						render_surface, &rdata);
 	}
 
+	render_layer(output, &output->layers[ZWLR_LAYER_SHELL_V1_LAYER_TOP]);
+	render_layer(output, &output->layers[ZWLR_LAYER_SHELL_V1_LAYER_OVERLAY]);
+
 	wlr_output_render_software_cursors(output->wlr_output, NULL);
 	wlr_renderer_end(renderer);
 	wlr_output_commit(output->wlr_output);
@@ -110,7 +153,7 @@ void output_frame_notify(struct wl_listener *listener, void *data) {
 
 void output_destroy_notify(struct wl_listener *listener, void *data) {
 	struct wb_output *output = wl_container_of(listener, output, destroy);
-	wlr_output_layout_remove(output->server->layout, output->wlr_output);
+	wlr_output_layout_remove(output->server->output_layout, output->wlr_output);
 	wl_list_remove(&output->link);
 	wl_list_remove(&output->destroy.link);
 	wl_list_remove(&output->frame.link);
@@ -142,16 +185,22 @@ void new_output_notify(struct wl_listener *listener, void *data) {
 	struct wb_output *output = calloc(1, sizeof(struct wb_output));
 	output->server = server;
 	output->wlr_output = wlr_output;
+	wlr_output->data = output;
 	wl_list_insert(&server->outputs, &output->link);
+
+	wl_list_init(&output->layers[0]);
+	wl_list_init(&output->layers[1]);
+	wl_list_init(&output->layers[2]);
+	wl_list_init(&output->layers[3]);
 
 	output->destroy.notify = output_destroy_notify;
 	wl_signal_add(&wlr_output->events.destroy, &output->destroy);
 	output->frame.notify = output_frame_notify;
 	wl_signal_add(&wlr_output->events.frame, &output->frame);
 
-	wlr_output_layout_add_auto(server->layout, wlr_output);
+	wlr_output_layout_add_auto(server->output_layout, wlr_output);
 	wlr_output_create_global(wlr_output);
 
 	output->manager = wlr_xdg_output_manager_v1_create(server->wl_display,
-				server->layout);
+				server->output_layout);
 }

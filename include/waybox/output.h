@@ -5,7 +5,6 @@
 #define _POSIX_C_SOURCE 200112L
 #endif
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
@@ -20,6 +19,8 @@ struct wb_output {
 	struct wb_server *server;
 
 	struct wlr_xdg_output_manager_v1 *manager;
+
+	struct wl_list layers[4];
 
 	struct wl_listener destroy;
 	struct wl_listener frame;
