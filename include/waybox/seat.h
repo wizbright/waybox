@@ -6,7 +6,7 @@
 #include <wlr/types/wlr_primary_selection_v1.h>
 #include <wlr/types/wlr_seat.h>
 
-#include "waybox/server.h"
+struct wb_server;
 
 struct wb_seat {
 	struct wlr_seat *seat;

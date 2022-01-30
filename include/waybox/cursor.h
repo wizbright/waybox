@@ -1,10 +1,9 @@
-#ifndef CURSOR_H
-#define CURSOR_H
-#include <wayland-server.h>
+#ifndef _WB_CURSOR_H
+#define _WB_CURSOR_H
 #include <wlr/types/wlr_cursor.h>
 #include <wlr/types/wlr_xcursor_manager.h>
 
-#include "waybox/server.h"
+struct wb_server;
 
 enum wb_cursor_mode {
 	WB_CURSOR_PASSTHROUGH,
@@ -32,4 +31,4 @@ struct wb_cursor {
 struct wb_cursor *wb_cursor_create(struct wb_server *server);
 void wb_cursor_destroy(struct wb_cursor *cursor);
 
-#endif // cursor.h
+#endif /* cursor.h */

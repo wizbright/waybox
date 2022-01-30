@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <unistd.h>
-#include <wayland-server.h>
 
 #include "waybox/server.h"
 

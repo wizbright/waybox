@@ -69,6 +69,7 @@ bool wb_start_server(struct wb_server* server) {
 
 	wlr_data_device_manager_create(server->wl_display);
 	wl_list_init(&server->views);
+	init_xdg_decoration(server);
 	init_xdg_shell(server);
 
 	return true;
@@ -76,6 +77,7 @@ bool wb_start_server(struct wb_server* server) {
 
 bool wb_terminate(struct wb_server* server) {
 	wb_cursor_destroy(server->cursor);
+	wl_list_remove(&server->new_xdg_decoration.link); /* wb_decoration_destroy */
 	wb_seat_destroy(server->seat);
 	wl_display_destroy_clients(server->wl_display);
 	wl_display_destroy(server->wl_display);

@@ -1,5 +1,5 @@
-#ifndef SERVER_H
-#define SERVER_H
+#ifndef _WB_SERVER_H
+#define _WB_SERVER_H
 
 #ifndef _POSIX_C_SOURCE
 #define _POSIX_C_SOURCE 200112L
@@ -25,38 +25,40 @@
 #include <locale.h>
 #define _ gettext
 
-#include "waybox/output.h"
 #include "waybox/cursor.h"
+#include "decoration.h"
+#include "waybox/output.h"
 #include "waybox/seat.h"
 
 struct wb_server {
 	struct wl_display *wl_display;
 
+	struct wlr_allocator *allocator;
 	struct wlr_backend *backend;
 	struct wlr_compositor *compositor;
-	struct wlr_renderer *renderer;
-	struct wlr_allocator *allocator;
-
 	struct wlr_output_layout *layout;
+	struct wlr_renderer *renderer;
+
 	struct wb_cursor *cursor;
 	struct wb_seat *seat;
 
 	struct wb_view *grabbed_view;
-	double grab_x, grab_y;
 	struct wlr_box grab_geo_box;
+	double grab_x, grab_y;
 	uint32_t resize_edges;
+	struct wl_list views;
 
 	struct wlr_xdg_shell *xdg_shell;
 	struct wl_listener new_xdg_surface;
-	struct wl_list views;
+	struct wl_listener new_xdg_decoration;
 
-	struct wl_listener new_output;
 	struct wl_listener new_input;
-	struct wl_list outputs; // wb_output::link
+	struct wl_listener new_output;
+	struct wl_list outputs; /* wb_output::link */
 };
 
 bool wb_create_backend(struct wb_server* server);
 bool wb_start_server(struct wb_server* server);
 bool wb_terminate(struct wb_server* server);
 
-#endif // server.h
+#endif /* server.h */

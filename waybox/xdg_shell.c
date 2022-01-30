@@ -86,7 +86,7 @@ static void begin_interactive(struct wb_view *view,
 	struct wb_server *server = view->server;
 	struct wlr_surface *focused_surface =
 		server->seat->seat->pointer_state.focused_surface;
-	if (view->xdg_surface->surface != focused_surface) {
+	if (view->xdg_surface->surface != wlr_surface_get_root_surface(focused_surface)) {
 		/* Deny move/resize requests from unfocused clients. */
 		return;
 	}
