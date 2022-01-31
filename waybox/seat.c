@@ -25,6 +25,20 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 		/* Move the previous view to the end of the list */
 		wl_list_remove(&current_view->link);
 		wl_list_insert(server->views.prev, &current_view->link);
+	} else if ((modifiers & (WLR_MODIFIER_ALT|WLR_MODIFIER_SHIFT))
+			&& sym == XKB_KEY_ISO_Left_Tab) {
+		/* Cycle to the previous view */
+		if (wl_list_length(&server->views) < 2) {
+			return false;
+		}
+		struct wb_view *current_view = wl_container_of(
+			server->views.prev, current_view, link);
+		struct wb_view *prev_view = wl_container_of(
+			server->views.next, prev_view, link);
+		focus_view(prev_view, prev_view->xdg_surface->surface);
+		/* Move the current view to the beginning of the list */
+		wl_list_remove(&current_view->link);
+		wl_list_insert(&server->views, &current_view->link);
 	} else if (modifiers & WLR_MODIFIER_ALT && sym == XKB_KEY_F2) {
 		if (fork() == 0) {
 			execl("/bin/sh", "/bin/sh", "-c", "(obrun || bemenu-run || synapse || gmrun || gnome-do || dmenu_run) 2>/dev/null", (char *) NULL);
@@ -72,8 +86,6 @@ static void keyboard_handle_key(
 	bool handled = false;
 	uint32_t modifiers = wlr_keyboard_get_modifiers(keyboard->device->keyboard);
 	if (event->state == WL_KEYBOARD_KEY_STATE_PRESSED) {
-		/* If alt is held down and this button was _pressed_, we attempt to
-		 * process it as a compositor keybinding. */
 		for (int i = 0; i < nsyms; i++) {
 			handled = handle_keybinding(server, syms[i], modifiers);
 		}
