@@ -1,5 +1,5 @@
 # Wayboxi eesti keele tõlge
-# translation of openbox to Estonian
+# mtranslation of waybox to Estonian
 # Copyright (C) 2020 Joe Wisdom
 # This file is distributed under the same license as the Waybox package.
 #
@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Waybox 0.0.1\n"
-"Report-Msgid-Bugs-To: https://github.com/wizbright/waybox/issues\n"
-"POT-Creation-Date: 2008-11-15 22:28+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-02-01 20:56-0500\n"
 "PO-Revision-Date: 2020-03-10 14:07-0400\n"
 "Last-Translator: mihkel <turakas@gmail.com>\n"
 "Language-Team: Estonian <et@li.org>\n"
@@ -19,253 +19,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: openbox/actions.c:149
+#: ../waybox/main.c:8
+#, fuzzy, c-format
+msgid "Syntax: %s [options]\n"
+msgstr "Süntaks: % [seaded]\n"
+
+#: ../waybox/main.c:9
 #, c-format
-msgid "Invalid action \"%s\" requested. No such action exists."
-msgstr "Taotleti kehtetut käsklust \"%s\". Sellist käsklust pole olemas."
-
-#: openbox/actions/execute.c:128
-msgid "No"
-msgstr "Ei"
-
-#: openbox/actions/execute.c:129
-msgid "Yes"
-msgstr "Jah"
-
-#: openbox/actions/execute.c:133
-msgid "Execute"
-msgstr "Käivita"
-
-#: openbox/actions/execute.c:142
-#, c-format
-msgid "Failed to convert the path \"%s\" from utf8"
-msgstr "Raja \"%s\" ümberkodeerimine UTF8-st ebaõnnestus"
-
-#: openbox/actions/exit.c:52 openbox/actions/session.c:64 openbox/client.c:3465
-msgid "Cancel"
-msgstr "Katkesta"
-
-#: openbox/actions/exit.c:53
-msgid "Exit"
-msgstr "Välju"
-
-#: openbox/actions/exit.c:56
-msgid "Are you sure you want to exit Waybox?"
-msgstr "Kas oled kindel, et soovid OpenBoxist väljuda?"
-
-#: openbox/actions/exit.c:57
-msgid "Exit Waybox"
-msgstr "Välju Waybox-st"
-
-#. TRANSLATORS: Don't translate the word "SessionLogout" as it's the
-#. name of the action you write in rc.xml
-#: openbox/actions/session.c:43
-msgid ""
-"The SessionLogout action is not available since Waybox was built without "
-"session management support"
-msgstr ""
-
-#: openbox/actions/session.c:65 openbox/actions/session.c:70
-msgid "Log Out"
-msgstr "Logi välja"
-
-#: openbox/actions/session.c:69
-msgid "Are you sure you want to log out?"
-msgstr "Kas oled kindel, et soovid välja logida?"
-
-#: openbox/client.c:2012
-msgid "Unnamed Window"
-msgstr "Nimetu aken"
-
-#: openbox/client.c:2026 openbox/client.c:2058
-msgid "Killing..."
-msgstr "Tapan..."
-
-#: openbox/client.c:3462
-msgid "Disconnect"
-msgstr "Ühenda lahti"
-
-#: openbox/client_list_combined_menu.c:87 openbox/client_list_menu.c:91
-msgid "Go there..."
-msgstr "Mine sinna..."
-
-#: openbox/client_list_combined_menu.c:94
-msgid "Manage desktops"
-msgstr "Halda töölaudu"
-
-#: openbox/client_list_combined_menu.c:95 openbox/client_list_menu.c:155
-msgid "_Add new desktop"
-msgstr "_Lisa uus töölaud"
-
-#: openbox/client_list_combined_menu.c:96 openbox/client_list_menu.c:156
-msgid "_Remove last desktop"
-msgstr "_Eemalda viimane töölaud"
-
-#: openbox/client_list_combined_menu.c:149
-msgid "Windows"
-msgstr "Aknad"
-
-#: openbox/client_list_menu.c:203
-msgid "Desktops"
-msgstr "Töölauad"
-
-#: openbox/client_menu.c:258
-msgid "All desktops"
-msgstr "Kõik töölauad"
-
-#: openbox/client_menu.c:370
-msgid "_Layer"
-msgstr "_Kiht"
-
-#: openbox/client_menu.c:375
-msgid "Always on _top"
-msgstr "Aken teiste _peal"
-
-#: openbox/client_menu.c:376
-msgid "_Normal"
-msgstr "_Normaalne"
-
-#: openbox/client_menu.c:377
-msgid "Always on _bottom"
-msgstr "Aken teiste _all"
-
-#: openbox/client_menu.c:379
-msgid "_Send to desktop"
-msgstr "_Saada töölauale"
-
-#: openbox/client_menu.c:383
-msgid "Client menu"
-msgstr "Kliendi menüü"
-
-#: openbox/client_menu.c:393
-msgid "R_estore"
-msgstr "_Taasta"
-
-#: openbox/client_menu.c:397
-msgid "_Move"
-msgstr "_Liiguta"
-
-#: openbox/client_menu.c:399
-msgid "Resi_ze"
-msgstr "Muuda _suurust"
-
-#: openbox/client_menu.c:401
-msgid "Ico_nify"
-msgstr "Muuda _ikooniks"
-
-#: openbox/client_menu.c:405
-msgid "Ma_ximize"
-msgstr "Ma_ksimeeri"
-
-#: openbox/client_menu.c:409
-msgid "_Roll up/down"
-msgstr "_Rulli üles/alla"
-
-#: openbox/client_menu.c:411
-msgid "Un/_Decorate"
-msgstr "Äär_ed sisse/välja"
-
-#: openbox/client_menu.c:415
-msgid "_Close"
-msgstr "S_ulge"
-
-#: openbox/config.c:781
-#, c-format
-msgid "Invalid button \"%s\" specified in config file"
-msgstr "Vigane nupp \"%s\" määratud seadistuste failis"
-
-#: openbox/config.c:956
-msgid ""
-"Waybox was compiled without image loading support. Icons in menus will not "
-"be loaded."
-msgstr ""
-
-#: openbox/keyboard.c:157
-msgid "Conflict with key binding in config file"
-msgstr "Konflikt kiirklahviga seadistuste failis"
-
-#: openbox/menu.c:102 openbox/menu.c:110
-#, c-format
-msgid "Unable to find a valid menu file \"%s\""
-msgstr "Ei suudetud leida kehtivat menüüfaili \"%s\""
-
-#: openbox/menu.c:170
-#, c-format
-msgid "Failed to execute command for pipe-menu \"%s\": %s"
-msgstr "Ei suudetud käivitada torumenüü \"%s\" käsku: %s"
-
-#: openbox/menu.c:184
-#, c-format
-msgid "Invalid output from pipe-menu \"%s\""
-msgstr "Vigane väljund torumenüüst \"%s\""
-
-#: openbox/menu.c:197
-#, c-format
-msgid "Attempted to access menu \"%s\" but it does not exist"
-msgstr "Üritati ligi pääseda menüüle \"%s\", aga seda pole olemas"
-
-#: openbox/menu.c:367 openbox/menu.c:368
-msgid "More..."
-msgstr "Rohkem..."
-
-#: openbox/mouse.c:373
-#, c-format
-msgid "Invalid button \"%s\" in mouse binding"
-msgstr "Vigane nupp \"%s\" hiire kiirklahvides"
-
-#: openbox/mouse.c:379
-#, c-format
-msgid "Invalid context \"%s\" in mouse binding"
-msgstr "Vigane kontekst \"%s\" hiire kiirklahvides"
-
-#: openbox/openbox.c:133
-#, c-format
-msgid "Unable to change to home directory \"%s\": %s"
-msgstr "Ei suudetud siseneda kodukataloogi \"%s\": %s"
-
-#: openbox/openbox.c:263
-msgid "Unable to find a valid config file, using some simple defaults"
-msgstr ""
-"Kehtiva seadistuste faili leidmine ebaõnnestus, kasutatakse lihtsaid "
-"vaikimisi seadeid"
-
-#: openbox/openbox.c:297
-msgid "Unable to load a theme."
-msgstr "Teema laadimine ebaõnnestus."
-
-#: openbox/openbox.c:377
-#, c-format
-msgid ""
-"One or more XML syntax errors were found while parsing the Waybox "
-"configuration files.  See stdout for more information.  The last error seen "
-"was in file \"%s\" line %d, with message: %s"
-msgstr ""
-"Üks või enam XML süntaki viga leiti Wayboxi seadistuse faili parsides. "
-"Rohkem infot leiad stdout-st. Viimane viga oli failis \"%s\", real %d ja "
-"sõnum oli: %s"
-
-#: openbox/openbox.c:379
-msgid "Waybox Syntax Error"
-msgstr "Wayboxi süntaksi viga"
-
-#: openbox/openbox.c:379
-msgid "Close"
-msgstr "Sulge"
-
-#: openbox/openbox.c:448
-#, c-format
-msgid "Restart failed to execute new executable \"%s\": %s"
-msgstr "Taaskäivitusel ebaõnnestus uue käivitusfaili \"%s\" käivitamine: %s"
-
-#: openbox/openbox.c:518 openbox/openbox.c:520
-msgid "Copyright (c)"
-msgstr "Autoriõigused (c)"
-
-#: openbox/openbox.c:529
-msgid "Syntax: openbox [options]\n"
-msgstr "Süntaks: openbox [seaded]\n"
-
-#: openbox/openbox.c:530
 msgid ""
 "\n"
 "Options:\n"
@@ -273,134 +33,312 @@ msgstr ""
 "\n"
 "Seaded:\n"
 
-#: openbox/openbox.c:531
+#: ../waybox/main.c:10
+#, c-format
 msgid "  --help              Display this help and exit\n"
 msgstr "  --help              Selle abi kuvamine ja väljumine\n"
 
-#: openbox/openbox.c:532
+#: ../waybox/main.c:11
+#, c-format
 msgid "  --version           Display the version and exit\n"
 msgstr "  --version           Versiooni kuvamine ja väljumine\n"
 
-#. TRANSLATORS: if you translate "FILE" here, make sure to keep the "Specify..."
-#. aligned still, if you have to, make a new line with \n and 22 spaces. It's
-#. fine to leave it as FILE though.
-#: openbox/openbox.c:537
+#: ../waybox/main.c:13
+#, c-format
 msgid "  --config-file FILE  Specify the path to the config file to use\n"
 msgstr "  --config-file FAIL Määra kasutatava seadistuste faili teekond\n"
 
-#: openbox/openbox.c:538
+#: ../waybox/main.c:14
+#, c-format
 msgid "  --sm-disable        Disable connection to the session manager\n"
 msgstr "  --sm-disable        Seansihalduriga ühenduse keelamine\n"
 
-#: openbox/openbox.c:543
-msgid ""
-"\n"
-"Debugging options:\n"
-msgstr ""
-"\n"
-"Silumise seaded:\n"
-
-#: openbox/openbox.c:544
-msgid "  --sync              Run in synchronous mode\n"
-msgstr "  --sync              Sünkroonselt jooksutamine\n"
-
-#: openbox/openbox.c:545
-msgid "  --debug             Display debugging output\n"
-msgstr "  --debug             Silumisväljundi kuvamine\n"
-
-#: openbox/openbox.c:546
-msgid "  --debug-focus       Display debugging output for focus handling\n"
-msgstr "  --debug-focus       Fookusekäsitluse siluriväljundi kuvamine\n"
-
-#: openbox/openbox.c:548
+#: ../waybox/main.c:15
+#, c-format
 msgid "  --startup CMD       Run CMD after starting\n"
 msgstr ""
 
-#: openbox/openbox.c:551
-msgid "  --debug-session     Display debugging output for session management\n"
-msgstr ""
+#: ../waybox/main.c:16
+#, c-format
+msgid "  --debug             Display debugging output\n"
+msgstr "  --debug             Silumisväljundi kuvamine\n"
 
-#: openbox/openbox.c:548
+#: ../waybox/main.c:17
 #, c-format
 msgid ""
 "\n"
-"Please report bugs at %s\n"
+"Other Openbox options aren't accepted, mostly due to them being nonsensical "
+"on Wayland.\n"
 msgstr ""
-"\n"
-"Palun teata vigadest siia %s\n"
 
-#: openbox/openbox.c:617
+#: ../waybox/main.c:40 ../waybox/main.c:52 ../waybox/main.c:57
+#, c-format
 msgid "%s requires an argument\n"
 msgstr "%s nõuab argumenti\n"
 
-#: openbox/openbox.c:660
+#: ../waybox/main.c:55
 #, c-format
-msgid "Invalid command line argument \"%s\"\n"
-msgstr "Vigane käsurea argument \"%s\"\n"
-
-#. TRANSLATORS: If you need to specify a different order of the
-#. arguments, you can use %1$d for the first one and %2$d for the
-#. second one. For example,
-#. "The current session has %2$d desktops, but Waybox is configured for %1$d ..."
-#: openbox/screen.c:412
-#, c-format
-msgid ""
-"Waybox is configured for %d desktop, but the current session has %d.  "
-"Overriding the Waybox configuration."
-msgid_plural ""
-"Waybox is configured for %d desktops, but the current session has %d.  "
-"Overriding the Waybox configuration."
-msgstr[0] ""
-"Waybox on seadistatud %d töölauale, aga aktiivsel seansil on %d. Tühistan "
-"Wayboxi seadistuse."
-msgstr[1] ""
-"Waybox on seadistatud %d töölauale, aga aktiivsel seansil on %d. Tühistan "
-"Wayboxi seadistuse."
-
-#: openbox/screen.c:1180
-#, c-format
-msgid "desktop %i"
-msgstr "töölaud %i"
-
-#: openbox/session.c:104
-#, fuzzy, c-format
-msgid "Unable to make directory \"%s\": %s"
-msgstr "Kausta '%s' tegemine ebaõnnestus: %s"
-
-#: openbox/session.c:466
-#, fuzzy, c-format
-msgid "Unable to save the session to \"%s\": %s"
-msgstr "Ei suudetud siseneda kodukataloogi \"%s\": %s"
-
-#: openbox/session.c:605
-#, c-format
-msgid "Error while saving the session to \"%s\": %s"
+msgid "%s hasn't been implemented yet.\n"
 msgstr ""
 
-#: openbox/session.c:842
-msgid "Not connected to a session manager"
+#: ../waybox/main.c:69
+msgid "Successfully created backend"
 msgstr ""
 
-#: openbox/startupnotify.c:243
-#, c-format
-msgid "Running %s"
-msgstr "Jooksev %s"
+#: ../waybox/main.c:71
+msgid "Failed to create backend"
+msgstr ""
 
-#: openbox/translate.c:59
-#, c-format
-msgid "Invalid modifier key \"%s\" in key/mouse binding"
-msgstr "Vigane muutujaklahv \"%s\" hiire/klaviatuuri kiirklahvides"
+#: ../waybox/main.c:76
+msgid "Successfully started server"
+msgstr ""
 
-#: openbox/translate.c:138
-#, c-format
-msgid "Invalid key code \"%s\" in key binding"
-msgstr "Vigane klahvikood \"%s\" kiirklahvil"
+#: ../waybox/main.c:78
+msgid "Failed to start server"
+msgstr ""
 
-#: openbox/translate.c:145
 #, c-format
-msgid "Invalid key name \"%s\" in key binding"
-msgstr "Vigane klahvinimi \"%s\" kiirklahvil"
+#~ msgid "Invalid action \"%s\" requested. No such action exists."
+#~ msgstr "Taotleti kehtetut käsklust \"%s\". Sellist käsklust pole olemas."
 
-#: openbox/prompt.c:200
-msgid "OK"
-msgstr "Sobib"
+#~ msgid "No"
+#~ msgstr "Ei"
+
+#~ msgid "Yes"
+#~ msgstr "Jah"
+
+#~ msgid "Execute"
+#~ msgstr "Käivita"
+
+#, c-format
+#~ msgid "Failed to convert the path \"%s\" from utf8"
+#~ msgstr "Raja \"%s\" ümberkodeerimine UTF8-st ebaõnnestus"
+
+#~ msgid "Cancel"
+#~ msgstr "Katkesta"
+
+#~ msgid "Exit"
+#~ msgstr "Välju"
+
+#~ msgid "Are you sure you want to exit Waybox?"
+#~ msgstr "Kas oled kindel, et soovid OpenBoxist väljuda?"
+
+#~ msgid "Exit Waybox"
+#~ msgstr "Välju Waybox-st"
+
+#~ msgid "Log Out"
+#~ msgstr "Logi välja"
+
+#~ msgid "Are you sure you want to log out?"
+#~ msgstr "Kas oled kindel, et soovid välja logida?"
+
+#~ msgid "Unnamed Window"
+#~ msgstr "Nimetu aken"
+
+#~ msgid "Killing..."
+#~ msgstr "Tapan..."
+
+#~ msgid "Disconnect"
+#~ msgstr "Ühenda lahti"
+
+#~ msgid "Go there..."
+#~ msgstr "Mine sinna..."
+
+#~ msgid "Manage desktops"
+#~ msgstr "Halda töölaudu"
+
+#~ msgid "_Add new desktop"
+#~ msgstr "_Lisa uus töölaud"
+
+#~ msgid "_Remove last desktop"
+#~ msgstr "_Eemalda viimane töölaud"
+
+#~ msgid "Windows"
+#~ msgstr "Aknad"
+
+#~ msgid "Desktops"
+#~ msgstr "Töölauad"
+
+#~ msgid "All desktops"
+#~ msgstr "Kõik töölauad"
+
+#~ msgid "_Layer"
+#~ msgstr "_Kiht"
+
+#~ msgid "Always on _top"
+#~ msgstr "Aken teiste _peal"
+
+#~ msgid "_Normal"
+#~ msgstr "_Normaalne"
+
+#~ msgid "Always on _bottom"
+#~ msgstr "Aken teiste _all"
+
+#~ msgid "_Send to desktop"
+#~ msgstr "_Saada töölauale"
+
+#~ msgid "Client menu"
+#~ msgstr "Kliendi menüü"
+
+#~ msgid "R_estore"
+#~ msgstr "_Taasta"
+
+#~ msgid "_Move"
+#~ msgstr "_Liiguta"
+
+#~ msgid "Resi_ze"
+#~ msgstr "Muuda _suurust"
+
+#~ msgid "Ico_nify"
+#~ msgstr "Muuda _ikooniks"
+
+#~ msgid "Ma_ximize"
+#~ msgstr "Ma_ksimeeri"
+
+#~ msgid "_Roll up/down"
+#~ msgstr "_Rulli üles/alla"
+
+#~ msgid "Un/_Decorate"
+#~ msgstr "Äär_ed sisse/välja"
+
+#~ msgid "_Close"
+#~ msgstr "S_ulge"
+
+#, c-format
+#~ msgid "Invalid button \"%s\" specified in config file"
+#~ msgstr "Vigane nupp \"%s\" määratud seadistuste failis"
+
+#~ msgid "Conflict with key binding in config file"
+#~ msgstr "Konflikt kiirklahviga seadistuste failis"
+
+#, c-format
+#~ msgid "Unable to find a valid menu file \"%s\""
+#~ msgstr "Ei suudetud leida kehtivat menüüfaili \"%s\""
+
+#, c-format
+#~ msgid "Failed to execute command for pipe-menu \"%s\": %s"
+#~ msgstr "Ei suudetud käivitada torumenüü \"%s\" käsku: %s"
+
+#, c-format
+#~ msgid "Invalid output from pipe-menu \"%s\""
+#~ msgstr "Vigane väljund torumenüüst \"%s\""
+
+#, c-format
+#~ msgid "Attempted to access menu \"%s\" but it does not exist"
+#~ msgstr "Üritati ligi pääseda menüüle \"%s\", aga seda pole olemas"
+
+#~ msgid "More..."
+#~ msgstr "Rohkem..."
+
+#, c-format
+#~ msgid "Invalid button \"%s\" in mouse binding"
+#~ msgstr "Vigane nupp \"%s\" hiire kiirklahvides"
+
+#, c-format
+#~ msgid "Invalid context \"%s\" in mouse binding"
+#~ msgstr "Vigane kontekst \"%s\" hiire kiirklahvides"
+
+#, c-format
+#~ msgid "Unable to change to home directory \"%s\": %s"
+#~ msgstr "Ei suudetud siseneda kodukataloogi \"%s\": %s"
+
+#~ msgid "Unable to find a valid config file, using some simple defaults"
+#~ msgstr ""
+#~ "Kehtiva seadistuste faili leidmine ebaõnnestus, kasutatakse lihtsaid "
+#~ "vaikimisi seadeid"
+
+#~ msgid "Unable to load a theme."
+#~ msgstr "Teema laadimine ebaõnnestus."
+
+#, c-format
+#~ msgid ""
+#~ "One or more XML syntax errors were found while parsing the Waybox "
+#~ "configuration files.  See stdout for more information.  The last error "
+#~ "seen was in file \"%s\" line %d, with message: %s"
+#~ msgstr ""
+#~ "Üks või enam XML süntaki viga leiti Wayboxi seadistuse faili parsides. "
+#~ "Rohkem infot leiad stdout-st. Viimane viga oli failis \"%s\", real %d ja "
+#~ "sõnum oli: %s"
+
+#~ msgid "Waybox Syntax Error"
+#~ msgstr "Wayboxi süntaksi viga"
+
+#~ msgid "Close"
+#~ msgstr "Sulge"
+
+#, c-format
+#~ msgid "Restart failed to execute new executable \"%s\": %s"
+#~ msgstr "Taaskäivitusel ebaõnnestus uue käivitusfaili \"%s\" käivitamine: %s"
+
+#~ msgid "Copyright (c)"
+#~ msgstr "Autoriõigused (c)"
+
+#~ msgid ""
+#~ "\n"
+#~ "Debugging options:\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Silumise seaded:\n"
+
+#~ msgid "  --sync              Run in synchronous mode\n"
+#~ msgstr "  --sync              Sünkroonselt jooksutamine\n"
+
+#~ msgid "  --debug-focus       Display debugging output for focus handling\n"
+#~ msgstr "  --debug-focus       Fookusekäsitluse siluriväljundi kuvamine\n"
+
+#, c-format
+#~ msgid ""
+#~ "\n"
+#~ "Please report bugs at %s\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Palun teata vigadest siia %s\n"
+
+#, c-format
+#~ msgid "Invalid command line argument \"%s\"\n"
+#~ msgstr "Vigane käsurea argument \"%s\"\n"
+
+#, c-format
+#~ msgid ""
+#~ "Waybox is configured for %d desktop, but the current session has %d.  "
+#~ "Overriding the Waybox configuration."
+#~ msgid_plural ""
+#~ "Waybox is configured for %d desktops, but the current session has %d.  "
+#~ "Overriding the Waybox configuration."
+#~ msgstr[0] ""
+#~ "Waybox on seadistatud %d töölauale, aga aktiivsel seansil on %d. Tühistan "
+#~ "Wayboxi seadistuse."
+#~ msgstr[1] ""
+#~ "Waybox on seadistatud %d töölauale, aga aktiivsel seansil on %d. Tühistan "
+#~ "Wayboxi seadistuse."
+
+#, c-format
+#~ msgid "desktop %i"
+#~ msgstr "töölaud %i"
+
+#, fuzzy, c-format
+#~ msgid "Unable to make directory \"%s\": %s"
+#~ msgstr "Kausta '%s' tegemine ebaõnnestus: %s"
+
+#, fuzzy, c-format
+#~ msgid "Unable to save the session to \"%s\": %s"
+#~ msgstr "Ei suudetud siseneda kodukataloogi \"%s\": %s"
+
+#, c-format
+#~ msgid "Running %s"
+#~ msgstr "Jooksev %s"
+
+#, c-format
+#~ msgid "Invalid modifier key \"%s\" in key/mouse binding"
+#~ msgstr "Vigane muutujaklahv \"%s\" hiire/klaviatuuri kiirklahvides"
+
+#, c-format
+#~ msgid "Invalid key code \"%s\" in key binding"
+#~ msgstr "Vigane klahvikood \"%s\" kiirklahvil"
+
+#, c-format
+#~ msgid "Invalid key name \"%s\" in key binding"
+#~ msgstr "Vigane klahvinimi \"%s\" kiirklahvil"
+
+#~ msgid "OK"
+#~ msgstr "Sobib"
