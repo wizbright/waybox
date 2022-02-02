@@ -1,4 +1,5 @@
 wb_src = files(
+  'config.c',
   'cursor.c',
   'decoration.c',
   'layer_shell.c',
@@ -10,6 +11,7 @@ wb_src = files(
   )
 
 wb_dep = [
+  libxml2,
   wayland_server,
   wlroots,
   xkbcommon,

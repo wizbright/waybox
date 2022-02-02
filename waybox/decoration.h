@@ -13,7 +13,6 @@ struct wb_decoration {
 	struct wl_listener toplevel_decoration_destroy;
 	struct wl_listener request_mode;
 	struct wl_listener mode_destroy;
-	int yes;
 };
 
 void init_xdg_decoration(struct wb_server *server);

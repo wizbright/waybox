@@ -42,6 +42,7 @@ bool wb_create_backend(struct wb_server* server) {
 }
 
 bool wb_start_server(struct wb_server* server) {
+	init_config(server);
 	wl_list_init(&server->outputs);
 
 	server->new_output.notify = new_output_notify;
@@ -80,6 +81,7 @@ bool wb_terminate(struct wb_server* server) {
 	wb_cursor_destroy(server->cursor);
 	wl_list_remove(&server->new_xdg_decoration.link); /* wb_decoration_destroy */
 	wb_seat_destroy(server->seat);
+	deinit_config(server->config);
 	wl_display_destroy_clients(server->wl_display);
 	wl_display_destroy(server->wl_display);
 	wlr_output_layout_destroy(server->output_layout);

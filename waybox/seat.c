@@ -8,45 +8,63 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 	 * Here we handle compositor keybindings. This is when the compositor is
 	 * processing keys, rather than passing them on to the client for its own
 	 * processing.
+	 *
+	 * Returns true if the keybinding is handled, false to send it to the
+	 * client.
 	 */
 
-	if (modifiers & WLR_MODIFIER_CTRL && sym == XKB_KEY_Escape) {
-		wl_display_terminate(server->wl_display);
-	} else if (modifiers & WLR_MODIFIER_ALT && sym == XKB_KEY_Tab) {
-		/* Cycle to the next view */
-		if (wl_list_length(&server->views) < 2) {
-			return false;
+	struct wb_key_binding *key_binding;
+	wl_list_for_each(key_binding, &server->config->key_bindings, link) {
+		if (sym == key_binding->sym && modifiers == key_binding->modifiers)
+		{
+			if ((strcmp("NextWindow", key_binding->action) == 0)) {
+				/* Cycle to the next view */
+				if (wl_list_length(&server->views) < 2) {
+					return false;
+				}
+				struct wb_view *current_view = wl_container_of(
+					server->views.prev, current_view, link);
+				struct wb_view *prev_view = wl_container_of(
+					server->views.next, prev_view, link);
+				focus_view(prev_view, prev_view->xdg_surface->surface);
+				/* Move the current view to the beginning of the list */
+				wl_list_remove(&current_view->link);
+				wl_list_insert(&server->views, &current_view->link);
+				return true;
+			}
+			else if ((strcmp("PreviousWindow", key_binding->action) == 0)) {
+				/* Cycle to the previous view */
+				if (wl_list_length(&server->views) < 2) {
+					return false;
+				}
+				struct wb_view *current_view = wl_container_of(
+					server->views.next, current_view, link);
+				struct wb_view *next_view = wl_container_of(
+					current_view->link.next, next_view, link);
+				focus_view(next_view, next_view->xdg_surface->surface);
+				/* Move the previous view to the end of the list */
+				wl_list_remove(&current_view->link);
+				wl_list_insert(server->views.prev, &current_view->link);
+				return true;
+			}
+			else if ((strcmp("Close", key_binding->action) == 0)) {
+				struct wb_view *current_view = wl_container_of(
+						server->views.next, current_view, link);
+				wlr_xdg_toplevel_send_close(current_view->xdg_surface);
+			}
+			else if ((strcmp("Execute", key_binding->action) == 0)) {
+				if (fork() == 0) {
+					execl("/bin/sh", "/bin/sh", "-c", key_binding->cmd, (char *) NULL);
+				}
+				return true;
+			}
+			else if ((strcmp("Exit", key_binding->action) == 0)) {
+					wl_display_terminate(server->wl_display);
+					return true;
+			}
 		}
-		struct wb_view *current_view = wl_container_of(
-			server->views.next, current_view, link);
-		struct wb_view *next_view = wl_container_of(
-			current_view->link.next, next_view, link);
-		focus_view(next_view, next_view->xdg_surface->surface);
-		/* Move the previous view to the end of the list */
-		wl_list_remove(&current_view->link);
-		wl_list_insert(server->views.prev, &current_view->link);
-	} else if ((modifiers & (WLR_MODIFIER_ALT|WLR_MODIFIER_SHIFT))
-			&& sym == XKB_KEY_ISO_Left_Tab) {
-		/* Cycle to the previous view */
-		if (wl_list_length(&server->views) < 2) {
-			return false;
-		}
-		struct wb_view *current_view = wl_container_of(
-			server->views.prev, current_view, link);
-		struct wb_view *prev_view = wl_container_of(
-			server->views.next, prev_view, link);
-		focus_view(prev_view, prev_view->xdg_surface->surface);
-		/* Move the current view to the beginning of the list */
-		wl_list_remove(&current_view->link);
-		wl_list_insert(&server->views, &current_view->link);
-	} else if (modifiers & WLR_MODIFIER_ALT && sym == XKB_KEY_F2) {
-		if (fork() == 0) {
-			execl("/bin/sh", "/bin/sh", "-c", "(obrun || bemenu-run || synapse || gmrun || gnome-do || dmenu_run) 2>/dev/null", (char *) NULL);
-		}
-	} else {
-		return false;
 	}
-	return true;
+	return false;
 }
 
 static void keyboard_handle_modifiers(
@@ -107,21 +125,38 @@ static void handle_new_keyboard(struct wb_server *server,
 	keyboard->device = device;
 
 	/* We need to prepare an XKB keymap and assign it to the keyboard. */
-	struct xkb_rule_names rules = {
-		.rules = getenv("XKB_DEFAULT_RULES"),
-		.model = getenv("XKB_DEFAULT_MODEL"),
-		.layout = getenv("XKB_DEFAULT_LAYOUT"),
-		.variant = getenv("XKB_DEFAULT_VARIANT"),
-		.options = getenv("XKB_DEFAULT_OPTIONS"),
-	};
+	struct xkb_rule_names rules = {0};
+	if (server->config->keyboard_layout.layout)
+		rules.layout = server->config->keyboard_layout.layout;
+	else
+		rules.layout = getenv("XKB_DEFAULT_LAYOUT");
+	if (server->config->keyboard_layout.model)
+		rules.model = server->config->keyboard_layout.model;
+	else
+		rules.model = getenv("XKB_DEFAULT_MODEL");
+	if (server->config->keyboard_layout.options)
+		rules.options = server->config->keyboard_layout.options;
+	else
+		rules.options = getenv("XKB_DEFAULT_OPTIONS");
+	if (server->config->keyboard_layout.rules)
+		rules.rules = server->config->keyboard_layout.rules;
+	else
+		rules.variant = getenv("XKB_DEFAULT_RULES");
+	if (server->config->keyboard_layout.variant)
+		rules.variant = server->config->keyboard_layout.variant;
+	else
+		rules.variant = getenv("XKB_DEFAULT_VARIANT");
+
 	struct xkb_context *context = xkb_context_new(XKB_CONTEXT_NO_FLAGS);
 	struct xkb_keymap *keymap = xkb_map_new_from_names(context, &rules,
 		XKB_KEYMAP_COMPILE_NO_FLAGS);
 
-	wlr_keyboard_set_keymap(device->keyboard, keymap);
+	if (keymap != NULL) {
+		wlr_keyboard_set_keymap(device->keyboard, keymap);
+		wlr_keyboard_set_repeat_info(device->keyboard, 25, 600);
+	}
 	xkb_keymap_unref(keymap);
 	xkb_context_unref(context);
-	wlr_keyboard_set_repeat_info(device->keyboard, 25, 600);
 
 	/* Here we set up listeners for keyboard events. */
 	keyboard->modifiers.notify = keyboard_handle_modifiers;

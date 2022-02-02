@@ -25,6 +25,7 @@
 #include <locale.h>
 #define _ gettext
 
+#include "config.h"
 #include "waybox/cursor.h"
 #include "decoration.h"
 #include "layer_shell.h"
@@ -39,6 +40,9 @@ struct wb_server {
 	struct wlr_compositor *compositor;
 	struct wlr_output_layout *output_layout;
 	struct wlr_renderer *renderer;
+
+	struct wb_config *config;
+	char *config_file;
 
 	struct wb_cursor *cursor;
 	struct wb_seat *seat;

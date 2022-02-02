@@ -26,6 +26,7 @@ int main(int argc, char **argv) {
 	textdomain(GETTEXT_PACKAGE);
 
 	char *startup_cmd = NULL;
+	struct wb_server server = {0};
 	enum wlr_log_importance debuglevel = WLR_ERROR;
 	if (argc > 1) {
 		int i;
@@ -44,8 +45,13 @@ int main(int argc, char **argv) {
 			} else if (!strcmp("--help", argv[i]) || !strcmp("-h", argv[i])) {
 				show_help(argv[0]);
 				return 0;
-			} else if (!strcmp("--config-file", argv[i]) ||
-					!strcmp("--sm-disable", argv[i])) {
+			} else if (strcmp("--config-file", argv[i]) == 0) {
+				if (i < argc - 1) {
+					server.config_file = argv[i + 1];
+				} else {
+					fprintf(stderr, _("%s requires an argument\n"), argv[i]);
+				}
+			} else if (!strcmp("--sm-disable", argv[i])) {
 				fprintf(stderr, _("%s hasn't been implemented yet.\n"), argv[i]);
 				if (i == argc - 1) {
 					fprintf(stderr, _("%s requires an argument\n"), argv[i]);
@@ -58,7 +64,6 @@ int main(int argc, char **argv) {
 	}
 
 	wlr_log_init(debuglevel, NULL);
-	struct wb_server server = {0};
 
 	if (wb_create_backend(&server)) {
 		wlr_log(WLR_INFO, "%s", _("Successfully created backend"));
