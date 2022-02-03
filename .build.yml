@@ -1,13 +1,20 @@
 image: archlinux
 packages:
+    # Packages needed by Waybox
   - meson
   - wayland
   - wayland-protocols
+  - libxkbcommon
+  - libxml2
+    # Packages needed for wlroots
+  - mesa
   - xorg-server-xwayland
   - xcb-util-image
   - libinput
-  - libxkbcommon
-  - libxml2
+  - libdrm
+  - udev
+  - pixman
+  - seatd
 sources:
   - https://github.com/wizbright/waybox
   - https://gitlab.freedesktop.org/wlroots/wlroots
