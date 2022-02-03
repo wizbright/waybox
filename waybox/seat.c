@@ -3,6 +3,38 @@
 #include "waybox/seat.h"
 #include "waybox/xdg_shell.h"
 
+static bool cycle_views(struct wb_server *server) {
+	/* Cycle to the next view */
+	if (wl_list_length(&server->views) < 2) {
+		return false;
+	}
+	struct wb_view *current_view = wl_container_of(
+		server->views.prev, current_view, link);
+	struct wb_view *prev_view = wl_container_of(
+		server->views.next, prev_view, link);
+	focus_view(current_view, current_view->xdg_surface->surface);
+	/* Move the current view to the beginning of the list */
+	wl_list_remove(&current_view->link);
+	wl_list_insert(&server->views, &current_view->link);
+	return true;
+}
+
+static bool cycle_views_reverse(struct wb_server *server) {
+	/* Cycle to the previous view */
+	if (wl_list_length(&server->views) < 2) {
+		return false;
+	}
+	struct wb_view *current_view = wl_container_of(
+		server->views.next, current_view, link);
+	struct wb_view *next_view = wl_container_of(
+		current_view->link.next, next_view, link);
+	focus_view(next_view, next_view->xdg_surface->surface);
+	/* Move the previous view to the end of the list */
+	wl_list_remove(&current_view->link);
+	wl_list_insert(server->views.prev, &current_view->link);
+	return true;
+}
+
 static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32_t modifiers) {
 	/*
 	 * Here we handle compositor keybindings. This is when the compositor is
@@ -14,43 +46,33 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 	 */
 
 	struct wb_key_binding *key_binding;
+	if (!server->config)
+	{
+		if (modifiers & WLR_MODIFIER_ALT && sym == XKB_KEY_Tab)
+			cycle_views(server);
+		else if (modifiers & (WLR_MODIFIER_ALT|WLR_MODIFIER_SHIFT) &&
+				sym == XKB_KEY_Tab)
+			cycle_views_reverse(server);
+		else if (sym == XKB_KEY_Escape && modifiers & WLR_MODIFIER_CTRL)
+					wl_display_terminate(server->wl_display);
+		else
+			return false;
+		return true;
+	}
 	wl_list_for_each(key_binding, &server->config->key_bindings, link) {
 		if (sym == key_binding->sym && modifiers == key_binding->modifiers)
 		{
 			if ((strcmp("NextWindow", key_binding->action) == 0)) {
-				/* Cycle to the next view */
-				if (wl_list_length(&server->views) < 2) {
-					return false;
-				}
-				struct wb_view *current_view = wl_container_of(
-					server->views.prev, current_view, link);
-				struct wb_view *prev_view = wl_container_of(
-					server->views.next, prev_view, link);
-				focus_view(prev_view, prev_view->xdg_surface->surface);
-				/* Move the current view to the beginning of the list */
-				wl_list_remove(&current_view->link);
-				wl_list_insert(&server->views, &current_view->link);
-				return true;
+				return cycle_views(server);
 			}
 			else if ((strcmp("PreviousWindow", key_binding->action) == 0)) {
-				/* Cycle to the previous view */
-				if (wl_list_length(&server->views) < 2) {
-					return false;
-				}
-				struct wb_view *current_view = wl_container_of(
-					server->views.next, current_view, link);
-				struct wb_view *next_view = wl_container_of(
-					current_view->link.next, next_view, link);
-				focus_view(next_view, next_view->xdg_surface->surface);
-				/* Move the previous view to the end of the list */
-				wl_list_remove(&current_view->link);
-				wl_list_insert(server->views.prev, &current_view->link);
-				return true;
+				return cycle_views_reverse(server);
 			}
 			else if ((strcmp("Close", key_binding->action) == 0)) {
 				struct wb_view *current_view = wl_container_of(
 						server->views.next, current_view, link);
 				wlr_xdg_toplevel_send_close(current_view->xdg_surface);
+				return true;
 			}
 			else if ((strcmp("Execute", key_binding->action) == 0)) {
 				if (fork() == 0) {
@@ -126,23 +148,23 @@ static void handle_new_keyboard(struct wb_server *server,
 
 	/* We need to prepare an XKB keymap and assign it to the keyboard. */
 	struct xkb_rule_names rules = {0};
-	if (server->config->keyboard_layout.layout)
+	if (server->config && server->config->keyboard_layout.layout)
 		rules.layout = server->config->keyboard_layout.layout;
 	else
 		rules.layout = getenv("XKB_DEFAULT_LAYOUT");
-	if (server->config->keyboard_layout.model)
+	if (server->config && server->config->keyboard_layout.model)
 		rules.model = server->config->keyboard_layout.model;
 	else
 		rules.model = getenv("XKB_DEFAULT_MODEL");
-	if (server->config->keyboard_layout.options)
+	if (server->config && server->config->keyboard_layout.options)
 		rules.options = server->config->keyboard_layout.options;
 	else
 		rules.options = getenv("XKB_DEFAULT_OPTIONS");
-	if (server->config->keyboard_layout.rules)
+	if (server->config && server->config->keyboard_layout.rules)
 		rules.rules = server->config->keyboard_layout.rules;
 	else
-		rules.variant = getenv("XKB_DEFAULT_RULES");
-	if (server->config->keyboard_layout.variant)
+		rules.rules = getenv("XKB_DEFAULT_RULES");
+	if (server->config && server->config->keyboard_layout.variant)
 		rules.variant = server->config->keyboard_layout.variant;
 	else
 		rules.variant = getenv("XKB_DEFAULT_VARIANT");

@@ -21,8 +21,7 @@ static char *parse_xpath_expr(char *expr, xmlXPathContextPtr ctxt) {
 	return (char *) ret;
 }
 
-static bool parse_key_bindings(struct wb_config *config, xmlXPathContextPtr ctxt)
-{
+static bool parse_key_bindings(struct wb_config *config, xmlXPathContextPtr ctxt) {
 	/* Get the key bindings */
 	wl_list_init(&config->key_bindings);
 	xmlXPathObjectPtr object = xmlXPathEvalExpression((xmlChar *) "//ob:keyboard/ob:keybind", ctxt);
@@ -92,7 +91,7 @@ static bool parse_key_bindings(struct wb_config *config, xmlXPathContextPtr ctxt
 						{
 							attr = attr->next;
 						}
-						key_bind->action = malloc(sizeof (char) * 64);
+						key_bind->action = malloc(sizeof(char) * 64);
 						strcpy(key_bind->action, (char *) attr->children->content);
 						wlr_log(WLR_INFO, "Registering action %s", (char *) key_bind->action);
 						if (strcmp((char *) key_bind->action, "Execute") != 0)
@@ -104,7 +103,7 @@ static bool parse_key_bindings(struct wb_config *config, xmlXPathContextPtr ctxt
 						/* Bad things can happen if the command is greater than 1024 characters */
 						key_bind->cmd = malloc(sizeof(char) * 1024);
 						strncpy(key_bind->cmd, (char *) cur_node->children->content, 1023);
-						key_bind->cmd[strlen(key_bind->cmd)] = '\0';
+						key_bind->cmd[1023] = '\0';
 						if (key_bind->action)
 							break;
 					}
@@ -118,8 +117,7 @@ static bool parse_key_bindings(struct wb_config *config, xmlXPathContextPtr ctxt
 	return true;
 }
 
-bool init_config(struct wb_server *server)
-{
+bool init_config(struct wb_server *server) {
 	xmlDocPtr doc;
 	if (server->config_file == NULL) {
 		char *xdg_config = getenv("XDG_CONFIG_HOME");
@@ -134,7 +132,7 @@ bool init_config(struct wb_server *server)
 		free(rc_file);
 	} else {
 		wlr_log(WLR_INFO, "Using config file %s", server->config_file);
-		doc = xmlParseFile(server->config_file);
+		doc = xmlReadFile(server->config_file, NULL, XML_PARSE_RECOVER);
 	}
 
 	if (doc == NULL) {
@@ -157,8 +155,7 @@ bool init_config(struct wb_server *server)
 	config->keyboard_layout.options = parse_xpath_expr("//ob:keyboard//ob:layout//ob:options", ctxt);
 	config->keyboard_layout.rules = parse_xpath_expr("//ob:keyboard//ob:layout//ob:rules", ctxt);
 	config->keyboard_layout.variant = parse_xpath_expr("//ob:keyboard//ob:layout//ob:variant", ctxt);
-	if (!parse_key_bindings(config, ctxt))
-	{
+	if (!parse_key_bindings(config, ctxt)) {
 		xmlFreeDoc(doc);
 		return false;
 	}
@@ -171,8 +168,10 @@ bool init_config(struct wb_server *server)
 	return true;
 }
 
-void deinit_config(struct wb_config *config)
-{
+void deinit_config(struct wb_config *config) {
+	if (!config)
+		return;
+
 	/* Free everything allocated in init_config */
 	struct wb_key_binding *key_binding;
 	wl_list_for_each(key_binding, &config->key_bindings, link) {

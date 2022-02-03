@@ -7,6 +7,7 @@ packages:
   - xcb-util-image
   - libinput
   - libxkbcommon
+  - libxml2
 sources:
   - https://github.com/wizbright/waybox
   - https://gitlab.freedesktop.org/wlroots/wlroots
