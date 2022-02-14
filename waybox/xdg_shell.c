@@ -2,7 +2,7 @@
 
 void focus_view(struct wb_view *view, struct wlr_surface *surface) {
 	/* Note: this function only deals with keyboard focus. */
-	if (view == NULL || surface == NULL) {
+	if (view == NULL || surface == NULL || !wlr_surface_is_xdg_surface(surface)) {
 		return;
 	}
 	struct wlr_xdg_surface *xdg_surface = wlr_xdg_surface_from_wlr_surface(surface);
