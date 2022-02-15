@@ -41,6 +41,33 @@ void focus_view(struct wb_view *view, struct wlr_surface *surface) {
 		keyboard->keycodes, keyboard->num_keycodes, &keyboard->modifiers);
 }
 
+static void xdg_surface_ack_configure(struct wl_listener *listener, void *data) {
+	/* Called after the surface is configured */
+	struct wb_view *view = wl_container_of(listener, view, ack_configure);
+
+	/* If there's no decoration, there's no need to change the size and
+	 * cause endless reconfigures. */
+	if (!view->decoration)
+		return;
+
+	if (!view->configured)
+	{
+		/* With client-side decorations, after setting the size, it'll
+		 * return a negative y value, which can be used to determine the
+		 * size of the CSD titlebar. */
+		struct wlr_box geo_box;
+		wlr_xdg_surface_get_geometry(view->xdg_surface, &geo_box);
+		if (geo_box.y < 0)
+		{
+			view->y = geo_box.y * -1;
+			view->configured = true;
+		}
+
+		/* Set size here, so the view->y value will be known */
+		wlr_xdg_toplevel_set_size(view->xdg_surface, geo_box.width - view->x, geo_box.height - view->y);
+	}
+}
+
 static void xdg_surface_map(struct wl_listener *listener, void *data) {
 	/* Called when the surface is mapped, or ready to display on-screen. */
 	struct wb_view *view = wl_container_of(listener, view, map);
@@ -149,6 +176,8 @@ static void handle_new_xdg_surface(struct wl_listener *listener, void *data) {
 	view->xdg_surface = xdg_surface;
 
 	/* Listen to the various events it can emit */
+	view->ack_configure.notify = xdg_surface_ack_configure;
+	wl_signal_add(&xdg_surface->events.ack_configure, &view->ack_configure);
 	view->map.notify = xdg_surface_map;
 	wl_signal_add(&xdg_surface->events.map, &view->map);
 	view->unmap.notify = xdg_surface_unmap;

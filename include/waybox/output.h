@@ -33,12 +33,15 @@ struct wb_view {
 	struct wb_server *server;
 	struct wlr_xdg_surface *xdg_surface;
 
+	struct wlr_xdg_toplevel_decoration_v1 *decoration;
+
+	struct wl_listener ack_configure;
 	struct wl_listener map;
 	struct wl_listener unmap;
 	struct wl_listener destroy;
 	struct wl_listener request_move;
 	struct wl_listener request_resize;
-	bool mapped;
+	bool configured, mapped;
 	int x, y;
 };
 
