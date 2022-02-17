@@ -41,13 +41,13 @@ static void process_cursor_resize(struct wb_server *server) {
 	}
 
 	struct wlr_box geo_box;
-	wlr_xdg_surface_get_geometry(view->xdg_surface, &geo_box);
+	wlr_xdg_surface_get_geometry(view->xdg_toplevel->base, &geo_box);
 	view->x = new_left - geo_box.x;
 	view->y = new_top - geo_box.y;
 
 	int new_width = new_right - new_left;
 	int new_height = new_bottom - new_top;
-	wlr_xdg_toplevel_set_size(view->xdg_surface, new_width, new_height);
+	wlr_xdg_toplevel_set_size(view->xdg_toplevel, new_width, new_height);
 }
 
 static void process_cursor_motion(struct wb_server *server, uint32_t time) {

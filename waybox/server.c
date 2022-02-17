@@ -34,6 +34,7 @@ bool wb_create_backend(struct wb_server* server) {
 
 	server->compositor = wlr_compositor_create(server->wl_display,
 			server->renderer);
+	server->subcompositor = wlr_subcompositor_create(server->wl_display);
 	server->output_layout = wlr_output_layout_create();
 	server->seat = wb_seat_create(server);
 	server->cursor = wb_cursor_create(server);

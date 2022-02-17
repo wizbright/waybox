@@ -31,7 +31,7 @@ struct wb_output {
 struct wb_view {
 	struct wl_list link;
 	struct wb_server *server;
-	struct wlr_xdg_surface *xdg_surface;
+	struct wlr_xdg_toplevel *xdg_toplevel;
 
 	struct wlr_xdg_toplevel_decoration_v1 *decoration;
 

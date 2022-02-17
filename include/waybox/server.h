@@ -18,6 +18,7 @@
 #include <wlr/types/wlr_matrix.h>
 #include <wlr/types/wlr_gamma_control_v1.h>
 #include <wlr/types/wlr_output_layout.h>
+#include <wlr/types/wlr_subcompositor.h>
 #include <wlr/types/wlr_xdg_shell.h>
 #include <wlr/util/log.h>
 
@@ -40,6 +41,7 @@ struct wb_server {
 	struct wlr_compositor *compositor;
 	struct wlr_output_layout *output_layout;
 	struct wlr_renderer *renderer;
+	struct wlr_subcompositor *subcompositor;
 
 	struct wb_config *config;
 	char *config_file;

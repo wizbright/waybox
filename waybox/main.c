@@ -31,18 +31,18 @@ int main(int argc, char **argv) {
 	if (argc > 1) {
 		int i;
 		for (i = 0; i < argc; i++) {
-			if (!strcmp("--debug", argv[i]) || !strcmp("-v", argv[i])) {
+			if (strcmp("--debug", argv[i]) == 0 || strcmp("-v", argv[i]) == 0) {
 				debuglevel = WLR_INFO;
-			} else if ((!strcmp("--startup", argv[i]) || !strcmp("-s", argv[i]))) {
+			} else if (strcmp("--startup", argv[i]) == 0 || strcmp("-s", argv[i]) == 0) {
 				if (i < argc - 1) {
 					startup_cmd = argv[i + 1];
 				} else {
 					fprintf(stderr, _("%s requires an argument\n"), argv[i]);
 				}
-			} else if (!strcmp("--version", argv[i]) || !strcmp("-V", argv[i])) {
+			} else if (strcmp("--version", argv[i]) == 0 || strcmp("-V", argv[i]) == 0) {
 				printf(PACKAGE_NAME " " PACKAGE_VERSION "\n");
 				return 0;
-			} else if (!strcmp("--help", argv[i]) || !strcmp("-h", argv[i])) {
+			} else if (strcmp("--help", argv[i]) == 0 || strcmp("-h", argv[i]) == 0) {
 				show_help(argv[0]);
 				return 0;
 			} else if (strcmp("--config-file", argv[i]) == 0) {
@@ -51,7 +51,7 @@ int main(int argc, char **argv) {
 				} else {
 					fprintf(stderr, _("%s requires an argument\n"), argv[i]);
 				}
-			} else if (!strcmp("--sm-disable", argv[i])) {
+			} else if (strcmp("--sm-disable", argv[i]) == 0) {
 				fprintf(stderr, _("%s hasn't been implemented yet.\n"), argv[i]);
 				if (i == argc - 1) {
 					fprintf(stderr, _("%s requires an argument\n"), argv[i]);

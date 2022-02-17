@@ -201,7 +201,7 @@ void arrange_layers(struct wb_output *output) {
 	{
 		struct wb_view *view =
 			wl_container_of(output->server->views.next, view, link);
-		focus_view(view, view->xdg_surface->surface);
+		focus_view(view, view->xdg_toplevel->base->surface);
 	}
 }
 

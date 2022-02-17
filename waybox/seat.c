@@ -12,7 +12,7 @@ static bool cycle_views(struct wb_server *server) {
 		server->views.prev, current_view, link);
 	struct wb_view *prev_view = wl_container_of(
 		server->views.next, prev_view, link);
-	focus_view(current_view, current_view->xdg_surface->surface);
+	focus_view(current_view, current_view->xdg_toplevel->base->surface);
 	/* Move the current view to the beginning of the list */
 	wl_list_remove(&current_view->link);
 	wl_list_insert(&server->views, &current_view->link);
@@ -28,7 +28,7 @@ static bool cycle_views_reverse(struct wb_server *server) {
 		server->views.next, current_view, link);
 	struct wb_view *next_view = wl_container_of(
 		current_view->link.next, next_view, link);
-	focus_view(next_view, next_view->xdg_surface->surface);
+	focus_view(next_view, next_view->xdg_toplevel->base->surface);
 	/* Move the previous view to the end of the list */
 	wl_list_remove(&current_view->link);
 	wl_list_insert(server->views.prev, &current_view->link);
@@ -71,7 +71,7 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 			else if ((strcmp("Close", key_binding->action) == 0)) {
 				struct wb_view *current_view = wl_container_of(
 						server->views.next, current_view, link);
-				wlr_xdg_toplevel_send_close(current_view->xdg_surface);
+				wlr_xdg_toplevel_send_close(current_view->xdg_toplevel);
 				return true;
 			}
 			else if ((strcmp("Execute", key_binding->action) == 0)) {

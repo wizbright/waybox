@@ -21,7 +21,7 @@ static void render_surface(struct wlr_surface *surface,
 	 * means. You don't have to worry about this, wlroots takes care of it. */
 	struct wlr_texture *texture = wlr_surface_get_texture(surface);
 	if (texture == NULL) {
-		wlr_log(WLR_ERROR, "%s: %s", _("Couldn't get a surface texture"));
+		wlr_log(WLR_ERROR, "%s", _("Couldn't get a surface texture"));
 		return;
 	}
 
@@ -139,7 +139,7 @@ void output_frame_notify(struct wl_listener *listener, void *data) {
 			.when = &now,
 		};
 
-		wlr_xdg_surface_for_each_surface(view->xdg_surface,
+		wlr_xdg_surface_for_each_surface(view->xdg_toplevel->base,
 						render_surface, &rdata);
 	}
 

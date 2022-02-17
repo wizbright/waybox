@@ -24,20 +24,20 @@ void focus_view(struct wb_view *view, struct wlr_surface *surface) {
 		 */
 		struct wlr_xdg_surface *previous = wlr_xdg_surface_from_wlr_surface(
 					seat->keyboard_state.focused_surface);
-		wlr_xdg_toplevel_set_activated(previous, false);
+		wlr_xdg_toplevel_set_activated(previous->toplevel, false);
 	}
 	struct wlr_keyboard *keyboard = wlr_seat_get_keyboard(seat);
 	/* Move the view to the front */
 	wl_list_remove(&view->link);
 	wl_list_insert(&server->views, &view->link);
 	/* Activate the new surface */
-	wlr_xdg_toplevel_set_activated(view->xdg_surface, true);
+	wlr_xdg_toplevel_set_activated(view->xdg_toplevel, true);
 	/*
 	 * Tell the seat to have the keyboard enter this surface. wlroots will keep
 	 * track of this and automatically send key events to the appropriate
 	 * clients without additional work on your part.
 	 */
-	wlr_seat_keyboard_notify_enter(seat, view->xdg_surface->surface,
+	wlr_seat_keyboard_notify_enter(seat, view->xdg_toplevel->base->surface,
 		keyboard->keycodes, keyboard->num_keycodes, &keyboard->modifiers);
 }
 
@@ -56,7 +56,7 @@ static void xdg_surface_ack_configure(struct wl_listener *listener, void *data) 
 		 * return a negative y value, which can be used to determine the
 		 * size of the CSD titlebar. */
 		struct wlr_box geo_box;
-		wlr_xdg_surface_get_geometry(view->xdg_surface, &geo_box);
+		wlr_xdg_surface_get_geometry(view->xdg_toplevel->base, &geo_box);
 		if (geo_box.y < 0)
 		{
 			view->y = geo_box.y * -1;
@@ -64,7 +64,7 @@ static void xdg_surface_ack_configure(struct wl_listener *listener, void *data) 
 		}
 
 		/* Set size here, so the view->y value will be known */
-		wlr_xdg_toplevel_set_size(view->xdg_surface, geo_box.width - view->x, geo_box.height - view->y);
+		wlr_xdg_toplevel_set_size(view->xdg_toplevel, geo_box.width - view->x, geo_box.height - view->y);
 	}
 }
 
@@ -72,7 +72,7 @@ static void xdg_surface_map(struct wl_listener *listener, void *data) {
 	/* Called when the surface is mapped, or ready to display on-screen. */
 	struct wb_view *view = wl_container_of(listener, view, map);
 	view->mapped = true;
-	focus_view(view, view->xdg_surface->surface);
+	focus_view(view, view->xdg_toplevel->base->surface);
 }
 
 static void xdg_surface_unmap(struct wl_listener *listener, void *data) {
@@ -80,21 +80,21 @@ static void xdg_surface_unmap(struct wl_listener *listener, void *data) {
 	struct wb_view *view = wl_container_of(listener, view, unmap);
 	view->mapped = false;
 
-	struct wb_view *current_view = (struct wb_view *) view->server->views.next;
-	struct wb_view *next_view = (struct wb_view *) current_view->link.next;
+	struct wb_view *current_view = wl_container_of(view->server->views.next, current_view, link);
+	struct wb_view *next_view = wl_container_of(current_view->link.next, next_view, link);
 
 	/* If the current view is mapped, focus it. */
 	if (current_view->mapped) {
 		wlr_log(WLR_INFO, "%s: %s", _("Focusing current view"),
-				current_view->xdg_surface->toplevel->app_id);
-		focus_view(current_view, current_view->xdg_surface->surface);
+				current_view->xdg_toplevel->app_id);
+		focus_view(current_view, current_view->xdg_toplevel->base->surface);
 	}
 	/* Otherwise, focus the next view, if any. */
-	else if (next_view->xdg_surface->surface &&
-			wlr_surface_is_xdg_surface(next_view->xdg_surface->surface)) {
+	else if (next_view->xdg_toplevel->base->surface &&
+			wlr_surface_is_xdg_surface(next_view->xdg_toplevel->base->surface)) {
 		wlr_log(WLR_INFO, "%s: %s", _("Focusing next view"),
-				next_view->xdg_surface->toplevel->app_id);
-		focus_view(next_view, next_view->xdg_surface->surface);
+				next_view->xdg_toplevel->app_id);
+		focus_view(next_view, next_view->xdg_toplevel->base->surface);
 	}
 }
 
@@ -113,7 +113,7 @@ static void begin_interactive(struct wb_view *view,
 	struct wb_server *server = view->server;
 	struct wlr_surface *focused_surface =
 		server->seat->seat->pointer_state.focused_surface;
-	if (view->xdg_surface->surface != wlr_surface_get_root_surface(focused_surface)) {
+	if (view->xdg_toplevel->base->surface != wlr_surface_get_root_surface(focused_surface)) {
 		/* Deny move/resize requests from unfocused clients. */
 		return;
 	}
@@ -125,7 +125,7 @@ static void begin_interactive(struct wb_view *view,
 		server->grab_y = server->cursor->cursor->y - view->y;
 	} else if (mode == WB_CURSOR_RESIZE) {
 		struct wlr_box geo_box;
-		wlr_xdg_surface_get_geometry(view->xdg_surface, &geo_box);
+		wlr_xdg_surface_get_geometry(view->xdg_toplevel->base, &geo_box);
 
 		double border_x = (view->x + geo_box.x) + ((edges & WLR_EDGE_RIGHT) ? geo_box.width : 0);
 		double border_y = (view->y + geo_box.y) + ((edges & WLR_EDGE_BOTTOM) ? geo_box.height : 0);
@@ -173,7 +173,7 @@ static void handle_new_xdg_surface(struct wl_listener *listener, void *data) {
 	struct wb_view *view =
 		calloc(1, sizeof(struct wb_view));
 	view->server = server;
-	view->xdg_surface = xdg_surface;
+	view->xdg_toplevel = xdg_surface->toplevel;
 
 	/* Listen to the various events it can emit */
 	view->ack_configure.notify = xdg_surface_ack_configure;
@@ -185,11 +185,10 @@ static void handle_new_xdg_surface(struct wl_listener *listener, void *data) {
 	view->destroy.notify = xdg_surface_destroy;
 	wl_signal_add(&xdg_surface->events.destroy, &view->destroy);
 
-	struct wlr_xdg_toplevel *toplevel = xdg_surface->toplevel;
 	view->request_move.notify = xdg_toplevel_request_move;
-	wl_signal_add(&toplevel->events.request_move, &view->request_move);
+	wl_signal_add(&view->xdg_toplevel->events.request_move, &view->request_move);
 	view->request_resize.notify = xdg_toplevel_request_resize;
-	wl_signal_add(&toplevel->events.request_resize, &view->request_resize);
+	wl_signal_add(&view->xdg_toplevel->events.request_resize, &view->request_resize);
 
 	/* Add it to the list of views. */
 	wl_list_insert(&server->views, &view->link);
@@ -211,7 +210,7 @@ bool view_at(struct wb_view *view,
 	double _sx, _sy;
 	struct wlr_surface *_surface = NULL;
 	_surface = wlr_xdg_surface_surface_at(
-			view->xdg_surface, view_sx, view_sy, &_sx, &_sy);
+			view->xdg_toplevel->base, view_sx, view_sy, &_sx, &_sy);
 
 	if (_surface != NULL) {
 		*sx = _sx;
