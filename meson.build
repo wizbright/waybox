@@ -13,6 +13,7 @@ project(
 
 add_project_arguments(
   '-Wno-unused-parameter',
+  '-DWL_HIDE_DEPRECATED', # Hide the deprecated parts of the Wayland API
   '-DWLR_USE_UNSTABLE',
   '-DPACKAGE_NAME="' + meson.project_name() + '"',
   '-DPACKAGE_VERSION="' + meson.project_version() + '"',
@@ -29,6 +30,12 @@ wayland_server = dependency('wayland-server', version: '>=1.15')
 wayland_protos  = dependency('wayland-protocols', version: '>=1.17')
 xkbcommon  = dependency('xkbcommon')
 
-subdir('po')
+msgfmt = find_program('msgfmt', required: false)
+if msgfmt.found()
+  source_root = meson.current_source_dir()
+  add_project_arguments('-DUSE_NLS=1', language: 'c')
+  subdir('po')
+endif
+
 subdir('protocol')
 subdir('waybox')

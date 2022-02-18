@@ -21,9 +21,11 @@ bool show_help(char *name)
 }
 
 int main(int argc, char **argv) {
+#ifdef USE_NLS
 	setlocale(LC_ALL, "");
 	bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
 	textdomain(GETTEXT_PACKAGE);
+#endif
 
 	char *startup_cmd = NULL;
 	struct wb_server server = {0};

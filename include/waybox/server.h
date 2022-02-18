@@ -22,9 +22,13 @@
 #include <wlr/types/wlr_xdg_shell.h>
 #include <wlr/util/log.h>
 
-#include <libintl.h>
-#include <locale.h>
-#define _ gettext
+#ifdef USE_NLS
+#	include <libintl.h>
+#	include <locale.h>
+#	define _ gettext
+#else
+#	define _(s) (s)
+#endif
 
 #include "config.h"
 #include "waybox/cursor.h"
