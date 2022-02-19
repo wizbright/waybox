@@ -1,3 +1,4 @@
+#include <signal.h>
 #include <stdio.h>
 #include <unistd.h>
 
@@ -20,6 +21,26 @@ bool show_help(char *name)
 	return true;
 }
 
+struct wb_server server = {0};
+void signal_handler(int sig)
+{
+	switch (sig)
+	{
+		case SIGINT:
+		case SIGTERM:
+			wl_display_terminate(server.wl_display);
+			break;
+		case SIGUSR1:
+			/* Openbox uses SIGUSR1 to restart. I'm not sure of the
+			 * difference between restarting and reconfiguring.
+			 */
+		case SIGUSR2:
+			deinit_config(server.config);
+			init_config(&server);
+			break;
+	}
+}
+
 int main(int argc, char **argv) {
 #ifdef USE_NLS
 	setlocale(LC_ALL, "");
@@ -28,7 +49,6 @@ int main(int argc, char **argv) {
 #endif
 
 	char *startup_cmd = NULL;
-	struct wb_server server = {0};
 	enum wlr_log_importance debuglevel = WLR_ERROR;
 	if (argc > 1) {
 		int i;
@@ -88,6 +108,13 @@ int main(int argc, char **argv) {
 		}
 	}
 
+	struct sigaction sa;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_handler = signal_handler;
+	sigaction(SIGINT, &sa, NULL);
+	sigaction(SIGTERM, &sa, NULL);
+	sigaction(SIGUSR1, &sa, NULL);
+	sigaction(SIGUSR2, &sa, NULL);
 	wl_display_run(server.wl_display);
 
 	wb_terminate(&server);

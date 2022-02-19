@@ -1,10 +1,6 @@
 #ifndef _WB_OUTPUT_H
 #define _WB_OUTPUT_H
 
-#ifndef _POSIX_C_SOURCE
-#define _POSIX_C_SOURCE 200112L
-#endif
-
 #include <stdlib.h>
 #include <time.h>
 
