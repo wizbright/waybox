@@ -62,25 +62,29 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 	wl_list_for_each(key_binding, &server->config->key_bindings, link) {
 		if (sym == key_binding->sym && modifiers == key_binding->modifiers)
 		{
-			if ((strcmp("NextWindow", key_binding->action) == 0)) {
-				return cycle_views(server);
-			}
-			else if ((strcmp("PreviousWindow", key_binding->action) == 0)) {
-				return cycle_views_reverse(server);
-			}
-			else if ((strcmp("Close", key_binding->action) == 0)) {
-				struct wb_view *current_view = wl_container_of(
-						server->views.next, current_view, link);
-				wlr_xdg_toplevel_send_close(current_view->xdg_toplevel);
-				return true;
-			}
-			else if ((strcmp("Execute", key_binding->action) == 0)) {
-				if (fork() == 0) {
-					execl("/bin/sh", "/bin/sh", "-c", key_binding->cmd, (char *) NULL);
-				}
-				return true;
-			}
-			else if ((strcmp("Exit", key_binding->action) == 0)) {
+			switch (key_binding->action)
+			{
+				case ACTION_NEXT_WINDOW:
+					return cycle_views(server);
+				case ACTION_PREVIOUS_WINDOW:
+					return cycle_views_reverse(server);
+				case ACTION_CLOSE:
+				{
+					struct wb_view *current_view = wl_container_of(
+							server->views.next, current_view, link);
+					wlr_xdg_toplevel_send_close(current_view->xdg_toplevel);
+					return true;
+				 }
+				case ACTION_EXECUTE:
+					if (fork() == 0) {
+						execl("/bin/sh", "/bin/sh", "-c", key_binding->cmd, (char *) NULL);
+					}
+					return true;
+				case ACTION_RECONFIGURE:
+					deinit_config(server->config);
+					init_config(server);
+					return true;
+				case ACTION_EXIT:
 					wl_display_terminate(server->wl_display);
 					return true;
 			}

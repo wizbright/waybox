@@ -3,6 +3,16 @@
 
 #include "waybox/server.h"
 
+enum action_type {
+	ACTION_FIRST,
+	ACTION_CLOSE,
+	ACTION_EXECUTE,
+	ACTION_EXIT,
+	ACTION_NEXT_WINDOW,
+	ACTION_PREVIOUS_WINDOW,
+	ACTION_RECONFIGURE
+};
+
 struct wb_config {
 	struct wb_server *server;
 	struct {
@@ -20,7 +30,7 @@ struct wb_config {
 struct wb_key_binding {
 	xkb_keysym_t sym;
 	uint32_t modifiers;
-	char *action;
+	enum action_type action;
 	char *cmd;
 	struct wl_list link;
 };

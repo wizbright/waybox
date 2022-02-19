@@ -91,19 +91,27 @@ static bool parse_key_bindings(struct wb_config *config, xmlXPathContextPtr ctxt
 						{
 							attr = attr->next;
 						}
-						key_bind->action = malloc(sizeof(char) * 64);
-						strcpy(key_bind->action, (char *) attr->children->content);
-						wlr_log(WLR_INFO, "Registering action %s", (char *) key_bind->action);
-						if (strcmp((char *) key_bind->action, "Execute") != 0)
+						char *action = (char *) attr->children->content;
+						if (strcmp(action, "Execute") == 0)
+							key_bind->action = ACTION_EXECUTE;
+						else if (strcmp(action, "NextWindow") == 0)
+							key_bind->action = ACTION_NEXT_WINDOW;
+						else if (strcmp(action, "PreviousWindow") == 0)
+							key_bind->action = ACTION_PREVIOUS_WINDOW;
+						else if (strcmp(action, "Close") == 0)
+							key_bind->action = ACTION_CLOSE;
+						else if (strcmp(action, "Exit") == 0)
+							key_bind->action = ACTION_EXIT;
+						else if (strcmp(action, "Reconfigure") == 0)
+							key_bind->action = ACTION_RECONFIGURE;
+						if (key_bind->action != ACTION_EXECUTE)
 							break;
 						cur_node = cur_node->children;
 					}
 					if (strcmp((char *) cur_node->name, "execute") == 0)
 					{
 						/* Bad things can happen if the command is greater than 1024 characters */
-						key_bind->cmd = malloc(sizeof(char) * 1024);
-						strncpy(key_bind->cmd, (char *) cur_node->children->content, 1023);
-						key_bind->cmd[1023] = '\0';
+						key_bind->cmd = (char *) xmlStrdup(cur_node->children->content);
 						if (key_bind->action)
 							break;
 					}
@@ -175,7 +183,6 @@ void deinit_config(struct wb_config *config) {
 	/* Free everything allocated in init_config */
 	struct wb_key_binding *key_binding;
 	wl_list_for_each(key_binding, &config->key_bindings, link) {
-		free(key_binding->action);
 		free(key_binding->cmd);
 		free(key_binding);
 	}
