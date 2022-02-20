@@ -14,8 +14,6 @@ struct wb_output {
 	struct wlr_output *wlr_output;
 	struct wb_server *server;
 
-	struct wlr_xdg_output_manager_v1 *manager;
-
 	struct wl_list layers[4];
 
 	struct wl_listener destroy;

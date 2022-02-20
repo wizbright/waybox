@@ -40,6 +40,7 @@ struct wb_server {
 	struct wlr_backend *backend;
 	struct wlr_compositor *compositor;
 	struct wlr_output_layout *output_layout;
+	struct wlr_xdg_output_manager_v1 *output_manager;
 	struct wlr_renderer *renderer;
 	struct wlr_subcompositor *subcompositor;
 

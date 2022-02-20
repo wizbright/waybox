@@ -200,7 +200,4 @@ void new_output_notify(struct wl_listener *listener, void *data) {
 
 	wlr_output_layout_add_auto(server->output_layout, wlr_output);
 	wlr_output_create_global(wlr_output);
-
-	output->manager = wlr_xdg_output_manager_v1_create(server->wl_display,
-				server->output_layout);
 }

@@ -39,6 +39,9 @@ bool wb_create_backend(struct wb_server* server) {
 	server->seat = wb_seat_create(server);
 	server->cursor = wb_cursor_create(server);
 
+	server->output_manager = wlr_xdg_output_manager_v1_create(server->wl_display,
+				server->output_layout);
+
 	return true;
 }
 
