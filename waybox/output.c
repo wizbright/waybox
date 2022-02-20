@@ -139,8 +139,9 @@ void output_frame_notify(struct wl_listener *listener, void *data) {
 			.when = &now,
 		};
 
-		wlr_xdg_surface_for_each_surface(view->xdg_toplevel->base,
-						render_surface, &rdata);
+		if (view->xdg_toplevel->base->role == WLR_XDG_SURFACE_ROLE_TOPLEVEL)
+			wlr_xdg_surface_for_each_surface(view->xdg_toplevel->base,
+							render_surface, &rdata);
 	}
 
 	render_layer(output, &output->layers[ZWLR_LAYER_SHELL_V1_LAYER_TOP]);

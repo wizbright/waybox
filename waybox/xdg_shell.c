@@ -53,6 +53,9 @@ static void xdg_surface_commit(struct wl_listener *listener, void *data) {
 	/* Called after the surface is committed */
 	struct wb_view *view = wl_container_of(listener, view, surface_commit);
 	struct wlr_xdg_surface *xdg_surface = view->xdg_toplevel->base;
+	if (xdg_surface->role != WLR_XDG_SURFACE_ROLE_TOPLEVEL)
+		return;
+
 	struct wlr_box geo_box = {0};
 	wlr_xdg_surface_get_geometry(xdg_surface, &geo_box);
 	if (geo_box.x < 0 && view->x < 1)
@@ -65,6 +68,9 @@ static void xdg_surface_map(struct wl_listener *listener, void *data) {
 	/* Called when the surface is mapped, or ready to display on-screen. */
 	struct wb_view *view = wl_container_of(listener, view, map);
 	view->mapped = true;
+	if (view->xdg_toplevel->base->role != WLR_XDG_SURFACE_ROLE_TOPLEVEL)
+		return;
+
 	struct wlr_box geo_box = {0};
 	wlr_xdg_surface_get_geometry(view->xdg_toplevel->base, &geo_box);
 #if WLR_CHECK_VERSION(0, 16, 0)
@@ -82,6 +88,8 @@ static void xdg_surface_unmap(struct wl_listener *listener, void *data) {
 
 	struct wb_view *current_view = wl_container_of(view->server->views.next, current_view, link);
 	struct wb_view *next_view = wl_container_of(current_view->link.next, next_view, link);
+	if (current_view->xdg_toplevel->base->role != WLR_XDG_SURFACE_ROLE_TOPLEVEL)
+		return;
 
 	/* If the current view is mapped, focus it. */
 	if (current_view->mapped) {
@@ -101,7 +109,8 @@ static void xdg_surface_unmap(struct wl_listener *listener, void *data) {
 static void xdg_surface_destroy(struct wl_listener *listener, void *data) {
 	/* Called when the surface is destroyed and should never be shown again. */
 	struct wb_view *view = wl_container_of(listener, view, destroy);
-	wl_list_remove(&view->link);
+	if (view->xdg_toplevel->base->role == WLR_XDG_SURFACE_ROLE_TOPLEVEL)
+		wl_list_remove(&view->link);
 	free(view);
 }
 
@@ -194,13 +203,34 @@ static void xdg_toplevel_request_resize(
 	begin_interactive(view, WB_CURSOR_RESIZE, event->edges);
 }
 
+static void handle_new_popup(struct wl_listener *listener, void *data) {
+	struct wlr_xdg_popup *popup = data;
+	struct wb_view *view = wl_container_of(listener, view, new_popup);
+	struct wlr_output_layout *output_layout = view->server->output_layout;
+
+	struct wlr_output *wlr_output = wlr_output_layout_output_at(output_layout, view->x + popup->geometry.x, view->y + popup->geometry.y);
+	struct wlr_box output_box;
+#if WLR_CHECK_VERSION(0, 16, 0)
+	wlr_output_layout_get_box(output_layout, wlr_output, &output_box);
+#else
+	output_box = (*wlr_output_layout_get_box(output_layout, wlr_output));
+#endif
+	struct wlr_box output_toplevel_box = {
+		.x = output_box.x - view->x,
+		.y = output_box.y - view->y,
+		.width = output_box.width,
+		.height = output_box.height,
+	};
+	wlr_xdg_popup_unconstrain_from_box(popup, &output_toplevel_box);
+}
+
 static void handle_new_xdg_surface(struct wl_listener *listener, void *data) {
 	/* This event is raised when wlr_xdg_shell receives a new xdg surface from a
 	 * client, either a toplevel (application window) or popup. */
 	struct wb_server *server =
 		wl_container_of(listener, server, new_xdg_surface);
 	struct wlr_xdg_surface *xdg_surface = data;
-	if (xdg_surface->role != WLR_XDG_SURFACE_ROLE_TOPLEVEL) {
+	if (xdg_surface->role == WLR_XDG_SURFACE_ROLE_NONE) {
 		return;
 	}
 
@@ -223,17 +253,22 @@ static void handle_new_xdg_surface(struct wl_listener *listener, void *data) {
 	wl_signal_add(&xdg_surface->events.unmap, &view->unmap);
 	view->destroy.notify = xdg_surface_destroy;
 	wl_signal_add(&xdg_surface->events.destroy, &view->destroy);
+	view->new_popup.notify = handle_new_popup;
+	wl_signal_add(&xdg_surface->events.new_popup, &view->new_popup);
 
-	struct wlr_xdg_toplevel *toplevel = view->xdg_toplevel;
-	view->request_maximize.notify = xdg_toplevel_request_maximize;
-	wl_signal_add(&toplevel->events.request_maximize, &view->request_maximize);
-	view->request_move.notify = xdg_toplevel_request_move;
-	wl_signal_add(&toplevel->events.request_move, &view->request_move);
-	view->request_resize.notify = xdg_toplevel_request_resize;
-	wl_signal_add(&toplevel->events.request_resize, &view->request_resize);
+	if (xdg_surface->role == WLR_XDG_SURFACE_ROLE_TOPLEVEL)
+	{
+		struct wlr_xdg_toplevel *toplevel = view->xdg_toplevel;
+		view->request_maximize.notify = xdg_toplevel_request_maximize;
+		wl_signal_add(&toplevel->events.request_maximize, &view->request_maximize);
+		view->request_move.notify = xdg_toplevel_request_move;
+		wl_signal_add(&toplevel->events.request_move, &view->request_move);
+		view->request_resize.notify = xdg_toplevel_request_resize;
+		wl_signal_add(&toplevel->events.request_resize, &view->request_resize);
 
-	/* Add it to the list of views. */
-	wl_list_insert(&server->views, &view->link);
+		/* Add it to the list of views. */
+		wl_list_insert(&server->views, &view->link);
+	}
 }
 
 bool view_at(struct wb_view *view,
@@ -251,6 +286,8 @@ bool view_at(struct wb_view *view,
 
 	double _sx, _sy;
 	struct wlr_surface *_surface = NULL;
+	if (view->xdg_toplevel->base->role != WLR_XDG_SURFACE_ROLE_TOPLEVEL)
+		return false;
 	_surface = wlr_xdg_surface_surface_at(
 			view->xdg_toplevel->base, view_sx, view_sy, &_sx, &_sy);
 
