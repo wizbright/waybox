@@ -110,7 +110,6 @@ static bool parse_key_bindings(struct wb_config *config, xmlXPathContextPtr ctxt
 					}
 					if (strcmp((char *) cur_node->name, "execute") == 0)
 					{
-						/* Bad things can happen if the command is greater than 1024 characters */
 						key_bind->cmd = (char *) xmlStrdup(cur_node->children->content);
 						if (key_bind->action)
 							break;
@@ -144,7 +143,7 @@ bool init_config(struct wb_server *server) {
 	}
 
 	if (doc == NULL) {
-		wlr_log(WLR_INFO, "%s", _("Unable to parse XML file"));
+		wlr_log(WLR_ERROR, "%s", _("Unable to parse the configuration file. Consult stderr for more information."));
 		return false;
 	}
 	xmlXPathContextPtr ctxt = xmlXPathNewContext(doc);

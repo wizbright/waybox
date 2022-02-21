@@ -110,6 +110,7 @@ int main(int argc, char **argv) {
 
 	struct sigaction sa;
 	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = SA_RESTART;
 	sa.sa_handler = signal_handler;
 	sigaction(SIGINT, &sa, NULL);
 	sigaction(SIGTERM, &sa, NULL);

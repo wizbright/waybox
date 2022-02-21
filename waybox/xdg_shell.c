@@ -58,10 +58,8 @@ static void xdg_surface_ack_configure(struct wl_listener *listener, void *data) 
 		struct wlr_box geo_box;
 		wlr_xdg_surface_get_geometry(view->xdg_toplevel->base, &geo_box);
 		if (geo_box.y < 0)
-		{
 			view->y = geo_box.y * -1;
-			view->configured = true;
-		}
+		view->configured = view->y > 0;
 
 		/* Set size here, so the view->y value will be known */
 		wlr_xdg_toplevel_set_size(view->xdg_toplevel, geo_box.width - view->x, geo_box.height - view->y);

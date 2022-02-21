@@ -1,3 +1,9 @@
+/*
+ * More or less taken verbatim from wio <https://git.sr.ht/~sircmpwn/wio>, so in
+ * accordance with its MIT license:
+ *
+ * Copyright 2019 Drew DeVault
+ */
 #include <wlr/types/wlr_layer_shell_v1.h>
 #include "waybox/xdg_shell.h"
 
@@ -196,13 +202,7 @@ void arrange_layers(struct wb_output *output) {
 		}
 	}
 
-	/* Focus the topmost layer */
-	if (topmost != NULL)
-	{
-		struct wb_view *view =
-			wl_container_of(output->server->views.next, view, link);
-		focus_view(view, view->xdg_toplevel->base->surface);
-	}
+	/* TODO: Focus topmost layer */
 }
 
 static void handle_output_destroy(struct wl_listener *listener, void *data) {

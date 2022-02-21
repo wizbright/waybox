@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Waybox 0.0.1\n"
 "Report-Msgid-Bugs-To: https://github.com/wizbright/waybox/issues\n"
-"POT-Creation-Date: 2022-02-18 17:31-0500\n"
-"PO-Revision-Date: 2022-02-18 18:05-0500\n"
+"POT-Creation-Date: 2022-02-20 20:16-0500\n"
+"PO-Revision-Date: 2022-02-20 20:21-0500\n"
 "Last-Translator: Volker Ribbert <volker.nospam@netcologne.de>\n"
 "Language-Team:  <de@li.org>\n"
 "Language: de\n"
@@ -30,8 +30,10 @@ msgstr "Kein nodesetval"
 msgid "No nodeset"
 msgstr "Kein nodeset"
 
-msgid "Unable to parse XML file"
-msgstr "Konnte die XML-Datei nicht analisieren"
+msgid ""
+"Unable to parse the configuration file. Consult stderr for more information."
+msgstr ""
+"Kann nicht die Einstullungsdatei analisieren. Für mehr Informationen die Standardfehlerausgabe lesen."
 
 msgid "Couldn't create new context!"
 msgstr "Konnte einen neuen Zusammenhang nicht erstellen"
@@ -116,7 +118,7 @@ msgid "New output device detected"
 msgstr "Neue Ausgabegerät entdeckt"
 
 msgid "Couldn't commit pending frame to output"
-msgstr "Konnte sich nicht an den anstehenden Rahmen an die Ausgabe festlegen"
+msgstr "Konnte sich nicht an den anstehenden Rahmen an die Ausgabe eintragen"
 
 msgid "New keyboard detected"
 msgstr "Neue Tastatur entdeckt"
@@ -147,6 +149,9 @@ msgstr "Fokussiert jetzige Ansicht"
 
 msgid "Focusing next view"
 msgstr "Fokussiert nächste Ansicht"
+
+#~ msgid "Unable to parse XML file"
+#~ msgstr "Konnte die XML-Datei nicht analisieren"
 
 #, c-format
 #~ msgid "Invalid action \"%s\" requested. No such action exists."

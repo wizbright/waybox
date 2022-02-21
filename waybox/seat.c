@@ -29,7 +29,7 @@ static bool cycle_views_reverse(struct wb_server *server) {
 	struct wb_view *next_view = wl_container_of(
 		current_view->link.next, next_view, link);
 	focus_view(next_view, next_view->xdg_toplevel->base->surface);
-	/* Move the previous view to the end of the list */
+	/* Move the current view to after the previous view in the list */
 	wl_list_remove(&current_view->link);
 	wl_list_insert(server->views.prev, &current_view->link);
 	return true;
@@ -45,20 +45,23 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 	 * client.
 	 */
 
-	struct wb_key_binding *key_binding;
 	if (!server->config)
 	{
+		/* Some default key bindings, when the rc.xml file can't be
+		 * parsed. */
 		if (modifiers & WLR_MODIFIER_ALT && sym == XKB_KEY_Tab)
 			cycle_views(server);
 		else if (modifiers & (WLR_MODIFIER_ALT|WLR_MODIFIER_SHIFT) &&
 				sym == XKB_KEY_Tab)
 			cycle_views_reverse(server);
 		else if (sym == XKB_KEY_Escape && modifiers & WLR_MODIFIER_CTRL)
-					wl_display_terminate(server->wl_display);
+			wl_display_terminate(server->wl_display);
 		else
 			return false;
 		return true;
 	}
+
+	struct wb_key_binding *key_binding;
 	wl_list_for_each(key_binding, &server->config->key_bindings, link) {
 		if (sym == key_binding->sym && modifiers == key_binding->modifiers)
 		{
