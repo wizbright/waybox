@@ -78,17 +78,16 @@ static void process_cursor_motion(struct wb_server *server, uint32_t time) {
 				server->cursor->xcursor_manager, "left_ptr", server->cursor->cursor);
 	}
 	if (surface) {
-		bool focus_changed = seat->pointer_state.focused_surface != surface;
 		/*
 		 * "Enter" the surface if necessary. This lets the client know that the
 		 * cursor has entered one of its surfaces.
+		 *
+		 * Note that wlroots will avoid sending duplicate enter/motion events if
+		 * the surface has already has pointer focus or if the client is already
+		 * aware of the coordinates passed.
 		 */
 		wlr_seat_pointer_notify_enter(seat, surface, sx, sy);
-		if (!focus_changed) {
-			/* The enter event contains coordinates, so we only need to notify
-			 * on motion if the focus did not change. */
-			wlr_seat_pointer_notify_motion(seat, time, sx, sy);
-		}
+		wlr_seat_pointer_notify_motion(seat, time, sx, sy);
 	} else {
 		/* Clear pointer focus so future button events and such are not sent to
 		 * the last client to have the cursor over it. */
@@ -158,7 +157,7 @@ static void handle_cursor_frame(struct wl_listener *listener, void *data) {
 static void handle_cursor_request(struct wl_listener *listener, void *data) {
 	struct wb_cursor *cursor = wl_container_of(
 			listener, cursor, request_cursor);
-	/* This event is rasied by the seat when a client provides a cursor image */
+	/* This event is raised by the seat when a client provides a cursor image */
 	struct wlr_seat_pointer_request_set_cursor_event *event = data;
 	struct wlr_seat_client *focused_client =
 		cursor->server->seat->seat->pointer_state.focused_client;

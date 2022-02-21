@@ -161,36 +161,35 @@ static void handle_new_keyboard(struct wb_server *server,
 	keyboard->device = device;
 
 	/* We need to prepare an XKB keymap and assign it to the keyboard. */
-	struct xkb_rule_names rules = {0};
-	if (server->config && server->config->keyboard_layout.layout)
-		rules.layout = server->config->keyboard_layout.layout;
+	struct xkb_rule_names *rules = malloc(sizeof(struct xkb_rule_names));
+	if (server->config && server->config->keyboard_layout.use_config)
+	{
+		if (server->config->keyboard_layout.layout)
+			rules->layout = server->config->keyboard_layout.layout;
+		if (server->config->keyboard_layout.model)
+			rules->model = server->config->keyboard_layout.model;
+		if (server->config->keyboard_layout.options)
+			rules->options = server->config->keyboard_layout.options;
+		if (server->config->keyboard_layout.rules)
+			rules->rules = server->config->keyboard_layout.rules;
+		if (server->config->keyboard_layout.variant)
+			rules->variant = server->config->keyboard_layout.variant;
+	}
 	else
-		rules.layout = getenv("XKB_DEFAULT_LAYOUT");
-	if (server->config && server->config->keyboard_layout.model)
-		rules.model = server->config->keyboard_layout.model;
-	else
-		rules.model = getenv("XKB_DEFAULT_MODEL");
-	if (server->config && server->config->keyboard_layout.options)
-		rules.options = server->config->keyboard_layout.options;
-	else
-		rules.options = getenv("XKB_DEFAULT_OPTIONS");
-	if (server->config && server->config->keyboard_layout.rules)
-		rules.rules = server->config->keyboard_layout.rules;
-	else
-		rules.rules = getenv("XKB_DEFAULT_RULES");
-	if (server->config && server->config->keyboard_layout.variant)
-		rules.variant = server->config->keyboard_layout.variant;
-	else
-		rules.variant = getenv("XKB_DEFAULT_VARIANT");
+		/* If a NULL xkb_rule_names pointer is passed to
+		   xkb_keymap_new_from_names, libxkbcommon will default to reading
+		   the XKB_* env variables. So there's no need to do it ourselves. */
+		rules = NULL;
 
 	struct xkb_context *context = xkb_context_new(XKB_CONTEXT_NO_FLAGS);
-	struct xkb_keymap *keymap = xkb_map_new_from_names(context, &rules,
+	struct xkb_keymap *keymap = xkb_keymap_new_from_names(context, rules,
 		XKB_KEYMAP_COMPILE_NO_FLAGS);
 
 	if (keymap != NULL) {
 		wlr_keyboard_set_keymap(device->keyboard, keymap);
 		wlr_keyboard_set_repeat_info(device->keyboard, 25, 600);
 	}
+	free(rules);
 	xkb_keymap_unref(keymap);
 	xkb_context_unref(context);
 

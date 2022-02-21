@@ -21,6 +21,8 @@ struct wb_config {
 		char *options;
 		char *rules;
 		char *variant;
+
+		bool use_config;
 	} keyboard_layout;
 
 	struct wl_list applications;

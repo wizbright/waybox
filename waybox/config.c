@@ -6,7 +6,7 @@
 static char *parse_xpath_expr(char *expr, xmlXPathContextPtr ctxt) {
 	xmlXPathObjectPtr object = xmlXPathEvalExpression((xmlChar *) expr, ctxt);
 	if (object == NULL) {
-		wlr_log(WLR_INFO, "%s", _("Unable to evaluate expression"));
+		wlr_log(WLR_INFO, "%s: %s", _("Unable to evaluate expression"), expr);
 		xmlXPathFreeContext(ctxt);
 		return(NULL);
 	}
@@ -157,11 +157,16 @@ bool init_config(struct wb_server *server) {
 	}
 
 	struct wb_config *config = calloc(1, sizeof(struct wb_config));
-	config->keyboard_layout.layout = parse_xpath_expr("//ob:keyboard//ob:layout//ob:layout", ctxt);
-	config->keyboard_layout.model = parse_xpath_expr("//ob:keyboard//ob:layout//ob:model", ctxt);
-	config->keyboard_layout.options = parse_xpath_expr("//ob:keyboard//ob:layout//ob:options", ctxt);
-	config->keyboard_layout.rules = parse_xpath_expr("//ob:keyboard//ob:layout//ob:rules", ctxt);
-	config->keyboard_layout.variant = parse_xpath_expr("//ob:keyboard//ob:layout//ob:variant", ctxt);
+	config->keyboard_layout.use_config = parse_xpath_expr("//ob:keyboard//ob:keyboardLayout", ctxt) != NULL;
+
+	if (config->keyboard_layout.use_config)
+	{
+		config->keyboard_layout.layout = parse_xpath_expr("//ob:keyboard//ob:keyboardLayout//ob:layout", ctxt);
+		config->keyboard_layout.model = parse_xpath_expr("//ob:keyboard//ob:keyboardLayout//ob:model", ctxt);
+		config->keyboard_layout.options = parse_xpath_expr("//ob:keyboard//ob:keyboardLayout//ob:options", ctxt);
+		config->keyboard_layout.rules = parse_xpath_expr("//ob:keyboard//ob:keyboardLayout//ob:rules", ctxt);
+		config->keyboard_layout.variant = parse_xpath_expr("//ob:keyboard//ob:keyboardLayout//ob:variant", ctxt);
+	}
 	if (!parse_key_bindings(config, ctxt)) {
 		xmlFreeDoc(doc);
 		return false;

@@ -198,6 +198,14 @@ void new_output_notify(struct wl_listener *listener, void *data) {
 	output->frame.notify = output_frame_notify;
 	wl_signal_add(&wlr_output->events.frame, &output->frame);
 
+	/* Adds this to the output layout. The add_auto function arranges outputs
+	 * from left-to-right in the order they appear. A more sophisticated
+	 * compositor would let the user configure the arrangement of outputs in the
+	 * layout.
+	 *
+	 * The output layout utility automatically adds a wl_output global to the
+	 * display, which Wayland clients can see to find out information about the
+	 * output (such as DPI, scale factor, manufacturer, etc).
+	 */
 	wlr_output_layout_add_auto(server->output_layout, wlr_output);
-	wlr_output_create_global(wlr_output);
 }
