@@ -1,36 +1,19 @@
+# A SourceHut build manifest. See https://man.sr.ht/builds.sr.ht/manifest.md
+# for more information.
+#
 image: archlinux
 packages:
-    # Base packages needed
   - meson
   - wayland
   - wayland-protocols
-  - libxkbcommon
-    # Packages needed by Waybox
-  - libxml2
-    # Packages needed for wlroots
-  - mesa
-  - libdrm
-  - udev
-  - pixman
-  - seatd
-    # Packages needed for wlroots libinput backend
   - libinput
-    # Packages needed for wlroots Xwayland support
+  - libxkbcommon
+  - libxml2
+  - wlroots
   - xorg-server-xwayland
-  - libxcb
-  - xcb-util-renderutil
-  - xcb-util-wm
-  - xcb-util-errors
-  - xcb-util-image
 sources:
   - https://github.com/wizbright/waybox
-  - https://gitlab.freedesktop.org/wlroots/wlroots
 tasks:
-  - wlroots: |
-      cd wlroots
-      meson --prefix=/usr build
-      ninja -C build
-      sudo ninja -C build install
   - setup: |
       cd waybox
       meson build

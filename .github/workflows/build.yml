@@ -1,0 +1,29 @@
+# A GitHub Actions port of the old .build.yml.  This has the advantage of being
+# able to use GitHub actions, contexts, secrets, etc, to do more in the future
+# than merely check whether a build succeeds or fails.  It also allows to see
+# whether builds succeed or fail on forks, which also has its advantages.
+#
+# The disadvantage is that it's less portable than .build.yml, which will work
+# on at least GitHub, GitLab, and SourceHut, where GitHub Actions only work on
+# GitHub.
+#
+name: build
+on: [push, pull_request]
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        container: archlinux:base-devel
+        steps:
+            - name: packages
+              run: |
+                pacman-key --init
+                pacman -Syu --noconfirm
+                pacman -S --noconfirm git meson libxkbcommon libinput libxml2 wayland wayland-protocols wlroots xorg-server-xwayland
+            # actions/checkout@v2 clones the repository
+            - uses: actions/checkout@v2
+            - name: setup
+              run: |
+                meson build
+            - name: build
+              run: |
+                ninja -C build

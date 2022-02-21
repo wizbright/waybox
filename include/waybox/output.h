@@ -26,6 +26,9 @@ struct wb_view {
 	struct wl_list link;
 	struct wb_server *server;
 	struct wlr_xdg_toplevel *xdg_toplevel;
+#if !WLR_CHECK_VERSION(0, 16, 0)
+	struct wlr_xdg_surface *xdg_surface;
+#endif
 
 	struct wlr_xdg_toplevel_decoration_v1 *decoration;
 

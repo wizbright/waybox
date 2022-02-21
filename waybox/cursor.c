@@ -47,7 +47,11 @@ static void process_cursor_resize(struct wb_server *server) {
 
 	int new_width = new_right - new_left;
 	int new_height = new_bottom - new_top;
+#if WLR_CHECK_VERSION(0, 16, 0)
 	wlr_xdg_toplevel_set_size(view->xdg_toplevel, new_width, new_height);
+#else
+	wlr_xdg_toplevel_set_size(view->xdg_surface, new_width, new_height);
+#endif
 }
 
 static void process_cursor_motion(struct wb_server *server, uint32_t time) {

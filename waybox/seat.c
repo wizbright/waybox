@@ -76,7 +76,11 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 					struct wb_view *current_view = wl_container_of(
 							server->views.next, current_view, link);
 					if (wlr_surface_is_xdg_surface(current_view->xdg_toplevel->base->surface))
+#if WLR_CHECK_VERSION(0, 16, 0)
 						wlr_xdg_toplevel_send_close(current_view->xdg_toplevel);
+#else
+						wlr_xdg_toplevel_send_close(current_view->xdg_surface);
+#endif
 					return true;
 				 }
 				case ACTION_EXECUTE:

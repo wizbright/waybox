@@ -24,14 +24,22 @@ void focus_view(struct wb_view *view, struct wlr_surface *surface) {
 		 */
 		struct wlr_xdg_surface *previous = wlr_xdg_surface_from_wlr_surface(
 					seat->keyboard_state.focused_surface);
+#if WLR_CHECK_VERSION(0, 16, 0)
 		wlr_xdg_toplevel_set_activated(previous->toplevel, false);
+#else
+		wlr_xdg_toplevel_set_activated(previous, false);
+#endif
 	}
 	struct wlr_keyboard *keyboard = wlr_seat_get_keyboard(seat);
 	/* Move the view to the front */
 	wl_list_remove(&view->link);
 	wl_list_insert(&server->views, &view->link);
 	/* Activate the new surface */
+#if WLR_CHECK_VERSION(0, 16, 0)
 	wlr_xdg_toplevel_set_activated(view->xdg_toplevel, true);
+#else
+	wlr_xdg_toplevel_set_activated(view->xdg_surface, true);
+#endif
 	/*
 	 * Tell the seat to have the keyboard enter this surface. wlroots will keep
 	 * track of this and automatically send key events to the appropriate
@@ -62,7 +70,11 @@ static void xdg_surface_ack_configure(struct wl_listener *listener, void *data) 
 		view->configured = view->y > 0;
 
 		/* Set size here, so the view->y value will be known */
+#if WLR_CHECK_VERSION(0, 16, 0)
 		wlr_xdg_toplevel_set_size(view->xdg_toplevel, geo_box.width - view->x, geo_box.height - view->y);
+#else
+		wlr_xdg_toplevel_set_size(view->xdg_surface, geo_box.width - view->x, geo_box.height - view->y);
+#endif
 	}
 }
 
@@ -172,6 +184,9 @@ static void handle_new_xdg_surface(struct wl_listener *listener, void *data) {
 		calloc(1, sizeof(struct wb_view));
 	view->server = server;
 	view->xdg_toplevel = xdg_surface->toplevel;
+#if !WLR_CHECK_VERSION(0, 16, 0)
+	view->xdg_surface = view->xdg_toplevel->base;
+#endif
 
 	/* Listen to the various events it can emit */
 	view->ack_configure.notify = xdg_surface_ack_configure;

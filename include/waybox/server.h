@@ -3,6 +3,9 @@
 
 #include <stdio.h>
 
+#include <wlr/version.h>
+#define WLR_CHECK_VERSION(major, minor, micro) (WLR_VERSION_NUM >= ((major << 16) | (minor << 8) | (micro)))
+
 #include <wlr/backend.h>
 #include <wlr/render/allocator.h>
 #include <wlr/render/wlr_renderer.h>
@@ -14,7 +17,9 @@
 #include <wlr/types/wlr_matrix.h>
 #include <wlr/types/wlr_gamma_control_v1.h>
 #include <wlr/types/wlr_output_layout.h>
+#if WLR_CHECK_VERSION(0, 16, 0)
 #include <wlr/types/wlr_subcompositor.h>
+#endif
 #include <wlr/types/wlr_xdg_shell.h>
 #include <wlr/util/log.h>
 
@@ -42,7 +47,9 @@ struct wb_server {
 	struct wlr_output_layout *output_layout;
 	struct wlr_xdg_output_manager_v1 *output_manager;
 	struct wlr_renderer *renderer;
+#if WLR_CHECK_VERSION(0, 16, 0)
 	struct wlr_subcompositor *subcompositor;
+#endif
 
 	struct wb_config *config;
 	char *config_file;

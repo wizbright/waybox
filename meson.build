@@ -27,7 +27,7 @@ cc = meson.get_compiler('c')
 inc_dir = include_directories('include')
 
 libxml2 = dependency('libxml-2.0')
-wlroots = dependency('wlroots', version: '>=0.16.0')
+wlroots = dependency('wlroots', version: '>=0.15.0')
 wayland_server = dependency('wayland-server', version: '>=1.15')
 wayland_protos  = dependency('wayland-protocols', version: '>=1.17')
 xkbcommon  = dependency('xkbcommon')
