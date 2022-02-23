@@ -126,22 +126,24 @@ static bool parse_key_bindings(struct wb_config *config, xmlXPathContextPtr ctxt
 
 bool init_config(struct wb_server *server) {
 	xmlDocPtr doc;
-	if (server->config_file == NULL) {
+	char *rc_file;
+	if (getenv("WB_RC_XML")) {
+		rc_file = strdup(getenv("WB_RC_XML"));
+	} else if (server->config_file != NULL) {
+		rc_file = strdup(server->config_file);
+	} else {
 		char *xdg_config = getenv("XDG_CONFIG_HOME");
 		if (!xdg_config)
 			xdg_config = "~/.config";
 
-		char *rc_file = malloc(strlen(xdg_config) + 14);
+		rc_file = malloc(strlen(xdg_config) + 14);
 		strcpy(rc_file, xdg_config);
 		rc_file = strcat(rc_file, "/waybox/rc.xml");
-		doc = xmlParseFile(rc_file);
-		wlr_log(WLR_INFO, "Using config file %s", rc_file);
-		free(rc_file);
-	} else {
-		wlr_log(WLR_INFO, "Using config file %s", server->config_file);
-		doc = xmlReadFile(server->config_file, NULL, XML_PARSE_RECOVER);
 	}
 
+	doc = xmlReadFile(rc_file, NULL, XML_PARSE_RECOVER);
+	wlr_log(WLR_INFO, "Using config file %s", rc_file);
+	free(rc_file);
 	if (doc == NULL) {
 		wlr_log(WLR_ERROR, "%s", _("Unable to parse the configuration file. Consult stderr for more information."));
 		return false;

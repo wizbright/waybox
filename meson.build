@@ -38,5 +38,6 @@ if msgfmt.found()
   subdir('po')
 endif
 
+subdir('data')
 subdir('protocol')
 subdir('waybox')

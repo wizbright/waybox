@@ -23,4 +23,5 @@ executable(
   include_directories: [inc_dir],
   dependencies: [wb_dep, wlr_protos],
   install: true,
+  install_dir: get_option('prefix') / get_option('libexecdir'),
   )

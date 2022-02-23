@@ -1,3 +1,4 @@
+data/waybox.sh
 waybox/config.c
 waybox/main.c
 waybox/output.c
