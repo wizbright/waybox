@@ -28,7 +28,7 @@ do
         elif cat "$f" | grep -q "^Hidden\s*=\s*true$";
         then
             show_in=0
-        # Value of WAYBOX: run all programs
+        # Value of all: run all programs
         elif test "$WB_AUTOSTART_ENVIRONMENT" = "all";
         then
             show_in=1

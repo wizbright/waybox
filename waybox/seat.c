@@ -88,6 +88,13 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 						execl("/bin/sh", "/bin/sh", "-c", key_binding->cmd, (char *) NULL);
 					}
 					return true;
+				case ACTION_TOGGLE_MAXIMIZE:
+				{
+					struct wb_view *view = wl_container_of(server->views.next, view, link);
+					if (wlr_surface_is_xdg_surface(view->xdg_toplevel->base->surface))
+						wl_signal_emit(&view->xdg_toplevel->events.request_maximize, view->xdg_toplevel->base);
+					return true;
+				}
 				case ACTION_RECONFIGURE:
 					deinit_config(server->config);
 					init_config(server);

@@ -49,39 +49,29 @@ void focus_view(struct wb_view *view, struct wlr_surface *surface) {
 		keyboard->keycodes, keyboard->num_keycodes, &keyboard->modifiers);
 }
 
-static void xdg_surface_ack_configure(struct wl_listener *listener, void *data) {
-	/* Called after the surface is configured */
-	struct wb_view *view = wl_container_of(listener, view, ack_configure);
-
-	/* If there's no decoration, there's no need to change the size and
-	 * cause endless reconfigures. */
-	if (!view->decoration)
-		return;
-
-	if (!view->configured)
-	{
-		/* With client-side decorations, after setting the size, it'll
-		 * return a negative y value, which can be used to determine the
-		 * size of the CSD titlebar. */
-		struct wlr_box geo_box;
-		wlr_xdg_surface_get_geometry(view->xdg_toplevel->base, &geo_box);
-		if (geo_box.y < 0)
-			view->y = geo_box.y * -1;
-		view->configured = view->y > 0;
-
-		/* Set size here, so the view->y value will be known */
-#if WLR_CHECK_VERSION(0, 16, 0)
-		wlr_xdg_toplevel_set_size(view->xdg_toplevel, geo_box.width - view->x, geo_box.height - view->y);
-#else
-		wlr_xdg_toplevel_set_size(view->xdg_surface, geo_box.width - view->x, geo_box.height - view->y);
-#endif
-	}
+static void xdg_surface_commit(struct wl_listener *listener, void *data) {
+	/* Called after the surface is committed */
+	struct wb_view *view = wl_container_of(listener, view, surface_commit);
+	struct wlr_xdg_surface *xdg_surface = view->xdg_toplevel->base;
+	struct wlr_box geo_box = {0};
+	wlr_xdg_surface_get_geometry(xdg_surface, &geo_box);
+	if (geo_box.x < 0 && view->x < 1)
+		view->x += -geo_box.x;
+	if (geo_box.y < 0 && view->y < 1)
+		view->y += -geo_box.y;
 }
 
 static void xdg_surface_map(struct wl_listener *listener, void *data) {
 	/* Called when the surface is mapped, or ready to display on-screen. */
 	struct wb_view *view = wl_container_of(listener, view, map);
 	view->mapped = true;
+	struct wlr_box geo_box = {0};
+	wlr_xdg_surface_get_geometry(view->xdg_toplevel->base, &geo_box);
+#if WLR_CHECK_VERSION(0, 16, 0)
+	wlr_xdg_toplevel_set_size(view->xdg_toplevel, geo_box.width, geo_box.height);
+#else
+	wlr_xdg_toplevel_set_size(view->xdg_surface, geo_box.width, geo_box.height);
+#endif
 	focus_view(view, view->xdg_toplevel->base->surface);
 }
 
@@ -113,6 +103,41 @@ static void xdg_surface_destroy(struct wl_listener *listener, void *data) {
 	struct wb_view *view = wl_container_of(listener, view, destroy);
 	wl_list_remove(&view->link);
 	free(view);
+}
+
+static void xdg_toplevel_request_maximize(struct wl_listener *listener, void *data) {
+	struct wlr_xdg_surface *surface = data;
+	struct wb_view *view = wl_container_of(listener, view, request_maximize);
+
+	double closest_x, closest_y;
+	struct wlr_box geo_box;
+	struct wlr_output *output = NULL;
+	wlr_xdg_surface_get_geometry(surface, &geo_box);
+	wlr_output_layout_closest_point(view->server->output_layout, output, view->x + geo_box.width / 2, view->y + geo_box.height / 2, &closest_x, &closest_y);
+	output = wlr_output_layout_output_at(view->server->output_layout, closest_x, closest_y);
+
+	bool is_maximized = surface->toplevel->current.maximized;
+	struct wlr_box usable_area = {0};
+	if (!is_maximized) {
+		wlr_output_effective_resolution(output, &usable_area.width, &usable_area.height);
+		view->origdim.height = geo_box.height;
+		view->origdim.width = geo_box.width;
+		view->origdim.x = view->x;
+		view->origdim.y = view->y;
+		view->x = 0;
+		view->y = 0;
+	} else {
+		usable_area = view->origdim;
+		view->x = view->origdim.x;
+		view->y = view->origdim.y;
+	}
+#if WLR_CHECK_VERSION(0, 16, 0)
+	wlr_xdg_toplevel_set_size(surface->toplevel, usable_area.width, usable_area.height);
+	wlr_xdg_toplevel_set_maximized(surface->toplevel, !is_maximized);
+#else
+	wlr_xdg_toplevel_set_size(surface, usable_area.width, usable_area.height);
+	wlr_xdg_toplevel_set_maximized(surface, !is_maximized);
+#endif
 }
 
 static void begin_interactive(struct wb_view *view,
@@ -185,12 +210,13 @@ static void handle_new_xdg_surface(struct wl_listener *listener, void *data) {
 	view->server = server;
 	view->xdg_toplevel = xdg_surface->toplevel;
 #if !WLR_CHECK_VERSION(0, 16, 0)
-	view->xdg_surface = view->xdg_toplevel->base;
+	view->xdg_surface = xdg_surface;
 #endif
 
 	/* Listen to the various events it can emit */
-	view->ack_configure.notify = xdg_surface_ack_configure;
-	wl_signal_add(&xdg_surface->events.ack_configure, &view->ack_configure);
+	view->surface_commit.notify = xdg_surface_commit;
+	wl_signal_add(&xdg_surface->surface->events.commit, &view->surface_commit);
+
 	view->map.notify = xdg_surface_map;
 	wl_signal_add(&xdg_surface->events.map, &view->map);
 	view->unmap.notify = xdg_surface_unmap;
@@ -198,10 +224,13 @@ static void handle_new_xdg_surface(struct wl_listener *listener, void *data) {
 	view->destroy.notify = xdg_surface_destroy;
 	wl_signal_add(&xdg_surface->events.destroy, &view->destroy);
 
+	struct wlr_xdg_toplevel *toplevel = view->xdg_toplevel;
+	view->request_maximize.notify = xdg_toplevel_request_maximize;
+	wl_signal_add(&toplevel->events.request_maximize, &view->request_maximize);
 	view->request_move.notify = xdg_toplevel_request_move;
-	wl_signal_add(&view->xdg_toplevel->events.request_move, &view->request_move);
+	wl_signal_add(&toplevel->events.request_move, &view->request_move);
 	view->request_resize.notify = xdg_toplevel_request_resize;
-	wl_signal_add(&view->xdg_toplevel->events.request_resize, &view->request_resize);
+	wl_signal_add(&toplevel->events.request_resize, &view->request_resize);
 
 	/* Add it to the list of views. */
 	wl_list_insert(&server->views, &view->link);

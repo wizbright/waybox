@@ -72,9 +72,8 @@ static bool parse_key_bindings(struct wb_config *config, xmlXPathContextPtr ctxt
 						modifiers |= WLR_MODIFIER_SHIFT;
 					else if (strcmp(s, "W") == 0 || strcmp(s, "Logo") == 0)
 						modifiers |= WLR_MODIFIER_LOGO;
-					else
-						key_bind->sym = xkb_keysym_from_name(s, 0);
 					key_bind->modifiers = modifiers;
+					key_bind->sym = xkb_keysym_from_name(s, 0);
 					sym = NULL;
 				}
 
@@ -100,6 +99,8 @@ static bool parse_key_bindings(struct wb_config *config, xmlXPathContextPtr ctxt
 							key_bind->action = ACTION_PREVIOUS_WINDOW;
 						else if (strcmp(action, "Close") == 0)
 							key_bind->action = ACTION_CLOSE;
+						else if (strcmp(action, "ToggleMaximize") == 0)
+							key_bind->action = ACTION_TOGGLE_MAXIMIZE;
 						else if (strcmp(action, "Exit") == 0)
 							key_bind->action = ACTION_EXIT;
 						else if (strcmp(action, "Reconfigure") == 0)

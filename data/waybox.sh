@@ -80,12 +80,14 @@ then
     WB_RC_XML=$WB_SYS_CONF_DIR/rc.xml
 elif test -f $OB_USER_CONF_DIR/rc.xml;
 then
+    _ "WARNING: Using files from Openbox. These may not work correctly."
     WB_RC_XML=$OB_USER_CONF_DIR/rc.xml
 elif test -f $OB_SYS_CONF_DIR/rc.xml;
 then
+    _ "WARNING: Using files from Openbox. These may not work correctly."
     WB_RC_XML=$OB_SYS_CONF_DIR/rc.xml;
 else
-    _ "ERROR: No configuration file found."
+    _ "ERROR: No configuration file found." >&2
     exit 1
 fi
 export WB_RC_XML

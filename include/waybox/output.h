@@ -32,14 +32,16 @@ struct wb_view {
 
 	struct wlr_xdg_toplevel_decoration_v1 *decoration;
 
-	struct wl_listener ack_configure;
 	struct wl_listener map;
 	struct wl_listener unmap;
 	struct wl_listener destroy;
+	struct wl_listener request_maximize;
 	struct wl_listener request_move;
 	struct wl_listener request_resize;
-	bool configured, mapped;
+	struct wl_listener surface_commit;
+	bool mapped;
 	int x, y;
+	struct wlr_box origdim;
 };
 
 void output_frame_notify(struct wl_listener* listener, void *data);

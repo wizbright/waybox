@@ -27,6 +27,9 @@
         <execute>grim "$(xdg-user-dir PICTURES)/$(date +'%Y-%m-%d-%H%M%S_grim_fs.png')"</execute>
       </action>
     </keybind>
+    <keybind key="W-S-M">
+      <action name="ToggleMaximize"/>
+    </keybind>
     <!-- Keybindings for window switching -->
     <keybind key="A-Tab">
       <action name="NextWindow">
