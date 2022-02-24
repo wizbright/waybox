@@ -19,13 +19,18 @@ cairo-dock &
 # Start a panel
 (waybar || yambar) &
 
+# Start a notification daemon
+mako &
+
 # Load a random wallpaper
 oldifs=$IFS
 IFS=:
-for wpdir in ${XDG_DATA_DIRS:-${datadir:-/usr/share}}:${XDG_DATA_HOME:-~/.local/share};
+data_dirs=${XDG_DATA_DIRS:-${datadir:-/usr/share}}:${XDG_DATA_HOME:-~/.local/share}
+for data_dir in $data_dirs;
 do
-    find $wpdir -path '*/backgrounds/*.jpg' -o -path '*/backgrounds/*.png' -o -path '*/backgrounds/*.svg' \
-        -o -path '*/wallpapers/*.jpg' -o -path '*/wallpapers/*.png' -o -path '*/wallpapers/*.svg';
+    wpdir="$data_dir/wallpapers"
+    test -d "$wpdir" && \
+        find $wpdir -name '*.jpg' -o -name '*.png' -o -name '*.svg'
 done | (shuf -n 1 || tail -n 1) | xargs swaybg -m fill -i &
 IFS=$oldifs
 

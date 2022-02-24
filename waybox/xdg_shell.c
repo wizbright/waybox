@@ -53,15 +53,18 @@ static void xdg_surface_commit(struct wl_listener *listener, void *data) {
 	/* Called after the surface is committed */
 	struct wb_view *view = wl_container_of(listener, view, surface_commit);
 	struct wlr_xdg_surface *xdg_surface = view->xdg_toplevel->base;
-	if (xdg_surface->role != WLR_XDG_SURFACE_ROLE_TOPLEVEL)
+	if (xdg_surface->role != WLR_XDG_SURFACE_ROLE_TOPLEVEL ||
+			xdg_surface->toplevel->requested.minimized)
 		return;
 
 	struct wlr_box geo_box = {0};
 	wlr_xdg_surface_get_geometry(xdg_surface, &geo_box);
 	if (geo_box.x < 0 && view->x < 1)
 		view->x += -geo_box.x;
-	if (geo_box.y < 0 && view->y < 1)
-		view->y += -geo_box.y;
+	if (geo_box.y < 0 && view->y < 1) {
+		view->decoration_height = -geo_box.y;
+		view->y += view->decoration_height;
+	}
 }
 
 static void xdg_surface_map(struct wl_listener *listener, void *data) {
@@ -73,6 +76,10 @@ static void xdg_surface_map(struct wl_listener *listener, void *data) {
 
 	struct wlr_box geo_box = {0};
 	wlr_xdg_surface_get_geometry(view->xdg_toplevel->base, &geo_box);
+	view->height = geo_box.height;
+	view->width = geo_box.width;
+	view->x = geo_box.x;
+	view->y = geo_box.y;
 #if WLR_CHECK_VERSION(0, 16, 0)
 	wlr_xdg_toplevel_set_size(view->xdg_toplevel, geo_box.width, geo_box.height);
 #else
@@ -119,26 +126,24 @@ static void xdg_toplevel_request_maximize(struct wl_listener *listener, void *da
 	struct wb_view *view = wl_container_of(listener, view, request_maximize);
 
 	double closest_x, closest_y;
-	struct wlr_box geo_box;
 	struct wlr_output *output = NULL;
-	wlr_xdg_surface_get_geometry(surface, &geo_box);
-	wlr_output_layout_closest_point(view->server->output_layout, output, view->x + geo_box.width / 2, view->y + geo_box.height / 2, &closest_x, &closest_y);
+	wlr_output_layout_closest_point(view->server->output_layout, output, view->x + view->width / 2, view->y + view->height / 2, &closest_x, &closest_y);
 	output = wlr_output_layout_output_at(view->server->output_layout, closest_x, closest_y);
 
 	bool is_maximized = surface->toplevel->current.maximized;
 	struct wlr_box usable_area = {0};
 	if (!is_maximized) {
 		wlr_output_effective_resolution(output, &usable_area.width, &usable_area.height);
-		view->origdim.height = geo_box.height;
-		view->origdim.width = geo_box.width;
-		view->origdim.x = view->x;
-		view->origdim.y = view->y;
+		view->previous_position.height = view->height;
+		view->previous_position.width = view->width;
+		view->previous_position.x = view->x;
+		view->previous_position.y = view->y;
 		view->x = 0;
-		view->y = 0;
+		view->y = 0 + view->decoration_height;
 	} else {
-		usable_area = view->origdim;
-		view->x = view->origdim.x;
-		view->y = view->origdim.y;
+		usable_area = view->previous_position;
+		view->x = view->previous_position.x;
+		view->y = view->previous_position.y;
 	}
 #if WLR_CHECK_VERSION(0, 16, 0)
 	wlr_xdg_toplevel_set_size(surface->toplevel, usable_area.width, usable_area.height);
@@ -147,6 +152,24 @@ static void xdg_toplevel_request_maximize(struct wl_listener *listener, void *da
 	wlr_xdg_toplevel_set_size(surface, usable_area.width, usable_area.height);
 	wlr_xdg_toplevel_set_maximized(surface, !is_maximized);
 #endif
+}
+
+static void xdg_toplevel_request_minimize(struct wl_listener *listener, void *data) {
+	struct wlr_xdg_surface *surface = data;
+	struct wb_view *view = wl_container_of(listener, view, request_minimize);
+	bool minimize_requested = surface->toplevel->requested.minimized;
+	if (minimize_requested) {
+		view->previous_position.height = view->height;
+		view->previous_position.width = view->width;
+		view->previous_position.x = view->x;
+		view->previous_position.y = view->y;
+		view->y = 0 - view->decoration_height * 2 - view->height;
+	} else {
+		view->height = view->previous_position.height;
+		view->width = view->previous_position.width;
+		view->x = view->previous_position.x;
+		view->y = view->previous_position.y;
+	}
 }
 
 static void begin_interactive(struct wb_view *view,
@@ -261,6 +284,8 @@ static void handle_new_xdg_surface(struct wl_listener *listener, void *data) {
 		struct wlr_xdg_toplevel *toplevel = view->xdg_toplevel;
 		view->request_maximize.notify = xdg_toplevel_request_maximize;
 		wl_signal_add(&toplevel->events.request_maximize, &view->request_maximize);
+		view->request_minimize.notify = xdg_toplevel_request_minimize;
+		wl_signal_add(&toplevel->events.request_minimize, &view->request_minimize);
 		view->request_move.notify = xdg_toplevel_request_move;
 		wl_signal_add(&toplevel->events.request_move, &view->request_move);
 		view->request_resize.notify = xdg_toplevel_request_resize;
@@ -281,13 +306,14 @@ bool view_at(struct wb_view *view,
 	 * surface pointer to that wlr_surface and the sx and sy coordinates to the
 	 * coordinates relative to that surface's top-left corner.
 	 */
+	if (view->xdg_toplevel->base->role != WLR_XDG_SURFACE_ROLE_TOPLEVEL)
+		return false;
+
 	double view_sx = lx - view->x;
 	double view_sy = ly - view->y;
 
 	double _sx, _sy;
 	struct wlr_surface *_surface = NULL;
-	if (view->xdg_toplevel->base->role != WLR_XDG_SURFACE_ROLE_TOPLEVEL)
-		return false;
 	_surface = wlr_xdg_surface_surface_at(
 			view->xdg_toplevel->base, view_sx, view_sy, &_sx, &_sy);
 

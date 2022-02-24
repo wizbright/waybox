@@ -2,7 +2,7 @@ cfdata = configuration_data()
 cfdata.set('libexecdir', get_option('prefix') / get_option('libexecdir'))
 cfdata.set('localedir', get_option('prefix') / get_option('localedir'))
 cfdata.set('sysconfdir', get_option('prefix') / get_option('sysconfdir'))
-cfdata.set('package', meson.project_name())
+cfdata.set('package', meson.project_name().to_lower())
 
 configure_file(
   configuration: cfdata,

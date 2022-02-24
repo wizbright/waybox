@@ -1,5 +1,5 @@
 #
-# Environment variables here for Waybox
+# Set environment variables here for Waybox
 # Copy to $XDG_CONFIG_HOME/waybox/environment to customize
 #
 

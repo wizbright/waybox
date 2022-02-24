@@ -3,15 +3,22 @@
 #include "waybox/seat.h"
 #include "waybox/xdg_shell.h"
 
+static void deiconify_view(struct wb_view *view) {
+
+	if (view->xdg_toplevel->requested.minimized) {
+		view->xdg_toplevel->requested.minimized = false;
+		wl_signal_emit(&view->xdg_toplevel->events.request_minimize, view->xdg_toplevel->base);
+	}
+}
+
 static bool cycle_views(struct wb_server *server) {
 	/* Cycle to the next view */
-	if (wl_list_length(&server->views) < 2) {
+	if (wl_list_length(&server->views) < 1) {
 		return false;
 	}
 	struct wb_view *current_view = wl_container_of(
 		server->views.prev, current_view, link);
-	struct wb_view *prev_view = wl_container_of(
-		server->views.next, prev_view, link);
+	deiconify_view(current_view);
 	focus_view(current_view, current_view->xdg_toplevel->base->surface);
 	/* Move the current view to the beginning of the list */
 	wl_list_remove(&current_view->link);
@@ -21,13 +28,14 @@ static bool cycle_views(struct wb_server *server) {
 
 static bool cycle_views_reverse(struct wb_server *server) {
 	/* Cycle to the previous view */
-	if (wl_list_length(&server->views) < 2) {
+	if (wl_list_length(&server->views) < 1) {
 		return false;
 	}
 	struct wb_view *current_view = wl_container_of(
 		server->views.next, current_view, link);
 	struct wb_view *next_view = wl_container_of(
 		current_view->link.next, next_view, link);
+	deiconify_view(next_view);
 	focus_view(next_view, next_view->xdg_toplevel->base->surface);
 	/* Move the current view to after the previous view in the list */
 	wl_list_remove(&current_view->link);
@@ -94,6 +102,18 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 					if (wlr_surface_is_xdg_surface(view->xdg_toplevel->base->surface))
 						wl_signal_emit(&view->xdg_toplevel->events.request_maximize, view->xdg_toplevel->base);
 					return true;
+				case ACTION_ICONIFY:
+				{
+					struct wb_view *view = wl_container_of(server->views.next, view, link);
+					if (wlr_surface_is_xdg_surface(view->xdg_toplevel->base->surface))
+					{
+						view->xdg_toplevel->requested.minimized = true;
+						wl_signal_emit(&view->xdg_toplevel->events.request_minimize, view->xdg_toplevel->base);
+						struct wb_view *previous_view = wl_container_of(server->views.prev, previous_view, link);
+						focus_view(previous_view, previous_view->xdg_toplevel->base->surface);
+					}
+					return true;
+				}
 				}
 				case ACTION_RECONFIGURE:
 					deinit_config(server->config);

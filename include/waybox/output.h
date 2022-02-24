@@ -31,18 +31,21 @@ struct wb_view {
 #endif
 
 	struct wlr_xdg_toplevel_decoration_v1 *decoration;
+	int decoration_height;
 
 	struct wl_listener map;
 	struct wl_listener unmap;
 	struct wl_listener destroy;
 	struct wl_listener new_popup;
 	struct wl_listener request_maximize;
+	struct wl_listener request_minimize;
 	struct wl_listener request_move;
 	struct wl_listener request_resize;
 	struct wl_listener surface_commit;
 	bool mapped;
-	int x, y;
-	struct wlr_box origdim;
+
+	int width, height, x, y;
+	struct wlr_box previous_position;
 };
 
 void output_frame_notify(struct wl_listener* listener, void *data);

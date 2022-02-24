@@ -10,11 +10,6 @@
       <rules>evdev</rules>
       <variant>dvorak</variant>
     </keyboardLayout> -->
-    <keybind key="W-Return">
-      <action name="Execute">
-        <execute>terminal</execute>
-      </action>
-    </keybind>
     <!-- Keybindings for windows -->
     <keybind key="A-F4">
       <action name="Close"/>
@@ -22,10 +17,11 @@
     <keybind key="C-Escape">
       <action name="Exit"/>
     </keybind>
-    <keybind key="Print">
-      <action name="Execute">
-        <execute>grim "$(xdg-user-dir PICTURES)/$(date +'%Y-%m-%d-%H%M%S_grim_fs.png')"</execute>
-      </action>
+    <keybind key="W-c">
+      <action name="Reconfigure"/>
+    </keybind>
+    <keybind key="W-m">
+      <action name="Iconify"/>
     </keybind>
     <keybind key="W-S-M">
       <action name="ToggleMaximize"/>
@@ -44,13 +40,20 @@
       </action>
     </keybind>
     <!-- Keybindings for running applications -->
+    <keybind key="W-Return">
+      <action name="Execute">
+        <execute>$TERMINAL</execute>
+      </action>
+    </keybind>
+    <keybind key="Print">
+      <action name="Execute">
+        <execute>grim "$(xdg-user-dir PICTURES)/$(date +'%Y-%m-%d-%H%M%S_grim_fs.png')"</execute>
+      </action>
+    </keybind>
     <keybind key="A-F2">
       <action name="Execute">
         <execute>obrun l</execute>
       </action>
-    </keybind>
-    <keybind key="W-c">
-      <action name="Reconfigure"/>
     </keybind>
     <keybind key="W-e">
       <action name="Execute">
@@ -59,7 +62,7 @@
     </keybind>
     <keybind key="W-o">
       <action name="Execute">
-        <execute>terminal -e mc</execute>
+        <execute>$TERMINAL -e mc</execute>
       </action>
     </keybind>
     <keybind key="W-w">
