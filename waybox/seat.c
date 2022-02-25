@@ -51,8 +51,7 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 	 * client.
 	 */
 
-	if (!server->config)
-	{
+	if (!server->config) {
 		/* Some default key bindings, when the rc.xml file can't be
 		 * parsed. */
 		if (modifiers & WLR_MODIFIER_ALT && sym == XKB_KEY_Tab)
@@ -69,88 +68,71 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 
 	struct wb_key_binding *key_binding;
 	wl_list_for_each(key_binding, &server->config->key_bindings, link) {
-		if (sym == key_binding->sym && modifiers == key_binding->modifiers)
-		{
-			switch (key_binding->action)
-			{
-				case ACTION_NEXT_WINDOW:
-					cycle_views(server);
-					break;
-				case ACTION_PREVIOUS_WINDOW:
-					cycle_views_reverse(server);
-					break;
-				case ACTION_CLOSE:
-				{
-					struct wb_view *current_view = wl_container_of(
-							server->views.next, current_view, link);
-					if (wlr_surface_is_xdg_surface(current_view->xdg_toplevel->base->surface))
+		if (sym == key_binding->sym && modifiers == key_binding->modifiers) {
+			if (key_binding->action & ACTION_NEXT_WINDOW)
+				cycle_views(server);
+			if (key_binding->action & ACTION_PREVIOUS_WINDOW)
+				cycle_views_reverse(server);
+			if (key_binding->action & ACTION_CLOSE) {
+				struct wb_view *current_view = wl_container_of(
+						server->views.next, current_view, link);
+				if (wlr_surface_is_xdg_surface(current_view->xdg_toplevel->base->surface))
 #if WLR_CHECK_VERSION(0, 16, 0)
-						wlr_xdg_toplevel_send_close(current_view->xdg_toplevel);
+					wlr_xdg_toplevel_send_close(current_view->xdg_toplevel);
 #else
-						wlr_xdg_toplevel_send_close(current_view->xdg_surface);
+					wlr_xdg_toplevel_send_close(current_view->xdg_surface);
 #endif
-						break;
-				 }
-				case ACTION_EXECUTE:
-					if (fork() == 0) {
-						execl("/bin/sh", "/bin/sh", "-c", key_binding->cmd, (char *) NULL);
-					}
-					break;
-				case ACTION_TOGGLE_MAXIMIZE:
-				{
-					struct wb_view *view = wl_container_of(server->views.next, view, link);
-					if (wlr_surface_is_xdg_surface(view->xdg_toplevel->base->surface))
-						wl_signal_emit(&view->xdg_toplevel->events.request_maximize, view->xdg_toplevel->base);
-					break;
+			 }
+			if (key_binding->action & ACTION_EXECUTE) {
+				if (fork() == 0) {
+					execl("/bin/sh", "/bin/sh", "-c", key_binding->cmd, (char *) NULL);
 				}
-				case ACTION_ICONIFY:
-				{
-					struct wb_view *view = wl_container_of(server->views.next, view, link);
-					if (wlr_surface_is_xdg_surface(view->xdg_toplevel->base->surface))
-					{
-						view->xdg_toplevel->requested.minimized = true;
-						wl_signal_emit(&view->xdg_toplevel->events.request_minimize, view->xdg_toplevel->base);
-						struct wb_view *previous_view = wl_container_of(server->views.prev, previous_view, link);
-						focus_view(previous_view, previous_view->xdg_toplevel->base->surface);
-					}
-					break;
-				}
-				case ACTION_SHADE:
-				{
-					struct wb_view *view = wl_container_of(server->views.next, view, link);
-					if (wlr_surface_is_xdg_surface(view->xdg_toplevel->base->surface))
-					{
-						view->previous_position = view->current_position;
-						wlr_xdg_toplevel_set_size(view->xdg_toplevel->base,
-								view->current_position.width, view->decoration_height);
-					}
-					break;
-				}
-				case ACTION_UNSHADE:
-				{
-					struct wb_view *view = wl_container_of(server->views.next, view, link);
-					if (wlr_surface_is_xdg_surface(view->xdg_toplevel->base->surface))
-					{
-#if WLR_CHECK_VERSION(0, 16, 0)
-						wlr_xdg_toplevel_set_size(view->xdg_toplevel,
-								view->previous_position.width, view->previous_position.height);
-#else
-						wlr_xdg_toplevel_set_size(view->xdg_surface,
-								view->previous_position.width, view->previous_position.height);
-#endif
-					}
-					break;
-				}
-				case ACTION_RECONFIGURE:
-					deinit_config(server->config);
-					init_config(server);
-					break;
-				case ACTION_EXIT:
-					wl_display_terminate(server->wl_display);
-					break;
-				default:
-					continue;
 			}
+			if (key_binding->action & ACTION_TOGGLE_MAXIMIZE) {
+				struct wb_view *view = wl_container_of(server->views.next, view, link);
+				if (wlr_surface_is_xdg_surface(view->xdg_toplevel->base->surface))
+					wl_signal_emit(&view->xdg_toplevel->events.request_maximize, view->xdg_toplevel->base);
+			}
+			if (key_binding->action & ACTION_ICONIFY) {
+				struct wb_view *view = wl_container_of(server->views.next, view, link);
+				if (wlr_surface_is_xdg_surface(view->xdg_toplevel->base->surface)) {
+					view->xdg_toplevel->requested.minimized = true;
+					wl_signal_emit(&view->xdg_toplevel->events.request_minimize, view->xdg_toplevel->base);
+					struct wb_view *previous_view = wl_container_of(server->views.prev, previous_view, link);
+					focus_view(previous_view, previous_view->xdg_toplevel->base->surface);
+				}
+			}
+			if (key_binding->action & ACTION_SHADE) {
+				struct wb_view *view = wl_container_of(server->views.next, view, link);
+				if (wlr_surface_is_xdg_surface(view->xdg_toplevel->base->surface)) {
+					view->previous_position = view->current_position;
+#if WLR_CHECK_VERSION(0, 16, 0)
+					wlr_xdg_toplevel_set_size(view->xdg_toplevel,
+							view->current_position.width, view->decoration_height);
+#else
+					wlr_xdg_toplevel_set_size(view->xdg_surface,
+							view->current_position.width, view->decoration_height);
+#endif
+				}
+			}
+			if (key_binding->action & ACTION_UNSHADE) {
+				struct wb_view *view = wl_container_of(server->views.next, view, link);
+				if (wlr_surface_is_xdg_surface(view->xdg_toplevel->base->surface)) {
+#if WLR_CHECK_VERSION(0, 16, 0)
+					wlr_xdg_toplevel_set_size(view->xdg_toplevel,
+							view->previous_position.width, view->previous_position.height);
+#else
+					wlr_xdg_toplevel_set_size(view->xdg_surface,
+							view->previous_position.width, view->previous_position.height);
+#endif
+				}
+			}
+			if (key_binding->action & ACTION_RECONFIGURE) {
+				deinit_config(server->config);
+				init_config(server);
+			}
+			if (key_binding->action & ACTION_EXIT)
+				wl_display_terminate(server->wl_display);
 			return true;
 		}
 	}
@@ -216,8 +198,7 @@ static void handle_new_keyboard(struct wb_server *server,
 
 	/* We need to prepare an XKB keymap and assign it to the keyboard. */
 	struct xkb_rule_names *rules = malloc(sizeof(struct xkb_rule_names));
-	if (server->config && server->config->keyboard_layout.use_config)
-	{
+	if (server->config && server->config->keyboard_layout.use_config) {
 		if (server->config->keyboard_layout.layout)
 			rules->layout = server->config->keyboard_layout.layout;
 		if (server->config->keyboard_layout.model)

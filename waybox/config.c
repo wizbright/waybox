@@ -21,6 +21,48 @@ static char *parse_xpath_expr(char *expr, xmlXPathContextPtr ctxt) {
 	return (char *) ret;
 }
 
+static void get_action(xmlNode *new_node, struct wb_key_binding *key_bind) {
+	xmlAttr *attr;
+	xmlNode *cur_node;
+	for (cur_node = new_node; cur_node; cur_node = cur_node->next) {
+		if (strcmp((char *) cur_node->name, "action") == 0) {
+			attr = cur_node->properties;
+			if (!attr) continue;
+			while (strcmp((char *) attr->name, "name") != 0) {
+				attr = attr->next;
+			}
+			char *action = (char *) attr->children->content;
+			if (strcmp(action, "Execute") == 0)
+				key_bind->action |= ACTION_EXECUTE;
+			else if (strcmp(action, "NextWindow") == 0)
+				key_bind->action |= ACTION_NEXT_WINDOW;
+			else if (strcmp(action, "PreviousWindow") == 0)
+				key_bind->action |= ACTION_PREVIOUS_WINDOW;
+			else if (strcmp(action, "Close") == 0)
+				key_bind->action |= ACTION_CLOSE;
+			else if (strcmp(action, "ToggleMaximize") == 0)
+				key_bind->action |= ACTION_TOGGLE_MAXIMIZE;
+			else if (strcmp(action, "Iconify") == 0)
+				key_bind->action |= ACTION_ICONIFY;
+			else if (strcmp(action, "Shade") == 0)
+				key_bind->action |= ACTION_SHADE;
+			else if (strcmp(action, "Unshade") == 0)
+				key_bind->action |= ACTION_UNSHADE;
+			else if (strcmp(action, "Exit") == 0)
+				key_bind->action |= ACTION_EXIT;
+			else if (strcmp(action, "Reconfigure") == 0)
+				key_bind->action |= ACTION_RECONFIGURE;
+		}
+		if (cur_node && cur_node->children)
+			get_action(cur_node->children, key_bind);
+
+		if (strcmp((char *) cur_node->name, "execute") == 0) {
+			key_bind->cmd = (char *) xmlStrdup(cur_node->children->content);
+		}
+	}
+
+}
+
 static bool parse_key_bindings(struct wb_config *config, xmlXPathContextPtr ctxt) {
 	/* Get the key bindings */
 	wl_list_init(&config->key_bindings);
@@ -42,9 +84,7 @@ static bool parse_key_bindings(struct wb_config *config, xmlXPathContextPtr ctxt
 				/* First get the key combinations */
 				xmlAttr *keycomb = object->nodesetval->nodeTab[i]->properties;
 				while (strcmp((char *) keycomb->name, "key") != 0)
-				{
 					keycomb = keycomb->next;
-				}
 
 				char *sym;
 				uint32_t modifiers = 0;
@@ -54,8 +94,7 @@ static bool parse_key_bindings(struct wb_config *config, xmlXPathContextPtr ctxt
 				struct wb_key_binding *key_bind = calloc(1, sizeof(struct wb_key_binding));
 				key_bind->sym = 0;
 				key_bind->modifiers = 0;
-				while ((s = strtok(sym, "-")) != NULL)
-				{
+				while ((s = strtok(sym, "-")) != NULL) {
 					if (strcmp(s, "A") == 0 || strcmp(s, "Alt") == 0)
 						modifiers |= WLR_MODIFIER_ALT;
 					else if (strcmp(s, "Caps") == 0)
@@ -78,50 +117,8 @@ static bool parse_key_bindings(struct wb_config *config, xmlXPathContextPtr ctxt
 				}
 
 				/* Now get the actions */
-				xmlNode *cur_node;
 				xmlNode *new_node = object->nodesetval->nodeTab[i]->children;
-				xmlAttr *attr;
-				for (cur_node = new_node; cur_node; cur_node = cur_node->next)
-				{
-					if (strcmp((char *) cur_node->name, "action") == 0)
-					{
-						attr = cur_node->properties;
-						while (strcmp((char *) attr->name, "name") != 0)
-						{
-							attr = attr->next;
-						}
-						char *action = (char *) attr->children->content;
-						if (strcmp(action, "Execute") == 0)
-							key_bind->action = ACTION_EXECUTE;
-						else if (strcmp(action, "NextWindow") == 0)
-							key_bind->action = ACTION_NEXT_WINDOW;
-						else if (strcmp(action, "PreviousWindow") == 0)
-							key_bind->action = ACTION_PREVIOUS_WINDOW;
-						else if (strcmp(action, "Close") == 0)
-							key_bind->action = ACTION_CLOSE;
-						else if (strcmp(action, "ToggleMaximize") == 0)
-							key_bind->action = ACTION_TOGGLE_MAXIMIZE;
-						else if (strcmp(action, "Iconify") == 0)
-							key_bind->action = ACTION_ICONIFY;
-						else if (strcmp(action, "Shade") == 0)
-							key_bind->action = ACTION_SHADE;
-						else if (strcmp(action, "Unshade") == 0)
-							key_bind->action = ACTION_UNSHADE;
-						else if (strcmp(action, "Exit") == 0)
-							key_bind->action = ACTION_EXIT;
-						else if (strcmp(action, "Reconfigure") == 0)
-							key_bind->action = ACTION_RECONFIGURE;
-						if (key_bind->action != ACTION_EXECUTE)
-							break;
-						cur_node = cur_node->children;
-					}
-					if (strcmp((char *) cur_node->name, "execute") == 0)
-					{
-						key_bind->cmd = (char *) xmlStrdup(cur_node->children->content);
-						if (key_bind->action)
-							break;
-					}
-				}
+				get_action(new_node, key_bind);
 
 				wl_list_insert(&config->key_bindings, &key_bind->link);
 			}
@@ -168,8 +165,7 @@ bool init_config(struct wb_server *server) {
 	struct wb_config *config = calloc(1, sizeof(struct wb_config));
 	config->keyboard_layout.use_config = parse_xpath_expr("//ob:keyboard//ob:keyboardLayout", ctxt) != NULL;
 
-	if (config->keyboard_layout.use_config)
-	{
+	if (config->keyboard_layout.use_config) {
 		config->keyboard_layout.layout = parse_xpath_expr("//ob:keyboard//ob:keyboardLayout//ob:layout", ctxt);
 		config->keyboard_layout.model = parse_xpath_expr("//ob:keyboard//ob:keyboardLayout//ob:model", ctxt);
 		config->keyboard_layout.options = parse_xpath_expr("//ob:keyboard//ob:keyboardLayout//ob:options", ctxt);
