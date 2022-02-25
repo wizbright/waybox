@@ -32,7 +32,7 @@ static void render_surface(struct wlr_surface *surface,
 	double ox = 0, oy = 0;
 	wlr_output_layout_output_coords(
 			view->server->output_layout, output, &ox, &oy);
-	ox += view->x + sx, oy += view->y + sy;
+	ox += view->current_position.x + sx, oy += view->current_position.y + sy;
 
 	/* We also have to apply the scale factor for HiDPI outputs. This is only
 	 * part of the puzzle, Waybox does not fully support HiDPI. */

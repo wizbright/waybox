@@ -26,6 +26,12 @@
     <keybind key="W-S-M">
       <action name="ToggleMaximize"/>
     </keybind>
+    <keybind key="W-s">
+      <action name="Shade"/>
+    </keybind>
+    <keybind key="W-S-S">
+      <action name="Unshade"/>
+    </keybind>
     <!-- Keybindings for window switching -->
     <keybind key="A-Tab">
       <action name="NextWindow">

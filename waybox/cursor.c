@@ -4,8 +4,8 @@
 
 static void process_cursor_move(struct wb_server *server) {
 	/* Move the grabbed view to the new position. */
-	server->grabbed_view->x = server->cursor->cursor->x - server->grab_x;
-	server->grabbed_view->y = server->cursor->cursor->y - server->grab_y;
+	server->grabbed_view->current_position.x = server->cursor->cursor->x - server->grab_x;
+	server->grabbed_view->current_position.y = server->cursor->cursor->y - server->grab_y;
 }
 
 static void process_cursor_resize(struct wb_server *server) {
@@ -42,8 +42,8 @@ static void process_cursor_resize(struct wb_server *server) {
 
 	struct wlr_box geo_box;
 	wlr_xdg_surface_get_geometry(view->xdg_toplevel->base, &geo_box);
-	view->x = new_left - geo_box.x;
-	view->y = new_top - geo_box.y;
+	view->current_position.x = new_left - geo_box.x;
+	view->current_position.y = new_top - geo_box.y;
 
 	int new_width = new_right - new_left;
 	int new_height = new_bottom - new_top;

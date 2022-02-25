@@ -103,6 +103,10 @@ static bool parse_key_bindings(struct wb_config *config, xmlXPathContextPtr ctxt
 							key_bind->action = ACTION_TOGGLE_MAXIMIZE;
 						else if (strcmp(action, "Iconify") == 0)
 							key_bind->action = ACTION_ICONIFY;
+						else if (strcmp(action, "Shade") == 0)
+							key_bind->action = ACTION_SHADE;
+						else if (strcmp(action, "Unshade") == 0)
+							key_bind->action = ACTION_UNSHADE;
 						else if (strcmp(action, "Exit") == 0)
 							key_bind->action = ACTION_EXIT;
 						else if (strcmp(action, "Reconfigure") == 0)

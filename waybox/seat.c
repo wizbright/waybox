@@ -11,10 +11,10 @@ static void deiconify_view(struct wb_view *view) {
 	}
 }
 
-static bool cycle_views(struct wb_server *server) {
+static void cycle_views(struct wb_server *server) {
 	/* Cycle to the next view */
 	if (wl_list_length(&server->views) < 1) {
-		return false;
+		return;
 	}
 	struct wb_view *current_view = wl_container_of(
 		server->views.prev, current_view, link);
@@ -23,13 +23,12 @@ static bool cycle_views(struct wb_server *server) {
 	/* Move the current view to the beginning of the list */
 	wl_list_remove(&current_view->link);
 	wl_list_insert(&server->views, &current_view->link);
-	return true;
 }
 
-static bool cycle_views_reverse(struct wb_server *server) {
+static void cycle_views_reverse(struct wb_server *server) {
 	/* Cycle to the previous view */
 	if (wl_list_length(&server->views) < 1) {
-		return false;
+		return;
 	}
 	struct wb_view *current_view = wl_container_of(
 		server->views.next, current_view, link);
@@ -40,7 +39,6 @@ static bool cycle_views_reverse(struct wb_server *server) {
 	/* Move the current view to after the previous view in the list */
 	wl_list_remove(&current_view->link);
 	wl_list_insert(server->views.prev, &current_view->link);
-	return true;
 }
 
 static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32_t modifiers) {
@@ -76,9 +74,11 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 			switch (key_binding->action)
 			{
 				case ACTION_NEXT_WINDOW:
-					return cycle_views(server);
+					cycle_views(server);
+					break;
 				case ACTION_PREVIOUS_WINDOW:
-					return cycle_views_reverse(server);
+					cycle_views_reverse(server);
+					break;
 				case ACTION_CLOSE:
 				{
 					struct wb_view *current_view = wl_container_of(
@@ -89,19 +89,20 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 #else
 						wlr_xdg_toplevel_send_close(current_view->xdg_surface);
 #endif
-					return true;
+						break;
 				 }
 				case ACTION_EXECUTE:
 					if (fork() == 0) {
 						execl("/bin/sh", "/bin/sh", "-c", key_binding->cmd, (char *) NULL);
 					}
-					return true;
+					break;
 				case ACTION_TOGGLE_MAXIMIZE:
 				{
 					struct wb_view *view = wl_container_of(server->views.next, view, link);
 					if (wlr_surface_is_xdg_surface(view->xdg_toplevel->base->surface))
 						wl_signal_emit(&view->xdg_toplevel->events.request_maximize, view->xdg_toplevel->base);
-					return true;
+					break;
+				}
 				case ACTION_ICONIFY:
 				{
 					struct wb_view *view = wl_container_of(server->views.next, view, link);
@@ -112,19 +113,45 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 						struct wb_view *previous_view = wl_container_of(server->views.prev, previous_view, link);
 						focus_view(previous_view, previous_view->xdg_toplevel->base->surface);
 					}
-					return true;
+					break;
 				}
+				case ACTION_SHADE:
+				{
+					struct wb_view *view = wl_container_of(server->views.next, view, link);
+					if (wlr_surface_is_xdg_surface(view->xdg_toplevel->base->surface))
+					{
+						view->previous_position = view->current_position;
+						wlr_xdg_toplevel_set_size(view->xdg_toplevel->base,
+								view->current_position.width, view->decoration_height);
+					}
+					break;
+				}
+				case ACTION_UNSHADE:
+				{
+					struct wb_view *view = wl_container_of(server->views.next, view, link);
+					if (wlr_surface_is_xdg_surface(view->xdg_toplevel->base->surface))
+					{
+#if WLR_CHECK_VERSION(0, 16, 0)
+						wlr_xdg_toplevel_set_size(view->xdg_toplevel,
+								view->previous_position.width, view->previous_position.height);
+#else
+						wlr_xdg_toplevel_set_size(view->xdg_surface,
+								view->previous_position.width, view->previous_position.height);
+#endif
+					}
+					break;
 				}
 				case ACTION_RECONFIGURE:
 					deinit_config(server->config);
 					init_config(server);
-					return true;
+					break;
 				case ACTION_EXIT:
 					wl_display_terminate(server->wl_display);
-					return true;
+					break;
 				default:
 					continue;
 			}
+			return true;
 		}
 	}
 	return false;

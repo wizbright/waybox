@@ -44,7 +44,7 @@ struct wb_view {
 	struct wl_listener surface_commit;
 	bool mapped;
 
-	int width, height, x, y;
+	struct wlr_box current_position;
 	struct wlr_box previous_position;
 };
 

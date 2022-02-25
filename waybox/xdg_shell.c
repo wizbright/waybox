@@ -59,11 +59,11 @@ static void xdg_surface_commit(struct wl_listener *listener, void *data) {
 
 	struct wlr_box geo_box = {0};
 	wlr_xdg_surface_get_geometry(xdg_surface, &geo_box);
-	if (geo_box.x < 0 && view->x < 1)
-		view->x += -geo_box.x;
-	if (geo_box.y < 0 && view->y < 1) {
+	if (geo_box.x < 0 && view->current_position.x < 1)
+		view->current_position.x += -geo_box.x;
+	if (geo_box.y < 0 && view->current_position.y < 1) {
 		view->decoration_height = -geo_box.y;
-		view->y += view->decoration_height;
+		view->current_position.y += view->decoration_height;
 	}
 }
 
@@ -76,10 +76,7 @@ static void xdg_surface_map(struct wl_listener *listener, void *data) {
 
 	struct wlr_box geo_box = {0};
 	wlr_xdg_surface_get_geometry(view->xdg_toplevel->base, &geo_box);
-	view->height = geo_box.height;
-	view->width = geo_box.width;
-	view->x = geo_box.x;
-	view->y = geo_box.y;
+	view->current_position = geo_box;
 #if WLR_CHECK_VERSION(0, 16, 0)
 	wlr_xdg_toplevel_set_size(view->xdg_toplevel, geo_box.width, geo_box.height);
 #else
@@ -127,23 +124,23 @@ static void xdg_toplevel_request_maximize(struct wl_listener *listener, void *da
 
 	double closest_x, closest_y;
 	struct wlr_output *output = NULL;
-	wlr_output_layout_closest_point(view->server->output_layout, output, view->x + view->width / 2, view->y + view->height / 2, &closest_x, &closest_y);
+	wlr_output_layout_closest_point(view->server->output_layout, output,
+			view->current_position.x + view->current_position.width / 2,
+			view->current_position.y + view->current_position.height / 2,
+			&closest_x, &closest_y);
 	output = wlr_output_layout_output_at(view->server->output_layout, closest_x, closest_y);
 
 	bool is_maximized = surface->toplevel->current.maximized;
 	struct wlr_box usable_area = {0};
 	if (!is_maximized) {
 		wlr_output_effective_resolution(output, &usable_area.width, &usable_area.height);
-		view->previous_position.height = view->height;
-		view->previous_position.width = view->width;
-		view->previous_position.x = view->x;
-		view->previous_position.y = view->y;
-		view->x = 0;
-		view->y = 0 + view->decoration_height;
+		view->previous_position = view->current_position;
+		view->current_position.x = 0;
+		view->current_position.y = 0 + view->decoration_height;
 	} else {
 		usable_area = view->previous_position;
-		view->x = view->previous_position.x;
-		view->y = view->previous_position.y;
+		view->current_position.x = view->previous_position.x;
+		view->current_position.y = view->previous_position.y;
 	}
 #if WLR_CHECK_VERSION(0, 16, 0)
 	wlr_xdg_toplevel_set_size(surface->toplevel, usable_area.width, usable_area.height);
@@ -159,16 +156,11 @@ static void xdg_toplevel_request_minimize(struct wl_listener *listener, void *da
 	struct wb_view *view = wl_container_of(listener, view, request_minimize);
 	bool minimize_requested = surface->toplevel->requested.minimized;
 	if (minimize_requested) {
-		view->previous_position.height = view->height;
-		view->previous_position.width = view->width;
-		view->previous_position.x = view->x;
-		view->previous_position.y = view->y;
-		view->y = 0 - view->decoration_height * 2 - view->height;
+		view->previous_position.height = view->current_position.height;
+		view->current_position.y = 0 -
+			view->decoration_height * 2 - view->current_position.height;
 	} else {
-		view->height = view->previous_position.height;
-		view->width = view->previous_position.width;
-		view->x = view->previous_position.x;
-		view->y = view->previous_position.y;
+		view->current_position = view->previous_position;
 	}
 }
 
@@ -188,20 +180,20 @@ static void begin_interactive(struct wb_view *view,
 	server->cursor->cursor_mode = mode;
 
 	if (mode == WB_CURSOR_MOVE) {
-		server->grab_x = server->cursor->cursor->x - view->x;
-		server->grab_y = server->cursor->cursor->y - view->y;
+		server->grab_x = server->cursor->cursor->x - view->current_position.x;
+		server->grab_y = server->cursor->cursor->y - view->current_position.y;
 	} else if (mode == WB_CURSOR_RESIZE) {
 		struct wlr_box geo_box;
 		wlr_xdg_surface_get_geometry(view->xdg_toplevel->base, &geo_box);
 
-		double border_x = (view->x + geo_box.x) + ((edges & WLR_EDGE_RIGHT) ? geo_box.width : 0);
-		double border_y = (view->y + geo_box.y) + ((edges & WLR_EDGE_BOTTOM) ? geo_box.height : 0);
+		double border_x = (view->current_position.x + geo_box.x) + ((edges & WLR_EDGE_RIGHT) ? geo_box.width : 0);
+		double border_y = (view->current_position.y + geo_box.y) + ((edges & WLR_EDGE_BOTTOM) ? geo_box.height : 0);
 		server->grab_x = server->cursor->cursor->x - border_x;
 		server->grab_y = server->cursor->cursor->y - border_y;
 
 		server->grab_geo_box = geo_box;
-		server->grab_geo_box.x += view->x;
-		server->grab_geo_box.y += view->y;
+		server->grab_geo_box.x += view->current_position.x;
+		server->grab_geo_box.y += view->current_position.y;
 
 		server->resize_edges = edges;
 	}
@@ -231,7 +223,9 @@ static void handle_new_popup(struct wl_listener *listener, void *data) {
 	struct wb_view *view = wl_container_of(listener, view, new_popup);
 	struct wlr_output_layout *output_layout = view->server->output_layout;
 
-	struct wlr_output *wlr_output = wlr_output_layout_output_at(output_layout, view->x + popup->geometry.x, view->y + popup->geometry.y);
+	struct wlr_output *wlr_output = wlr_output_layout_output_at(output_layout,
+			view->current_position.x + popup->geometry.x,
+			view->current_position.y + popup->geometry.y);
 	struct wlr_box output_box;
 #if WLR_CHECK_VERSION(0, 16, 0)
 	wlr_output_layout_get_box(output_layout, wlr_output, &output_box);
@@ -239,8 +233,8 @@ static void handle_new_popup(struct wl_listener *listener, void *data) {
 	output_box = (*wlr_output_layout_get_box(output_layout, wlr_output));
 #endif
 	struct wlr_box output_toplevel_box = {
-		.x = output_box.x - view->x,
-		.y = output_box.y - view->y,
+		.x = output_box.x - view->current_position.x,
+		.y = output_box.y - view->current_position.y,
 		.width = output_box.width,
 		.height = output_box.height,
 	};
@@ -309,8 +303,8 @@ bool view_at(struct wb_view *view,
 	if (view->xdg_toplevel->base->role != WLR_XDG_SURFACE_ROLE_TOPLEVEL)
 		return false;
 
-	double view_sx = lx - view->x;
-	double view_sy = ly - view->y;
+	double view_sx = lx - view->current_position.x;
+	double view_sy = ly - view->current_position.y;
 
 	double _sx, _sy;
 	struct wlr_surface *_surface = NULL;
