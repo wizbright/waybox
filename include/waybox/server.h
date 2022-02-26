@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 
+#define MAX(a, b) ((a > b) ? (a) : (b))
+#define MIN(a, b) ((a < b) ? (a) : (b))
 #include <wlr/version.h>
 #define WLR_CHECK_VERSION(major, minor, micro) (WLR_VERSION_NUM >= ((major << 16) | (minor << 8) | (micro)))
 

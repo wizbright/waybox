@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openbox_config xmlns="http://openbox.org/3.4/rc" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <!-- You can reserve a portion of your screen where windows will not cover when
+       they are maximized, or when they are initially placed. -->
   <margins>
     <top>0</top>
     <bottom>0</bottom>

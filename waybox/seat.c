@@ -4,10 +4,9 @@
 #include "waybox/xdg_shell.h"
 
 static void deiconify_view(struct wb_view *view) {
-
 	if (view->xdg_toplevel->requested.minimized) {
 		view->xdg_toplevel->requested.minimized = false;
-		wl_signal_emit(&view->xdg_toplevel->events.request_minimize, view->xdg_toplevel->base);
+		wl_signal_emit(&view->xdg_toplevel->events.request_minimize, NULL);
 	}
 }
 
@@ -50,7 +49,6 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 	 * Returns true if the keybinding is handled, false to send it to the
 	 * client.
 	 */
-
 	if (!server->config) {
 		/* Some default key bindings, when the rc.xml file can't be
 		 * parsed. */
@@ -76,7 +74,7 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 			if (key_binding->action & ACTION_CLOSE) {
 				struct wb_view *current_view = wl_container_of(
 						server->views.next, current_view, link);
-				if (wlr_surface_is_xdg_surface(current_view->xdg_toplevel->base->surface))
+				if (current_view->mapped)
 #if WLR_CHECK_VERSION(0, 16, 0)
 					wlr_xdg_toplevel_send_close(current_view->xdg_toplevel);
 #else
@@ -90,21 +88,21 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 			}
 			if (key_binding->action & ACTION_TOGGLE_MAXIMIZE) {
 				struct wb_view *view = wl_container_of(server->views.next, view, link);
-				if (wlr_surface_is_xdg_surface(view->xdg_toplevel->base->surface))
-					wl_signal_emit(&view->xdg_toplevel->events.request_maximize, view->xdg_toplevel->base);
+				if (view->mapped)
+					wl_signal_emit(&view->xdg_toplevel->events.request_maximize, NULL);
 			}
 			if (key_binding->action & ACTION_ICONIFY) {
 				struct wb_view *view = wl_container_of(server->views.next, view, link);
-				if (wlr_surface_is_xdg_surface(view->xdg_toplevel->base->surface)) {
+				if (view->mapped) {
 					view->xdg_toplevel->requested.minimized = true;
-					wl_signal_emit(&view->xdg_toplevel->events.request_minimize, view->xdg_toplevel->base);
+					wl_signal_emit(&view->xdg_toplevel->events.request_minimize, NULL);
 					struct wb_view *previous_view = wl_container_of(server->views.prev, previous_view, link);
 					focus_view(previous_view, previous_view->xdg_toplevel->base->surface);
 				}
 			}
 			if (key_binding->action & ACTION_SHADE) {
 				struct wb_view *view = wl_container_of(server->views.next, view, link);
-				if (wlr_surface_is_xdg_surface(view->xdg_toplevel->base->surface)) {
+				if (view->mapped) {
 					view->previous_position = view->current_position;
 #if WLR_CHECK_VERSION(0, 16, 0)
 					wlr_xdg_toplevel_set_size(view->xdg_toplevel,
@@ -117,7 +115,7 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 			}
 			if (key_binding->action & ACTION_UNSHADE) {
 				struct wb_view *view = wl_container_of(server->views.next, view, link);
-				if (wlr_surface_is_xdg_surface(view->xdg_toplevel->base->surface)) {
+				if (view->mapped) {
 #if WLR_CHECK_VERSION(0, 16, 0)
 					wlr_xdg_toplevel_set_size(view->xdg_toplevel,
 							view->previous_position.width, view->previous_position.height);

@@ -24,8 +24,7 @@ bool show_help(char *name)
 struct wb_server server = {0};
 void signal_handler(int sig)
 {
-	switch (sig)
-	{
+	switch (sig) {
 		case SIGINT:
 		case SIGTERM:
 			wl_display_terminate(server.wl_display);
