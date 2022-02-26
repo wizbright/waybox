@@ -59,9 +59,9 @@ static void xdg_surface_commit(struct wl_listener *listener, void *data) {
 
 	struct wlr_box geo_box = {0};
 	wlr_xdg_surface_get_geometry(xdg_surface, &geo_box);
-	if (geo_box.x < 0 && view->current_position.x < 1)
+	if (geo_box.x < 0 && view->current_position.x - view->server->config->margins.left < 1)
 		view->current_position.x += -geo_box.x;
-	if (geo_box.y < 0 && view->current_position.y < 1) {
+	if (geo_box.y < 0 && view->current_position.y - view->server->config->margins.top < 1) {
 		view->decoration_height = -geo_box.y;
 		view->current_position.y += view->decoration_height;
 	}
@@ -74,9 +74,12 @@ static void xdg_surface_map(struct wl_listener *listener, void *data) {
 	if (view->xdg_toplevel->base->role != WLR_XDG_SURFACE_ROLE_TOPLEVEL)
 		return;
 
+	struct wb_config *config = view->server->config;
 	struct wlr_box geo_box = {0};
 	wlr_xdg_surface_get_geometry(view->xdg_toplevel->base, &geo_box);
 	view->current_position = geo_box;
+	view->current_position.x = config->margins.left;
+	view->current_position.y = config->margins.top;
 #if WLR_CHECK_VERSION(0, 16, 0)
 	wlr_xdg_toplevel_set_size(view->xdg_toplevel, geo_box.width, geo_box.height);
 #else
@@ -133,10 +136,13 @@ static void xdg_toplevel_request_maximize(struct wl_listener *listener, void *da
 	bool is_maximized = surface->toplevel->current.maximized;
 	struct wlr_box usable_area = {0};
 	if (!is_maximized) {
+		struct wb_config *config = view->server->config;
 		wlr_output_effective_resolution(output, &usable_area.width, &usable_area.height);
 		view->previous_position = view->current_position;
-		view->current_position.x = 0;
-		view->current_position.y = 0 + view->decoration_height;
+		view->current_position.x = config->margins.left;
+		view->current_position.y = config->margins.top + view->decoration_height;
+		usable_area.height -= config->margins.top + config->margins.bottom;
+		usable_area.width -= config->margins.left + config->margins.right;
 	} else {
 		usable_area = view->previous_position;
 		view->current_position.x = view->previous_position.x;

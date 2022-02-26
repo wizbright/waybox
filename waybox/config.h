@@ -27,6 +27,12 @@ struct wb_config {
 
 		bool use_config;
 	} keyboard_layout;
+	struct {
+		int bottom;
+		int left;
+		int right;
+		int top;
+	} margins;
 
 	struct wl_list applications;
 	struct wl_list key_bindings;

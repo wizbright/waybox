@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openbox_config xmlns="http://openbox.org/3.4/rc" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <margins>
+    <top>0</top>
+    <bottom>0</bottom>
+    <left>0</left>
+    <right>0</right>
+  </margins>
   <keyboard>
     <!-- Keyboard layout.  See `man xkeyboard-config` for more information -->
     <!-- You can use the XKB_* environment variables instead -->

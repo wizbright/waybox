@@ -21,17 +21,18 @@ static char *parse_xpath_expr(char *expr, xmlXPathContextPtr ctxt) {
 	return (char *) ret;
 }
 
+static xmlChar *get_attribute(xmlNode *node, char *attr_name) {
+	xmlAttr *attr = node->properties;
+	while (attr && strcmp((char *) attr->name, attr_name) != 0)
+		attr = attr->next;
+	return attr->children->content;
+}
+
 static void get_action(xmlNode *new_node, struct wb_key_binding *key_bind) {
-	xmlAttr *attr;
 	xmlNode *cur_node;
 	for (cur_node = new_node; cur_node; cur_node = cur_node->next) {
 		if (strcmp((char *) cur_node->name, "action") == 0) {
-			attr = cur_node->properties;
-			if (!attr) continue;
-			while (strcmp((char *) attr->name, "name") != 0) {
-				attr = attr->next;
-			}
-			char *action = (char *) attr->children->content;
+			char *action = (char *) get_attribute(cur_node, "name");
 			if (strcmp(action, "Execute") == 0)
 				key_bind->action |= ACTION_EXECUTE;
 			else if (strcmp(action, "NextWindow") == 0)
@@ -82,13 +83,10 @@ static bool parse_key_bindings(struct wb_config *config, xmlXPathContextPtr ctxt
 		for (i = 0; i < object->nodesetval->nodeNr; i++) {
 			if (object->nodesetval->nodeTab[i]) {
 				/* First get the key combinations */
-				xmlAttr *keycomb = object->nodesetval->nodeTab[i]->properties;
-				while (strcmp((char *) keycomb->name, "key") != 0)
-					keycomb = keycomb->next;
-
+				xmlNode *keycomb = object->nodesetval->nodeTab[i];
 				char *sym;
 				uint32_t modifiers = 0;
-				sym = (char *) keycomb->children->content;
+				sym = (char *) get_attribute(keycomb, "key");
 				char *s;
 
 				struct wb_key_binding *key_bind = calloc(1, sizeof(struct wb_key_binding));
@@ -129,6 +127,7 @@ static bool parse_key_bindings(struct wb_config *config, xmlXPathContextPtr ctxt
 }
 
 bool init_config(struct wb_server *server) {
+	struct wb_config *config = calloc(1, sizeof(struct wb_config));
 	xmlDocPtr doc;
 	char *rc_file;
 	if (getenv("WB_RC_XML")) {
@@ -162,7 +161,6 @@ bool init_config(struct wb_server *server) {
 		wlr_log(WLR_INFO, "%s", _("Couldn't register the namespace"));
 	}
 
-	struct wb_config *config = calloc(1, sizeof(struct wb_config));
 	config->keyboard_layout.use_config = parse_xpath_expr("//ob:keyboard//ob:keyboardLayout", ctxt) != NULL;
 
 	if (config->keyboard_layout.use_config) {
@@ -176,6 +174,12 @@ bool init_config(struct wb_server *server) {
 		xmlFreeDoc(doc);
 		return false;
 	}
+
+	config->margins.bottom = strtoul(parse_xpath_expr("//ob:margins/ob:bottom", ctxt), NULL, 10);
+	config->margins.left = strtoul(parse_xpath_expr("//ob:margins/ob:left", ctxt), NULL, 10);
+	config->margins.right = strtoul(parse_xpath_expr("//ob:margins/ob:right", ctxt), NULL, 10);
+	config->margins.top = strtoul(parse_xpath_expr("//ob:margins/ob:top", ctxt), NULL, 10);
+
 	server->config = config;
 
 	xmlXPathFreeContext(ctxt);
