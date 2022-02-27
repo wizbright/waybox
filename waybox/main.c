@@ -4,8 +4,7 @@
 
 #include "waybox/server.h"
 
-bool show_help(char *name)
-{
+bool show_help(char *name) {
 	printf(_("Syntax: %s [options]\n"), name);
 	printf(_("\nOptions:\n"));
 	printf(_("  --help              Display this help and exit\n"));
@@ -22,8 +21,7 @@ bool show_help(char *name)
 }
 
 struct wb_server server = {0};
-void signal_handler(int sig)
-{
+void signal_handler(int sig) {
 	switch (sig) {
 		case SIGINT:
 		case SIGTERM:

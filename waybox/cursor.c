@@ -4,8 +4,11 @@
 
 static void process_cursor_move(struct wb_server *server) {
 	/* Move the grabbed view to the new position. */
-	server->grabbed_view->current_position.x = server->cursor->cursor->x - server->grab_x;
-	server->grabbed_view->current_position.y = server->cursor->cursor->y - server->grab_y;
+	struct wb_view *view = server->grabbed_view;
+	view->current_position.x = server->cursor->cursor->x - server->grab_x;
+	view->current_position.y = server->cursor->cursor->y - server->grab_y;
+	wlr_scene_node_set_position(view->scene_node,
+			view->current_position.x, view->current_position.y);
 }
 
 static void process_cursor_resize(struct wb_server *server) {
@@ -68,7 +71,7 @@ static void process_cursor_motion(struct wb_server *server, uint32_t time) {
 	double sx, sy;
 	struct wlr_seat *seat = server->seat->seat;
 	struct wlr_surface *surface = NULL;
-	struct wb_view *view = desktop_view_at(server,
+	struct wb_view *view = get_view_at(server,
 			server->cursor->cursor->x, server->cursor->cursor->y, &surface, &sx, &sy);
 	if (!view) {
 		/* If there's no view under the cursor, set the cursor image to a
@@ -120,7 +123,7 @@ static void handle_cursor_button(struct wl_listener *listener, void *data) {
 			event->time_msec, event->button, event->state);
 	double sx, sy;
 	struct wlr_surface *surface = NULL;
-	struct wb_view *view = desktop_view_at(cursor->server,
+	struct wb_view *view = get_view_at(cursor->server,
 			cursor->server->cursor->cursor->x, cursor->server->cursor->cursor->y, &surface, &sx, &sy);
 	if (event->state == WLR_BUTTON_RELEASED) {
 		/* If you released any buttons, we exit interactive move/resize mode. */

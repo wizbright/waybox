@@ -15,10 +15,12 @@ static void cycle_views(struct wb_server *server) {
 	if (wl_list_length(&server->views) < 1) {
 		return;
 	}
+
 	struct wb_view *current_view = wl_container_of(
 		server->views.prev, current_view, link);
 	deiconify_view(current_view);
 	focus_view(current_view, current_view->xdg_toplevel->base->surface);
+
 	/* Move the current view to the beginning of the list */
 	wl_list_remove(&current_view->link);
 	wl_list_insert(&server->views, &current_view->link);
@@ -29,12 +31,14 @@ static void cycle_views_reverse(struct wb_server *server) {
 	if (wl_list_length(&server->views) < 1) {
 		return;
 	}
+
 	struct wb_view *current_view = wl_container_of(
 		server->views.next, current_view, link);
 	struct wb_view *next_view = wl_container_of(
 		current_view->link.next, next_view, link);
 	deiconify_view(next_view);
 	focus_view(next_view, next_view->xdg_toplevel->base->surface);
+
 	/* Move the current view to after the previous view in the list */
 	wl_list_remove(&current_view->link);
 	wl_list_insert(server->views.prev, &current_view->link);
@@ -74,7 +78,7 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 			if (key_binding->action & ACTION_CLOSE) {
 				struct wb_view *current_view = wl_container_of(
 						server->views.next, current_view, link);
-				if (current_view->mapped)
+				if (current_view->scene_node->state.enabled)
 #if WLR_CHECK_VERSION(0, 16, 0)
 					wlr_xdg_toplevel_send_close(current_view->xdg_toplevel);
 #else
@@ -88,34 +92,37 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 			}
 			if (key_binding->action & ACTION_TOGGLE_MAXIMIZE) {
 				struct wb_view *view = wl_container_of(server->views.next, view, link);
-				if (view->mapped)
+				if (view->scene_node->state.enabled)
 					wl_signal_emit(&view->xdg_toplevel->events.request_maximize, NULL);
 			}
 			if (key_binding->action & ACTION_ICONIFY) {
 				struct wb_view *view = wl_container_of(server->views.next, view, link);
-				if (view->mapped) {
+				if (view->scene_node->state.enabled) {
 					view->xdg_toplevel->requested.minimized = true;
 					wl_signal_emit(&view->xdg_toplevel->events.request_minimize, NULL);
-					struct wb_view *previous_view = wl_container_of(server->views.prev, previous_view, link);
-					focus_view(previous_view, previous_view->xdg_toplevel->base->surface);
 				}
 			}
 			if (key_binding->action & ACTION_SHADE) {
 				struct wb_view *view = wl_container_of(server->views.next, view, link);
-				if (view->mapped) {
+				if (view->scene_node->state.enabled) {
+					struct wlr_box geo_box;
+					wlr_xdg_surface_get_geometry(view->xdg_toplevel->base, &geo_box);
+					/* TODO: Get the minimum height from the theme rather than hard-coded. */
+					int decoration_height = MAX(geo_box.y - view->current_position.y, 8);
+
 					view->previous_position = view->current_position;
 #if WLR_CHECK_VERSION(0, 16, 0)
 					wlr_xdg_toplevel_set_size(view->xdg_toplevel,
-							view->current_position.width, view->decoration_height);
+							view->current_position.width, decoration_height);
 #else
 					wlr_xdg_toplevel_set_size(view->xdg_surface,
-							view->current_position.width, view->decoration_height);
+							view->current_position.width, decoration_height);
 #endif
 				}
 			}
 			if (key_binding->action & ACTION_UNSHADE) {
 				struct wb_view *view = wl_container_of(server->views.next, view, link);
-				if (view->mapped) {
+				if (view->scene_node->state.enabled) {
 #if WLR_CHECK_VERSION(0, 16, 0)
 					wlr_xdg_toplevel_set_size(view->xdg_toplevel,
 							view->previous_position.width, view->previous_position.height);

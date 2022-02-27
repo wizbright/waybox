@@ -1,8 +1,9 @@
 /*
- * More or less taken verbatim from wio <https://git.sr.ht/~sircmpwn/wio>, so in
- * accordance with its MIT license:
+ * More or less taken verbatim from wio <https://git.sr.ht/~sircmpwn/wio>.
+ * Additional material taken from sway <https://github.com/swaywm/sway>.
  *
  * Copyright 2019 Drew DeVault
+ * Copyright 2022 Sway Developers
  */
 #include <wlr/types/wlr_layer_shell_v1.h>
 #include "waybox/xdg_shell.h"
@@ -285,9 +286,9 @@ void server_new_layer_surface(struct wl_listener *listener, void *data) {
 	layer_surface->current = old_state;
 }
 
-void init_layer_shell(struct wb_server *server)
-{
+void init_layer_shell(struct wb_server *server) {
 	server->layer_shell = wlr_layer_shell_v1_create(server->wl_display);
+	return;
 	server->new_layer_surface.notify = server_new_layer_surface;
 	wl_signal_add(&server->layer_shell->events.new_surface,
 			&server->new_layer_surface);

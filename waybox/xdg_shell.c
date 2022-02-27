@@ -1,14 +1,36 @@
 #include "waybox/xdg_shell.h"
 
+struct wb_view *get_view_at(
+		struct wb_server *server, double lx, double ly,
+		struct wlr_surface **surface, double *sx, double *sy) {
+	/* This returns the topmost node in the scene at the given layout coords.
+	 * we only care about surface nodes as we are specifically looking for a
+	 * surface in the surface tree of a wb_view. */
+	struct wlr_scene_node *node = wlr_scene_node_at(
+		&server->scene->node, lx, ly, sx, sy);
+	if (node == NULL || node->type != WLR_SCENE_NODE_SURFACE) {
+		return NULL;
+	}
+	*surface = wlr_scene_surface_from_node(node)->surface;
+	/* Find the node corresponding to the tinywl_view at the root of this
+	 * surface tree, it is the only one for which we set the data field. */
+	while (node != NULL && node->data == NULL) {
+		node = node->parent;
+	}
+	return node->data;
+}
+
 void focus_view(struct wb_view *view, struct wlr_surface *surface) {
 	/* Note: this function only deals with keyboard focus. */
 	if (view == NULL || surface == NULL || !wlr_surface_is_xdg_surface(surface)) {
 		return;
 	}
+
 	struct wlr_xdg_surface *xdg_surface = wlr_xdg_surface_from_wlr_surface(surface);
 	if (xdg_surface)
 		wlr_log(WLR_INFO, "%s: %s", _("Keyboard focus is now on surface"),
 				xdg_surface->toplevel->app_id);
+
 	struct wb_server *server = view->server;
 	struct wlr_seat *seat = server->seat->seat;
 	struct wlr_surface *prev_surface = seat->keyboard_state.focused_surface;
@@ -32,6 +54,7 @@ void focus_view(struct wb_view *view, struct wlr_surface *surface) {
 	}
 	struct wlr_keyboard *keyboard = wlr_seat_get_keyboard(seat);
 	/* Move the view to the front */
+	wlr_scene_node_raise_to_top(view->scene_node);
 	wl_list_remove(&view->link);
 	wl_list_insert(&server->views, &view->link);
 	/* Activate the new surface */
@@ -62,91 +85,81 @@ static struct wlr_box get_usable_area(struct wb_view *view) {
 	return usable_area;
 }
 
-static void xdg_surface_commit(struct wl_listener *listener, void *data) {
-	/* Called after the surface is committed */
-	struct wb_view *view = wl_container_of(listener, view, surface_commit);
-	struct wlr_xdg_surface *xdg_surface = view->xdg_toplevel->base;
-	if (xdg_surface->role != WLR_XDG_SURFACE_ROLE_TOPLEVEL ||
-			xdg_surface->toplevel->requested.minimized)
-		return;
-
-	struct wb_config *config = view->server->config;
-	int left_margin, top_margin;
-	if (config) {
-		left_margin = config->margins.left;
-		top_margin = config->margins.top;
-	} else {
-		left_margin = 0;
-		top_margin = 0;
-	}
-	struct wlr_box geo_box = {0};
-	wlr_xdg_surface_get_geometry(xdg_surface, &geo_box);
-	if (geo_box.x < 0 && view->current_position.x - left_margin < 1)
-		view->current_position.x += -geo_box.x;
-	if (geo_box.y < 0 && view->current_position.y - top_margin < 1) {
-		view->decoration_height = -geo_box.y;
-		view->current_position.y += view->decoration_height;
-	}
-}
-
-static void xdg_surface_map(struct wl_listener *listener, void *data) {
+static void xdg_toplevel_map(struct wl_listener *listener, void *data) {
 	/* Called when the surface is mapped, or ready to display on-screen. */
 	struct wb_view *view = wl_container_of(listener, view, map);
-	view->mapped = true;
 	if (view->xdg_toplevel->base->role != WLR_XDG_SURFACE_ROLE_TOPLEVEL)
 		return;
 
+	wl_list_insert(&view->server->views, &view->link);
+
 	struct wb_config *config = view->server->config;
 	struct wlr_box geo_box = {0};
+	struct wlr_box usable_area = get_usable_area(view);
 	wlr_xdg_surface_get_geometry(view->xdg_toplevel->base, &geo_box);
-	view->current_position = geo_box;
+
 	if (config) {
-		struct wlr_box usable_area = get_usable_area(view);
-		view->current_position.height = MIN(view->current_position.height,
+		view->current_position.height = MIN(geo_box.height,
 				usable_area.height - config->margins.top - config->margins.bottom);
-		view->current_position.width = MIN(view->current_position.width,
+		view->current_position.width = MIN(geo_box.width,
 				usable_area.width - config->margins.left - config->margins.right);
 		view->current_position.x = config->margins.left;
 		view->current_position.y = config->margins.top;
+	} else {
+		view->current_position.height = MIN(geo_box.height, usable_area.height);
+		view->current_position.width = MIN(geo_box.width, usable_area.width);
+		view->current_position.x = 0;
+		view->current_position.y = 0;
 	}
+
 #if WLR_CHECK_VERSION(0, 16, 0)
 	wlr_xdg_toplevel_set_size(view->xdg_toplevel, view->current_position.width, view->current_position.height);
 #else
 	wlr_xdg_toplevel_set_size(view->xdg_surface, view->current_position.width, view->current_position.height);
 #endif
 	focus_view(view, view->xdg_toplevel->base->surface);
+	wlr_scene_node_set_position(view->scene_node,
+			view->current_position.x, view->current_position.y);
 }
 
-static void xdg_surface_unmap(struct wl_listener *listener, void *data) {
+static void xdg_toplevel_unmap(struct wl_listener *listener, void *data) {
 	/* Called when the surface is unmapped, and should no longer be shown. */
 	struct wb_view *view = wl_container_of(listener, view, unmap);
-	view->mapped = false;
-
-	struct wb_view *current_view = wl_container_of(view->server->views.next, current_view, link);
-	struct wb_view *next_view = wl_container_of(current_view->link.next, next_view, link);
-	if (current_view->xdg_toplevel->base->role != WLR_XDG_SURFACE_ROLE_TOPLEVEL)
+	if (view->xdg_toplevel->base->role != WLR_XDG_SURFACE_ROLE_TOPLEVEL)
 		return;
 
+	struct wb_view *next_view = wl_container_of(view->link.next, next_view, link);
 	/* If the current view is mapped, focus it. */
-	if (current_view->mapped) {
+	if (view->scene_node->state.enabled) {
 		wlr_log(WLR_INFO, "%s: %s", _("Focusing current view"),
-				current_view->xdg_toplevel->app_id);
-		focus_view(current_view, current_view->xdg_toplevel->base->surface);
+				view->xdg_toplevel->app_id);
+		focus_view(view, view->xdg_toplevel->base->surface);
 	}
 	/* Otherwise, focus the next view, if any. */
-	else if (next_view->xdg_toplevel->base->surface &&
-			wlr_surface_is_xdg_surface(next_view->xdg_toplevel->base->surface)) {
+	else if (next_view && next_view->scene_node && next_view->scene_node->state.enabled) {
 		wlr_log(WLR_INFO, "%s: %s", _("Focusing next view"),
 				next_view->xdg_toplevel->app_id);
 		focus_view(next_view, next_view->xdg_toplevel->base->surface);
 	}
+
+	wl_list_remove(&view->link);
 }
 
-static void xdg_surface_destroy(struct wl_listener *listener, void *data) {
+static void xdg_toplevel_destroy(struct wl_listener *listener, void *data) {
 	/* Called when the surface is destroyed and should never be shown again. */
 	struct wb_view *view = wl_container_of(listener, view, destroy);
-	if (view->xdg_toplevel->base->role == WLR_XDG_SURFACE_ROLE_TOPLEVEL)
-		wl_list_remove(&view->link);
+
+	wl_list_remove(&view->map.link);
+	wl_list_remove(&view->unmap.link);
+	wl_list_remove(&view->destroy.link);
+
+	if (view->xdg_toplevel->base->role == WLR_XDG_SURFACE_ROLE_TOPLEVEL) {
+		wl_list_remove(&view->request_minimize.link);
+		wl_list_remove(&view->request_maximize.link);
+		wl_list_remove(&view->request_move.link);
+		wl_list_remove(&view->request_resize.link);
+	}
+
 	free(view);
 }
 
@@ -160,12 +173,12 @@ static void xdg_toplevel_request_maximize(struct wl_listener *listener, void *da
 		view->previous_position = view->current_position;
 		if (config) {
 			view->current_position.x = config->margins.left;
-			view->current_position.y = config->margins.top + view->decoration_height;
+			view->current_position.y = config->margins.top;
 			usable_area.height -= config->margins.top + config->margins.bottom;
 			usable_area.width -= config->margins.left + config->margins.right;
 		} else {
 			view->current_position.x = 0;
-			view->current_position.y = view->decoration_height;
+			view->current_position.y = 0;
 		}
 	} else {
 		usable_area = view->previous_position;
@@ -179,18 +192,25 @@ static void xdg_toplevel_request_maximize(struct wl_listener *listener, void *da
 	wlr_xdg_toplevel_set_size(view->xdg_surface, usable_area.width, usable_area.height);
 	wlr_xdg_toplevel_set_maximized(view->xdg_surface, !is_maximized);
 #endif
+	wlr_scene_node_set_position(view->scene_node,
+			view->current_position.x, view->current_position.y);
 }
 
 static void xdg_toplevel_request_minimize(struct wl_listener *listener, void *data) {
 	struct wb_view *view = wl_container_of(listener, view, request_minimize);
 	bool minimize_requested = view->xdg_toplevel->requested.minimized;
 	if (minimize_requested) {
-		view->previous_position.height = view->current_position.height;
-		view->current_position.y = 0 -
-			view->decoration_height * 2 - view->current_position.height;
+		view->previous_position = view->current_position;
+		view->current_position.y = -view->current_position.height;
 	} else {
 		view->current_position = view->previous_position;
 	}
+
+	struct wb_view *parent_view = wl_container_of(view->link.prev, parent_view, link);
+	struct wb_view *previous_view = wl_container_of(parent_view->link.prev, previous_view, link);
+	focus_view(previous_view, previous_view->xdg_toplevel->base->surface);
+	wlr_scene_node_set_position(view->scene_node,
+			view->current_position.x, view->current_position.y);
 }
 
 static void begin_interactive(struct wb_view *view,
@@ -215,8 +235,10 @@ static void begin_interactive(struct wb_view *view,
 		struct wlr_box geo_box;
 		wlr_xdg_surface_get_geometry(view->xdg_toplevel->base, &geo_box);
 
-		double border_x = (view->current_position.x + geo_box.x) + ((edges & WLR_EDGE_RIGHT) ? geo_box.width : 0);
-		double border_y = (view->current_position.y + geo_box.y) + ((edges & WLR_EDGE_BOTTOM) ? geo_box.height : 0);
+		double border_x = (view->current_position.x + geo_box.x) +
+			((edges & WLR_EDGE_RIGHT) ? geo_box.width : 0);
+		double border_y = (view->current_position.y + geo_box.y) +
+			((edges & WLR_EDGE_BOTTOM) ? geo_box.height : 0);
 		server->grab_x = server->cursor->cursor->x - border_x;
 		server->grab_y = server->cursor->cursor->y - border_y;
 
@@ -276,9 +298,23 @@ static void handle_new_xdg_surface(struct wl_listener *listener, void *data) {
 	struct wb_server *server =
 		wl_container_of(listener, server, new_xdg_surface);
 	struct wlr_xdg_surface *xdg_surface = data;
-	if (xdg_surface->role == WLR_XDG_SURFACE_ROLE_NONE) {
-		return;
+
+	/* We must add xdg popups to the scene graph so they get rendered. The
+	 * wlroots scene graph provides a helper for this, but to use it we must
+	 * provide the proper parent scene node of the xdg popup. To enable this,
+	 * we always set the user data field of xdg_surfaces to the corresponding
+	 * scene node. */
+	if (xdg_surface->role == WLR_XDG_SURFACE_ROLE_POPUP) {
+		struct wlr_xdg_surface *parent = wlr_xdg_surface_from_wlr_surface(
+			xdg_surface->popup->parent);
+			struct wlr_scene_node *parent_node = parent->data;
+		xdg_surface->data = wlr_scene_xdg_surface_create(
+			parent_node, xdg_surface);
+		/* The scene graph doesn't currently unconstrain popups, so keep going */
+		/* return; */
 	}
+	if (xdg_surface->role == WLR_XDG_SURFACE_ROLE_NONE)
+		return;
 
 	/* Allocate a wb_view for this surface */
 	struct wb_view *view =
@@ -290,19 +326,21 @@ static void handle_new_xdg_surface(struct wl_listener *listener, void *data) {
 #endif
 
 	/* Listen to the various events it can emit */
-	view->surface_commit.notify = xdg_surface_commit;
-	wl_signal_add(&xdg_surface->surface->events.commit, &view->surface_commit);
-
-	view->map.notify = xdg_surface_map;
+	view->map.notify = xdg_toplevel_map;
 	wl_signal_add(&xdg_surface->events.map, &view->map);
-	view->unmap.notify = xdg_surface_unmap;
+	view->unmap.notify = xdg_toplevel_unmap;
 	wl_signal_add(&xdg_surface->events.unmap, &view->unmap);
-	view->destroy.notify = xdg_surface_destroy;
+	view->destroy.notify = xdg_toplevel_destroy;
 	wl_signal_add(&xdg_surface->events.destroy, &view->destroy);
 	view->new_popup.notify = handle_new_popup;
 	wl_signal_add(&xdg_surface->events.new_popup, &view->new_popup);
 
 	if (xdg_surface->role == WLR_XDG_SURFACE_ROLE_TOPLEVEL) {
+		view->scene_node = wlr_scene_xdg_surface_create(
+			&view->server->scene->node, view->xdg_toplevel->base);
+		view->scene_node->data = view;
+		xdg_surface->data = view->scene_node;
+
 		struct wlr_xdg_toplevel *toplevel = view->xdg_toplevel;
 		view->request_maximize.notify = xdg_toplevel_request_maximize;
 		wl_signal_add(&toplevel->events.request_maximize, &view->request_maximize);
@@ -312,55 +350,7 @@ static void handle_new_xdg_surface(struct wl_listener *listener, void *data) {
 		wl_signal_add(&toplevel->events.request_move, &view->request_move);
 		view->request_resize.notify = xdg_toplevel_request_resize;
 		wl_signal_add(&toplevel->events.request_resize, &view->request_resize);
-
-		/* Add it to the list of views. */
-		wl_list_insert(&server->views, &view->link);
 	}
-}
-
-bool view_at(struct wb_view *view,
-		double lx, double ly, struct wlr_surface **surface,
-		double *sx, double *sy) {
-	/*
-	 * XDG toplevels may have nested surfaces, such as popup windows for context
-	 * menus or tooltips. This function tests if any of those are underneath the
-	 * coordinates lx and ly (in output Layout Coordinates). If so, it sets the
-	 * surface pointer to that wlr_surface and the sx and sy coordinates to the
-	 * coordinates relative to that surface's top-left corner.
-	 */
-	if (view->xdg_toplevel->base->role != WLR_XDG_SURFACE_ROLE_TOPLEVEL)
-		return false;
-
-	double view_sx = lx - view->current_position.x;
-	double view_sy = ly - view->current_position.y;
-
-	double _sx, _sy;
-	struct wlr_surface *_surface = NULL;
-	_surface = wlr_xdg_surface_surface_at(
-			view->xdg_toplevel->base, view_sx, view_sy, &_sx, &_sy);
-
-	if (_surface != NULL) {
-		*sx = _sx;
-		*sy = _sy;
-		*surface = _surface;
-		return true;
-	}
-
-	return false;
-}
-
-struct wb_view *desktop_view_at(
-		struct wb_server *server, double lx, double ly,
-		struct wlr_surface **surface, double *sx, double *sy) {
-	/* This iterates over all of our surfaces and attempts to find one under the
-	 * cursor. This relies on server->views being ordered from top-to-bottom. */
-	struct wb_view *view;
-	wl_list_for_each(view, &server->views, link) {
-		if (view_at(view, lx, ly, surface, sx, sy)) {
-			return view;
-		}
-	}
-	return NULL;
 }
 
 void init_xdg_shell(struct wb_server *server) {

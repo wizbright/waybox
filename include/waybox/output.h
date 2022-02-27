@@ -6,6 +6,7 @@
 
 #include <wlr/render/wlr_renderer.h>
 #include <wlr/render/wlr_texture.h>
+#include <wlr/types/wlr_scene.h>
 #include <wlr/types/wlr_xdg_output_v1.h>
 
 #include "waybox/server.h"
@@ -14,7 +15,9 @@ struct wb_output {
 	struct wlr_output *wlr_output;
 	struct wb_server *server;
 
-	struct wl_list layers[4];
+	struct wl_list layers[4]; /* wb_layer_surface::link */
+
+	struct wlr_scene_rect *scene_rect;
 
 	struct wl_listener destroy;
 	struct wl_listener frame;
@@ -29,9 +32,9 @@ struct wb_view {
 #if !WLR_CHECK_VERSION(0, 16, 0)
 	struct wlr_xdg_surface *xdg_surface;
 #endif
+	struct wlr_scene_node *scene_node;
 
 	struct wlr_xdg_toplevel_decoration_v1 *decoration;
-	int decoration_height;
 
 	struct wl_listener map;
 	struct wl_listener unmap;
@@ -41,8 +44,6 @@ struct wb_view {
 	struct wl_listener request_minimize;
 	struct wl_listener request_move;
 	struct wl_listener request_resize;
-	struct wl_listener surface_commit;
-	bool mapped;
 
 	struct wlr_box current_position;
 	struct wlr_box previous_position;

@@ -54,6 +54,15 @@ bool wb_start_server(struct wb_server* server) {
 	server->new_output.notify = new_output_notify;
 	wl_signal_add(&server->backend->events.new_output, &server->new_output);
 
+	/* Create a scene graph. This is a wlroots abstraction that handles all
+	 * rendering and damage tracking. All the compositor author needs to do
+	 * is add things that should be rendered to the scene graph at the proper
+	 * positions and then call wlr_scene_output_commit() to render a frame if
+	 * necessary.
+	 */
+	server->scene = wlr_scene_create();
+	wlr_scene_attach_output_layout(server->scene, server->output_layout);
+
 	const char *socket = wl_display_add_socket_auto(server->wl_display);
 	if (!socket) {
 		wlr_backend_destroy(server->backend);
@@ -78,6 +87,13 @@ bool wb_start_server(struct wb_server* server) {
 	wl_list_init(&server->views);
 	init_xdg_decoration(server);
 	init_layer_shell(server);
+
+	/* Set up the xdg-shell. The xdg-shell is a Wayland protocol which is used
+	 * for application windows. For more detail on shells, refer to Drew
+	 * DeVault's article:
+	 *
+	 * https://drewdevault.com/2018/07/29/Wayland-shells.html
+	 */
 	init_xdg_shell(server);
 
 	return true;

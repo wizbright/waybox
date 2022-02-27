@@ -16,7 +16,6 @@
 #include <wlr/types/wlr_data_device.h>
 #include <wlr/types/wlr_idle.h>
 #include <wlr/types/wlr_screencopy_v1.h>
-#include <wlr/types/wlr_matrix.h>
 #include <wlr/types/wlr_gamma_control_v1.h>
 #include <wlr/types/wlr_output_layout.h>
 #if WLR_CHECK_VERSION(0, 16, 0)
@@ -49,6 +48,7 @@ struct wb_server {
 	struct wlr_output_layout *output_layout;
 	struct wlr_xdg_output_manager_v1 *output_manager;
 	struct wlr_renderer *renderer;
+	struct wlr_scene *scene;
 #if WLR_CHECK_VERSION(0, 16, 0)
 	struct wlr_subcompositor *subcompositor;
 #endif
