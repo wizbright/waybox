@@ -15,9 +15,17 @@ struct wb_output {
 	struct wlr_output *wlr_output;
 	struct wb_server *server;
 
-	struct wl_list layers[4]; /* wb_layer_surface::link */
+	struct {
+		struct wlr_scene_node *shell_background;
+		struct wlr_scene_node *shell_bottom;
+		struct wlr_scene_node *shell_fullscreen;
+		struct wlr_scene_node *shell_overlay;
+		struct wlr_scene_node *shell_top;
+	} layers;
 
+#if !WLR_CHECK_VERSION(0, 16, 0)
 	struct wlr_scene_rect *scene_rect;
+#endif
 
 	struct wl_listener destroy;
 	struct wl_listener frame;

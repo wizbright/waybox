@@ -45,7 +45,7 @@ void focus_view(struct wb_view *view, struct wlr_surface *surface) {
 		 * stop displaying a caret.
 		 */
 		struct wlr_xdg_surface *previous = wlr_xdg_surface_from_wlr_surface(
-					seat->keyboard_state.focused_surface);
+					prev_surface);
 #if WLR_CHECK_VERSION(0, 16, 0)
 		wlr_xdg_toplevel_set_activated(previous->toplevel, false);
 #else
@@ -90,8 +90,6 @@ static void xdg_toplevel_map(struct wl_listener *listener, void *data) {
 	struct wb_view *view = wl_container_of(listener, view, map);
 	if (view->xdg_toplevel->base->role != WLR_XDG_SURFACE_ROLE_TOPLEVEL)
 		return;
-
-	wl_list_insert(&view->server->views, &view->link);
 
 	struct wb_config *config = view->server->config;
 	struct wlr_box geo_box = {0};
@@ -141,8 +139,6 @@ static void xdg_toplevel_unmap(struct wl_listener *listener, void *data) {
 				next_view->xdg_toplevel->app_id);
 		focus_view(next_view, next_view->xdg_toplevel->base->surface);
 	}
-
-	wl_list_remove(&view->link);
 }
 
 static void xdg_toplevel_destroy(struct wl_listener *listener, void *data) {
@@ -158,6 +154,7 @@ static void xdg_toplevel_destroy(struct wl_listener *listener, void *data) {
 		wl_list_remove(&view->request_maximize.link);
 		wl_list_remove(&view->request_move.link);
 		wl_list_remove(&view->request_resize.link);
+		wl_list_remove(&view->link);
 	}
 
 	free(view);
@@ -305,11 +302,13 @@ static void handle_new_xdg_surface(struct wl_listener *listener, void *data) {
 	 * we always set the user data field of xdg_surfaces to the corresponding
 	 * scene node. */
 	if (xdg_surface->role == WLR_XDG_SURFACE_ROLE_POPUP) {
-		struct wlr_xdg_surface *parent = wlr_xdg_surface_from_wlr_surface(
-			xdg_surface->popup->parent);
-			struct wlr_scene_node *parent_node = parent->data;
-		xdg_surface->data = wlr_scene_xdg_surface_create(
-			parent_node, xdg_surface);
+		if (wlr_surface_is_xdg_surface(xdg_surface->popup->parent)) {
+			struct wlr_xdg_surface *parent = wlr_xdg_surface_from_wlr_surface(
+				xdg_surface->popup->parent);
+				struct wlr_scene_node *parent_node = parent->data;
+			xdg_surface->data = wlr_scene_xdg_surface_create(
+				parent_node, xdg_surface);
+		}
 		/* The scene graph doesn't currently unconstrain popups, so keep going */
 		/* return; */
 	}
@@ -350,6 +349,8 @@ static void handle_new_xdg_surface(struct wl_listener *listener, void *data) {
 		wl_signal_add(&toplevel->events.request_move, &view->request_move);
 		view->request_resize.notify = xdg_toplevel_request_resize;
 		wl_signal_add(&toplevel->events.request_resize, &view->request_resize);
+
+		wl_list_insert(&view->server->views, &view->link);
 	}
 }
 

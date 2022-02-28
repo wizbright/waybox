@@ -11,6 +11,8 @@ struct wb_server;
 struct wb_seat {
 	struct wlr_seat *seat;
 
+	struct wlr_layer_surface_v1 *focused_layer;
+
 	struct wl_list keyboards;
 
 	struct wl_listener request_set_primary_selection;
@@ -28,5 +30,6 @@ struct wb_keyboard {
 
 struct wb_server;
 struct wb_seat *wb_seat_create(struct wb_server *server);
+void seat_set_focus_layer(struct wb_seat *seat, struct wlr_layer_surface_v1 *layer);
 void wb_seat_destroy(struct wb_seat *seat);
 #endif

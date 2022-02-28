@@ -269,6 +269,27 @@ static void new_input_notify(struct wl_listener *listener, void *data) {
 	wlr_seat_set_capabilities(server->seat->seat, caps);
 }
 
+void seat_focus_surface(struct wb_seat *seat, struct wlr_surface *surface) {
+	if (!surface) {
+		wlr_seat_keyboard_notify_clear_focus(seat->seat);
+		return;
+	}
+	struct wlr_keyboard *kb = (struct wlr_keyboard *) seat->keyboards.next;
+	wlr_seat_keyboard_notify_enter(seat->seat, surface, kb->keycodes,
+		kb->num_keycodes, &kb->modifiers);
+}
+
+void seat_set_focus_layer(struct wb_seat *seat, struct wlr_layer_surface_v1 *layer) {
+	if (!layer) {
+		seat->focused_layer = NULL;
+		return;
+	}
+	seat_focus_surface(seat, layer->surface);
+	if (layer->current.layer >= ZWLR_LAYER_SHELL_V1_LAYER_TOP) {
+		seat->focused_layer = layer;
+	}
+}
+
 static void handle_request_set_primary_selection(struct wl_listener *listener,
 		void *data) {
 	struct wb_seat *seat =
