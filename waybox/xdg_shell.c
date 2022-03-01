@@ -52,7 +52,6 @@ void focus_view(struct wb_view *view, struct wlr_surface *surface) {
 		wlr_xdg_toplevel_set_activated(previous, false);
 #endif
 	}
-	struct wlr_keyboard *keyboard = wlr_seat_get_keyboard(seat);
 	/* Move the view to the front */
 	wlr_scene_node_raise_to_top(view->scene_node);
 	wl_list_remove(&view->link);
@@ -68,8 +67,7 @@ void focus_view(struct wb_view *view, struct wlr_surface *surface) {
 	 * track of this and automatically send key events to the appropriate
 	 * clients without additional work on your part.
 	 */
-	wlr_seat_keyboard_notify_enter(seat, view->xdg_toplevel->base->surface,
-		keyboard->keycodes, keyboard->num_keycodes, &keyboard->modifiers);
+	seat_focus_surface(server->seat, view->xdg_toplevel->base->surface);
 }
 
 static struct wlr_box get_usable_area(struct wb_view *view) {
@@ -126,15 +124,9 @@ static void xdg_toplevel_unmap(struct wl_listener *listener, void *data) {
 	if (view->xdg_toplevel->base->role != WLR_XDG_SURFACE_ROLE_TOPLEVEL)
 		return;
 
+	/* Focus the next view, if any. */
 	struct wb_view *next_view = wl_container_of(view->link.next, next_view, link);
-	/* If the current view is mapped, focus it. */
-	if (view->scene_node->state.enabled) {
-		wlr_log(WLR_INFO, "%s: %s", _("Focusing current view"),
-				view->xdg_toplevel->app_id);
-		focus_view(view, view->xdg_toplevel->base->surface);
-	}
-	/* Otherwise, focus the next view, if any. */
-	else if (next_view && next_view->scene_node && next_view->scene_node->state.enabled) {
+	if (next_view && next_view->scene_node && next_view->scene_node->state.enabled) {
 		wlr_log(WLR_INFO, "%s: %s", _("Focusing next view"),
 				next_view->xdg_toplevel->app_id);
 		focus_view(next_view, next_view->xdg_toplevel->base->surface);
@@ -148,6 +140,7 @@ static void xdg_toplevel_destroy(struct wl_listener *listener, void *data) {
 	wl_list_remove(&view->map.link);
 	wl_list_remove(&view->unmap.link);
 	wl_list_remove(&view->destroy.link);
+	wl_list_remove(&view->new_popup.link);
 
 	if (view->xdg_toplevel->base->role == WLR_XDG_SURFACE_ROLE_TOPLEVEL) {
 		wl_list_remove(&view->request_minimize.link);
@@ -269,22 +262,18 @@ static void xdg_toplevel_request_resize(
 static void handle_new_popup(struct wl_listener *listener, void *data) {
 	struct wlr_xdg_popup *popup = data;
 	struct wb_view *view = wl_container_of(listener, view, new_popup);
-	struct wlr_output_layout *output_layout = view->server->output_layout;
 
-	struct wlr_output *wlr_output = wlr_output_layout_output_at(output_layout,
+	struct wlr_output *wlr_output = wlr_output_layout_output_at(
+			view->server->output_layout,
 			view->current_position.x + popup->geometry.x,
 			view->current_position.y + popup->geometry.y);
-	struct wlr_box output_box;
-#if WLR_CHECK_VERSION(0, 16, 0)
-	wlr_output_layout_get_box(output_layout, wlr_output, &output_box);
-#else
-	output_box = (*wlr_output_layout_get_box(output_layout, wlr_output));
-#endif
+	struct wb_output *output = wlr_output->data;
+
 	struct wlr_box output_toplevel_box = {
-		.x = output_box.x - view->current_position.x,
-		.y = output_box.y - view->current_position.y,
-		.width = output_box.width,
-		.height = output_box.height,
+		.x = output->geometry.x - view->current_position.x,
+		.y = output->geometry.y - view->current_position.y,
+		.width = output->geometry.width,
+		.height = output->geometry.height,
 	};
 	wlr_xdg_popup_unconstrain_from_box(popup, &output_toplevel_box);
 }

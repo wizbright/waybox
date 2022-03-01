@@ -23,9 +23,8 @@ struct wb_output {
 		struct wlr_scene_node *shell_top;
 	} layers;
 
-#if !WLR_CHECK_VERSION(0, 16, 0)
-	struct wlr_scene_rect *scene_rect;
-#endif
+	struct wlr_scene_rect *background;
+	struct wlr_box geometry;
 
 	struct wl_listener destroy;
 	struct wl_listener frame;

@@ -30,6 +30,7 @@ struct wb_keyboard {
 
 struct wb_server;
 struct wb_seat *wb_seat_create(struct wb_server *server);
+void seat_focus_surface(struct wb_seat *seat, struct wlr_surface *surface);
 void seat_set_focus_layer(struct wb_seat *seat, struct wlr_layer_surface_v1 *layer);
 void wb_seat_destroy(struct wb_seat *seat);
 #endif

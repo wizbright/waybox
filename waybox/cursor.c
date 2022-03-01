@@ -7,8 +7,10 @@ static void process_cursor_move(struct wb_server *server) {
 	struct wb_view *view = server->grabbed_view;
 	view->current_position.x = server->cursor->cursor->x - server->grab_x;
 	view->current_position.y = server->cursor->cursor->y - server->grab_y;
-	wlr_scene_node_set_position(view->scene_node,
-			view->current_position.x, view->current_position.y);
+	if (view->scene_node->parent->type == WLR_SCENE_NODE_ROOT) {
+		wlr_scene_node_set_position(view->scene_node,
+				view->current_position.x, view->current_position.y);
+	}
 }
 
 static void process_cursor_resize(struct wb_server *server) {

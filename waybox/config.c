@@ -3,6 +3,12 @@
 
 #include "config.h"
 
+static unsigned long strtoulong(char *s) {
+	if (s)
+		return strtoul(s, (char **) NULL, 10);
+	else return 0;
+}
+
 static char *parse_xpath_expr(char *expr, xmlXPathContextPtr ctxt) {
 	xmlXPathObjectPtr object = xmlXPathEvalExpression((xmlChar *) expr, ctxt);
 	if (object == NULL) {
@@ -175,10 +181,10 @@ bool init_config(struct wb_server *server) {
 		return false;
 	}
 
-	config->margins.bottom = strtoul(parse_xpath_expr("//ob:margins/ob:bottom", ctxt), NULL, 10);
-	config->margins.left = strtoul(parse_xpath_expr("//ob:margins/ob:left", ctxt), NULL, 10);
-	config->margins.right = strtoul(parse_xpath_expr("//ob:margins/ob:right", ctxt), NULL, 10);
-	config->margins.top = strtoul(parse_xpath_expr("//ob:margins/ob:top", ctxt), NULL, 10);
+	config->margins.bottom = strtoulong(parse_xpath_expr("//ob:margins/ob:bottom", ctxt));
+	config->margins.left = strtoulong(parse_xpath_expr("//ob:margins/ob:left", ctxt));
+	config->margins.right = strtoulong(parse_xpath_expr("//ob:margins/ob:right", ctxt));
+	config->margins.top = strtoulong(parse_xpath_expr("//ob:margins/ob:top", ctxt));
 
 	server->config = config;
 

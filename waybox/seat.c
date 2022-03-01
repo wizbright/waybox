@@ -274,7 +274,8 @@ void seat_focus_surface(struct wb_seat *seat, struct wlr_surface *surface) {
 		wlr_seat_keyboard_notify_clear_focus(seat->seat);
 		return;
 	}
-	struct wlr_keyboard *kb = (struct wlr_keyboard *) seat->keyboards.next;
+
+	struct wlr_keyboard *kb = wlr_seat_get_keyboard(seat->seat);
 	wlr_seat_keyboard_notify_enter(seat->seat, surface, kb->keycodes,
 		kb->num_keycodes, &kb->modifiers);
 }
@@ -327,6 +328,7 @@ struct wb_seat *wb_seat_create(struct wb_server *server) {
 }
 
 void wb_seat_destroy(struct wb_seat *seat) {
+	wl_list_remove(&seat->keyboards);
 	wl_list_remove(&seat->request_set_primary_selection.link);
 	wl_list_remove(&seat->request_set_selection.link);
 	wlr_seat_destroy(seat->seat);

@@ -237,12 +237,11 @@ static void popup_unconstrain(struct wb_layer_popup *popup) {
 
 	/* the output box expressed in the coordinate system of the toplevel parent
 	 * of the popup */
-	struct wb_view *view = wl_container_of(output->server->views.next, view, link);
 	struct wlr_box output_toplevel_sx_box = {
-		.x = view->current_position.x - lx,
-		.y = view->current_position.y - ly,
-		.width = output->wlr_output->width,
-		.height = output->wlr_output->height,
+		.x = output->geometry.x - lx,
+		.y = output->geometry.y - ly,
+		.width = output->geometry.width,
+		.height = output->geometry.height,
 	};
 
 	wlr_xdg_popup_unconstrain_from_box(wlr_popup, &output_toplevel_sx_box);
