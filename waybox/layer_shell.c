@@ -56,6 +56,14 @@ static void arrange_surface (struct wb_output *output, struct wlr_box *full_area
 			struct wb_layer_surface *surface = desc->data;
 			wlr_scene_layer_surface_v1_configure(surface->scene,
 				full_area, usable_area);
+
+			if (surface->scene->layer_surface->current.layer !=
+					ZWLR_LAYER_SHELL_V1_LAYER_BACKGROUND) {
+				wlr_scene_node_raise_to_top(scene_node);
+			}
+			if (surface->scene->layer_surface == output->server->seat->focused_layer) {
+					seat_set_focus_layer(output->server->seat, surface->scene->layer_surface);
+			}
 #endif
 		}
 	}
@@ -133,8 +141,22 @@ static void handle_surface_commit(struct wl_listener *listener, void *data) {
 
 	if (committed || layer_surface->mapped != surface->mapped) {
 		surface->mapped = layer_surface->mapped;
+#if WLR_CHECK_VERSION(0, 17, 0)
 		arrange_layers(surface->output);
+
+		struct timespec now;
+		clock_gettime(CLOCK_MONOTONIC, &now);
+		wlr_surface_send_frame_done(layer_surface->surface, &now);
 	}
+#else
+	}
+
+	arrange_layers(surface->output);
+
+	struct timespec now;
+	clock_gettime(CLOCK_MONOTONIC, &now);
+	wlr_surface_send_frame_done(layer_surface->surface, &now);
+#endif
 #endif
 }
 
@@ -163,14 +185,20 @@ static void handle_map(struct wl_listener *listener, void *data) {
 }
 
 static void handle_unmap(struct wl_listener *listener, void *data) {
-#if WLR_CHECK_VERSION(0, 16, 0)
 	struct wb_layer_surface *surface = wl_container_of(
 			listener, surface, unmap);
+
+#if WLR_CHECK_VERSION(0, 16, 0)
 	struct wb_seat *seat = surface->server->seat;
-		if (seat->focused_layer == surface->scene->layer_surface) {
-			seat_set_focus_layer(seat, seat->focused_layer);
-		}
+	if (seat->focused_layer == surface->scene->layer_surface) {
+		seat_set_focus_layer(seat, NULL);
+	}
 #endif
+
+	struct wb_view *view = wl_container_of(surface->server->views.next, view, link);
+	if (view) {
+		focus_view(view, view->xdg_toplevel->base->surface);
+	}
 }
 
 static void wb_layer_surface_destroy(struct wb_layer_surface *surface) {
@@ -300,8 +328,11 @@ static void handle_new_popup(struct wl_listener *listener, void *data) {
 void handle_layer_shell_surface(struct wl_listener *listener, void *data) {
 	struct wlr_layer_surface_v1 *layer_surface = data;
 
-	if (layer_surface->output == NULL)
-		return;
+	if (layer_surface->output == NULL) {
+		struct wb_server *server = wl_container_of(listener, server, new_layer_surface);
+		struct wb_view *view = wl_container_of(server->views.next, view, link);
+		layer_surface->output = get_active_output(view);
+	}
 	struct wb_output *output = layer_surface->output->data;
 
 	if (!layer_surface->output) {

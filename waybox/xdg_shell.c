@@ -38,7 +38,7 @@ void focus_view(struct wb_view *view, struct wlr_surface *surface) {
 		/* Don't re-focus an already focused surface. */
 		return;
 	}
-	if (prev_surface) {
+	if (prev_surface && wlr_surface_is_xdg_surface(prev_surface)) {
 		/*
 		 * Deactivate the previously focused surface. This lets the client know
 		 * it no longer has focus and the client will repaint accordingly, e.g.
@@ -70,15 +70,19 @@ void focus_view(struct wb_view *view, struct wlr_surface *surface) {
 	seat_focus_surface(server->seat, view->xdg_toplevel->base->surface);
 }
 
-static struct wlr_box get_usable_area(struct wb_view *view) {
+struct wlr_output *get_active_output(struct wb_view *view) {
 	double closest_x, closest_y;
 	struct wlr_output *output = NULL;
-	struct wlr_box usable_area = {0};
 	wlr_output_layout_closest_point(view->server->output_layout, output,
 			view->current_position.x + view->current_position.width / 2,
 			view->current_position.y + view->current_position.height / 2,
 			&closest_x, &closest_y);
-	output = wlr_output_layout_output_at(view->server->output_layout, closest_x, closest_y);
+	return wlr_output_layout_output_at(view->server->output_layout, closest_x, closest_y);
+}
+
+static struct wlr_box get_usable_area(struct wb_view *view) {
+	struct wlr_output *output = get_active_output(view);
+	struct wlr_box usable_area = {0};
 	wlr_output_effective_resolution(output, &usable_area.width, &usable_area.height);
 	return usable_area;
 }
@@ -108,12 +112,21 @@ static void xdg_toplevel_map(struct wl_listener *listener, void *data) {
 		view->current_position.y = 0;
 	}
 
+	/* A view no larger than a title bar shouldn't be sized or focused */
+	/* TODO: Get the title bar height from the theme */
+	if (view->current_position.height > 9 &&
+			view->current_position.height > 9 *
+			(usable_area.width / usable_area.height)) {
 #if WLR_CHECK_VERSION(0, 16, 0)
-	wlr_xdg_toplevel_set_size(view->xdg_toplevel, view->current_position.width, view->current_position.height);
+		wlr_xdg_toplevel_set_size(view->xdg_toplevel,
+				view->current_position.width, view->current_position.height);
 #else
-	wlr_xdg_toplevel_set_size(view->xdg_surface, view->current_position.width, view->current_position.height);
+		wlr_xdg_toplevel_set_size(view->xdg_surface,
+				view->current_position.width, view->current_position.height);
 #endif
-	focus_view(view, view->xdg_toplevel->base->surface);
+		focus_view(view, view->xdg_toplevel->base->surface);
+	}
+
 	wlr_scene_node_set_position(view->scene_node,
 			view->current_position.x, view->current_position.y);
 }

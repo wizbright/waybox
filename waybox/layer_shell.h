@@ -18,7 +18,6 @@ struct wb_layer_surface {
 	struct wl_listener map;
 	struct wl_listener unmap;
 	struct wl_listener surface_commit;
-	struct wl_listener output_destroy;
 	struct wl_listener new_popup;
 };
 
