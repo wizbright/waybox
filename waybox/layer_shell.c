@@ -56,14 +56,6 @@ static void arrange_surface (struct wb_output *output, struct wlr_box *full_area
 			struct wb_layer_surface *surface = desc->data;
 			wlr_scene_layer_surface_v1_configure(surface->scene,
 				full_area, usable_area);
-
-			if (surface->scene->layer_surface->current.layer !=
-					ZWLR_LAYER_SHELL_V1_LAYER_BACKGROUND) {
-				wlr_scene_node_raise_to_top(scene_node);
-			}
-			if (surface->scene->layer_surface == output->server->seat->focused_layer) {
-					seat_set_focus_layer(output->server->seat, surface->scene->layer_surface);
-			}
 #endif
 		}
 	}
@@ -132,31 +124,31 @@ static void handle_surface_commit(struct wl_listener *listener, void *data) {
 	struct wlr_layer_surface_v1 *layer_surface = surface->scene->layer_surface;
 	uint32_t committed = layer_surface->current.committed;
 
+	enum zwlr_layer_shell_v1_layer layer_type = layer_surface->current.layer;
+	struct wlr_scene_node *output_layer = wb_layer_get_scene(
+		surface->output, layer_type);
+
 	if (committed & WLR_LAYER_SURFACE_V1_STATE_LAYER) {
-		enum zwlr_layer_shell_v1_layer layer_type = layer_surface->current.layer;
-		struct wlr_scene_node *output_layer = wb_layer_get_scene(
-			surface->output, layer_type);
 		wlr_scene_node_reparent(surface->scene->node, output_layer);
 	}
 
 	if (committed || layer_surface->mapped != surface->mapped) {
 		surface->mapped = layer_surface->mapped;
-#if WLR_CHECK_VERSION(0, 17, 0)
 		arrange_layers(surface->output);
 
 		struct timespec now;
 		clock_gettime(CLOCK_MONOTONIC, &now);
 		wlr_surface_send_frame_done(layer_surface->surface, &now);
 	}
-#else
+
+	if (surface->scene->layer_surface->current.layer !=
+			ZWLR_LAYER_SHELL_V1_LAYER_BACKGROUND) {
+		wlr_scene_node_raise_to_top(output_layer);
 	}
 
-	arrange_layers(surface->output);
-
-	struct timespec now;
-	clock_gettime(CLOCK_MONOTONIC, &now);
-	wlr_surface_send_frame_done(layer_surface->surface, &now);
-#endif
+	if (layer_surface == surface->server->seat->focused_layer) {
+		seat_focus_surface(surface->server->seat, layer_surface->surface);
+	}
 #endif
 }
 
