@@ -113,6 +113,7 @@ int main(int argc, char **argv) {
 	sigaction(SIGTERM, &sa, NULL);
 	sigaction(SIGUSR1, &sa, NULL);
 	sigaction(SIGUSR2, &sa, NULL);
+
 	wl_display_run(server.wl_display);
 
 	wb_terminate(&server);

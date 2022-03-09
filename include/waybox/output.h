@@ -4,11 +4,6 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include <wlr/render/wlr_renderer.h>
-#include <wlr/render/wlr_texture.h>
-#include <wlr/types/wlr_scene.h>
-#include <wlr/types/wlr_xdg_output_v1.h>
-
 #include "waybox/server.h"
 
 struct wb_output {

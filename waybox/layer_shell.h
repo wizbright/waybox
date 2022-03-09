@@ -10,6 +10,11 @@ struct wb_layer_surface {
 
 #if WLR_CHECK_VERSION(0, 16, 0)
 	struct wlr_scene_layer_surface_v1 *scene;
+#else
+	struct {
+		struct wlr_layer_surface_v1 *layer_surface;
+		struct wlr_scene_node *node;
+	} *scene;
 #endif
 
 	bool mapped;

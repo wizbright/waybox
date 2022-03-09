@@ -43,14 +43,23 @@
     <!-- Keybindings for window switching -->
     <keybind key="A-Tab">
       <action name="NextWindow">
+        <finalactions>
+          <action name="Unshade"/>
+        </finalactions>
       </action>
     </keybind>
     <keybind key="A-S-ISO_Left_Tab">
       <action name="PreviousWindow">
+        <finalactions>
+          <action name="Unshade"/>
+        </finalactions>
       </action>
     </keybind>
     <keybind key="C-A-Tab">
       <action name="NextWindow">
+        <finalactions>
+          <action name="Unshade"/>
+        </finalactions>
       </action>
     </keybind>
     <!-- Keybindings for running applications -->
@@ -62,6 +71,11 @@
     <keybind key="Print">
       <action name="Execute">
         <execute>grim "$(xdg-user-dir PICTURES)/$(date +'%Y-%m-%d-%H%M%S_grim_fs.png')"</execute>
+      </action>
+    </keybind>
+    <keybind key="A-Sys_Req">
+      <action name="Execute">
+        <execute>grim -g "$(slurp -d)" "$(xdg-user-dir PICTURES)/$(date +'%Y-%m-%d-%H%M%S_grim_sel.png')"</execute>
       </action>
     </keybind>
     <keybind key="A-F2">

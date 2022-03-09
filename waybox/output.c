@@ -33,9 +33,9 @@ void output_frame_notify(struct wl_listener *listener, void *data) {
 void output_destroy_notify(struct wl_listener *listener, void *data) {
        	struct wb_output *output = wl_container_of(listener, output, destroy);
 
-	wl_list_remove(&output->link);
 	wl_list_remove(&output->destroy.link);
 	wl_list_remove(&output->frame.link);
+	wl_list_remove(&output->link);
 
 	/* Frees the layers */
 	size_t num_layers = sizeof(output->layers) / sizeof(struct wlr_scene_node *);

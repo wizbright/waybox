@@ -21,7 +21,7 @@
 #export ECORE_IMF_MODULE=uim
 
 # Current compositor.  Needed for Wayland security negotiation.
-export XDG_CURRENT_DESKTOP=waybox
+export XDG_CURRENT_DESKTOP=Waybox
 export XDG_SESSION_TYPE=wayland
 
 # Make sure to run the X initialization if started through a display manager 

@@ -1,26 +1,27 @@
 #ifndef _WB_SERVER_H
 #define _WB_SERVER_H
 
-#include <stdio.h>
-
 #define MAX(a, b) ((a > b) ? (a) : (b))
 #define MIN(a, b) ((a < b) ? (a) : (b))
+#define TITLEBAR_HEIGHT 8 /* TODO: Get this from the theme */
 #include <wlr/version.h>
 #define WLR_CHECK_VERSION(major, minor, micro) (WLR_VERSION_NUM >= ((major << 16) | (minor << 8) | (micro)))
 
 #include <wlr/backend.h>
 #include <wlr/render/allocator.h>
+
 #include <wlr/render/wlr_renderer.h>
-#include <wlr/render/wlr_texture.h>
 #include <wlr/types/wlr_compositor.h>
 #include <wlr/types/wlr_data_device.h>
-#include <wlr/types/wlr_idle.h>
-#include <wlr/types/wlr_screencopy_v1.h>
 #include <wlr/types/wlr_gamma_control_v1.h>
+#include <wlr/types/wlr_idle.h>
 #include <wlr/types/wlr_output_layout.h>
+#include <wlr/types/wlr_scene.h>
+#include <wlr/types/wlr_screencopy_v1.h>
 #if WLR_CHECK_VERSION(0, 16, 0)
 #include <wlr/types/wlr_subcompositor.h>
 #endif
+#include <wlr/types/wlr_xdg_output_v1.h>
 #include <wlr/types/wlr_xdg_shell.h>
 #include <wlr/util/log.h>
 
@@ -77,8 +78,8 @@ struct wb_server {
 	struct wl_list outputs; /* wb_output::link */
 };
 
-bool wb_create_backend(struct wb_server* server);
-bool wb_start_server(struct wb_server* server);
-bool wb_terminate(struct wb_server* server);
+bool wb_create_backend(struct wb_server *server);
+bool wb_start_server(struct wb_server *server);
+bool wb_terminate(struct wb_server *server);
 
 #endif /* server.h */

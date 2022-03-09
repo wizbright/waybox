@@ -53,7 +53,9 @@ void focus_view(struct wb_view *view, struct wlr_surface *surface) {
 #endif
 	}
 	/* Move the view to the front */
-	wlr_scene_node_raise_to_top(view->scene_node);
+	if (!server->seat->focused_layer) {
+		wlr_scene_node_raise_to_top(view->scene_node);
+	}
 	wl_list_remove(&view->link);
 	wl_list_insert(&server->views, &view->link);
 	/* Activate the new surface */
@@ -113,9 +115,8 @@ static void xdg_toplevel_map(struct wl_listener *listener, void *data) {
 	}
 
 	/* A view no larger than a title bar shouldn't be sized or focused */
-	/* TODO: Get the title bar height from the theme */
-	if (view->current_position.height > 9 &&
-			view->current_position.height > 9 *
+	if (view->current_position.height > TITLEBAR_HEIGHT &&
+			view->current_position.height > TITLEBAR_HEIGHT *
 			(usable_area.width / usable_area.height)) {
 #if WLR_CHECK_VERSION(0, 16, 0)
 		wlr_xdg_toplevel_set_size(view->xdg_toplevel,
@@ -280,6 +281,7 @@ static void handle_new_popup(struct wl_listener *listener, void *data) {
 			view->server->output_layout,
 			view->current_position.x + popup->geometry.x,
 			view->current_position.y + popup->geometry.y);
+	if (!wlr_output) return;
 	struct wb_output *output = wlr_output->data;
 
 	struct wlr_box output_toplevel_box = {

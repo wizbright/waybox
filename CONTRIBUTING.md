@@ -17,7 +17,7 @@ If you already have your own pull request habits, feel free to use them. If you
 don't, however, allow me to make a suggestion: feature branches pulled from
 upstream. Try this:
 
-1. Fork waybox
+1. Fork Waybox
 2. `git clone https://github.com/username/waybox && cd waybox`
 3. `git remote add upstream https://github.com/wizbright/waybox`
 
@@ -87,7 +87,7 @@ process is:
 
 ## Style Reference
 
-waybox is written in C with a style similar to the [kernel
+Waybox is written in C with a style similar to the [kernel
 style](https://www.kernel.org/doc/Documentation/process/coding-style.rst), but
 with a few notable differences.
 

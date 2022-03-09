@@ -1,5 +1,8 @@
 #include <unistd.h>
 
+#include <wlr/types/wlr_primary_selection.h>
+#include <wlr/types/wlr_primary_selection_v1.h>
+
 #include "waybox/seat.h"
 #include "waybox/xdg_shell.h"
 
@@ -107,8 +110,7 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 				if (view->scene_node->state.enabled) {
 					struct wlr_box geo_box;
 					wlr_xdg_surface_get_geometry(view->xdg_toplevel->base, &geo_box);
-					/* TODO: Get the minimum height from the theme rather than hard-coded. */
-					int decoration_height = MAX(geo_box.y - view->current_position.y, 8);
+					int decoration_height = MAX(geo_box.y - view->current_position.y, TITLEBAR_HEIGHT);
 
 					view->previous_position = view->current_position;
 #if WLR_CHECK_VERSION(0, 16, 0)
@@ -142,6 +144,19 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 		}
 	}
 	return false;
+}
+
+static void keyboard_handle_destroy(struct wl_listener *listener, void *data) {
+	/* This event is raised by the keyboard base wlr_input_device to signal
+	 * the destruction of the wlr_keyboard. It will no longer receive events
+	 * and should be destroyed.
+	 */
+	struct wb_keyboard *keyboard = wl_container_of(listener, keyboard, destroy);
+	wl_list_remove(&keyboard->destroy.link);
+	wl_list_remove(&keyboard->key.link);
+	wl_list_remove(&keyboard->modifiers.link);
+	wl_list_remove(&keyboard->link);
+	free(keyboard);
 }
 
 static void keyboard_handle_modifiers(
@@ -234,6 +249,8 @@ static void handle_new_keyboard(struct wb_server *server,
 	xkb_context_unref(context);
 
 	/* Here we set up listeners for keyboard events. */
+	keyboard->destroy.notify = keyboard_handle_destroy;
+	wl_signal_add(&device->events.destroy, &keyboard->destroy);
 	keyboard->modifiers.notify = keyboard_handle_modifiers;
 	wl_signal_add(&device->keyboard->events.modifiers, &keyboard->modifiers);
 	keyboard->key.notify = keyboard_handle_key;

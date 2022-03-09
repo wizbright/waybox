@@ -1,12 +1,7 @@
 #ifndef _WB_SEAT_H
 #define _WB_SEAT_H
 
-#include <wlr/types/wlr_keyboard.h>
-#include <wlr/types/wlr_primary_selection.h>
-#include <wlr/types/wlr_primary_selection_v1.h>
 #include <wlr/types/wlr_seat.h>
-
-struct wb_server;
 
 struct wb_seat {
 	struct wlr_seat *seat;
@@ -24,6 +19,7 @@ struct wb_keyboard {
 	struct wb_server *server;
 	struct wlr_input_device *device;
 
+	struct wl_listener destroy;
 	struct wl_listener modifiers;
 	struct wl_listener key;
 };

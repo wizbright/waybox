@@ -45,7 +45,7 @@ void assign_scene_descriptor(struct wlr_scene_node *node,
 	node->data = desc;
 }
 
-static void arrange_surface (struct wb_output *output, struct wlr_box *full_area,
+static void arrange_surface(struct wb_output *output, struct wlr_box *full_area,
 		struct wlr_box *usable_area, struct wlr_scene_node *scene_node) {
 	struct wlr_scene_node *node;
 	wl_list_for_each(node, &scene_node->state.children, state.link) {
@@ -75,24 +75,22 @@ void arrange_layers(struct wb_output *output) {
 	arrange_surface(output, &full_area, &usable_area, output->layers.shell_overlay);
 }
 
-#if WLR_CHECK_VERSION(0, 16, 0)
 static struct wlr_scene_node *wb_layer_get_scene(struct wb_output *output,
 		enum zwlr_layer_shell_v1_layer type) {
 	switch (type) {
-	case ZWLR_LAYER_SHELL_V1_LAYER_BACKGROUND:
-		return output->layers.shell_background;
-	case ZWLR_LAYER_SHELL_V1_LAYER_BOTTOM:
-		return output->layers.shell_bottom;
-	case ZWLR_LAYER_SHELL_V1_LAYER_TOP:
-		return output->layers.shell_top;
-	case ZWLR_LAYER_SHELL_V1_LAYER_OVERLAY:
-		return output->layers.shell_overlay;
+		case ZWLR_LAYER_SHELL_V1_LAYER_BACKGROUND:
+			return output->layers.shell_background;
+		case ZWLR_LAYER_SHELL_V1_LAYER_BOTTOM:
+			return output->layers.shell_bottom;
+		case ZWLR_LAYER_SHELL_V1_LAYER_TOP:
+			return output->layers.shell_top;
+		case ZWLR_LAYER_SHELL_V1_LAYER_OVERLAY:
+			return output->layers.shell_overlay;
 	}
 
 	/* Unreachable */
 	return NULL;
 }
-#endif
 
 static struct wb_layer_surface *wb_layer_surface_create(
 #if WLR_CHECK_VERSION(0, 16, 0)
@@ -120,7 +118,6 @@ static void handle_surface_commit(struct wl_listener *listener, void *data) {
 		return;
 	}
 
-#if WLR_CHECK_VERSION(0, 16, 0)
 	struct wlr_layer_surface_v1 *layer_surface = surface->scene->layer_surface;
 	uint32_t committed = layer_surface->current.committed;
 
@@ -141,22 +138,19 @@ static void handle_surface_commit(struct wl_listener *listener, void *data) {
 		wlr_surface_send_frame_done(layer_surface->surface, &now);
 	}
 
-	if (surface->scene->layer_surface->current.layer !=
-			ZWLR_LAYER_SHELL_V1_LAYER_BACKGROUND) {
+	if (layer_surface->current.layer != ZWLR_LAYER_SHELL_V1_LAYER_BACKGROUND) {
 		wlr_scene_node_raise_to_top(output_layer);
 	}
 
 	if (layer_surface == surface->server->seat->focused_layer) {
 		seat_focus_surface(surface->server->seat, layer_surface->surface);
 	}
-#endif
 }
 
 static void handle_map(struct wl_listener *listener, void *data) {
 	struct wb_layer_surface *surface = wl_container_of(listener,
 			surface, map);
 
-#if WLR_CHECK_VERSION(0, 16, 0)
 	struct wlr_layer_surface_v1 *layer_surface =
 				surface->scene->layer_surface;
 
@@ -173,19 +167,16 @@ static void handle_map(struct wl_listener *listener, void *data) {
 		}
 		arrange_layers(surface->output);
 	}
-#endif
 }
 
 static void handle_unmap(struct wl_listener *listener, void *data) {
 	struct wb_layer_surface *surface = wl_container_of(
 			listener, surface, unmap);
 
-#if WLR_CHECK_VERSION(0, 16, 0)
 	struct wb_seat *seat = surface->server->seat;
 	if (seat->focused_layer == surface->scene->layer_surface) {
 		seat_set_focus_layer(seat, NULL);
 	}
-#endif
 
 	struct wb_view *view = wl_container_of(surface->server->views.next, view, link);
 	if (view) {
@@ -310,11 +301,9 @@ static void popup_handle_new_popup(struct wl_listener *listener, void *data) {
 static void handle_new_popup(struct wl_listener *listener, void *data) {
 	struct wb_layer_surface *wb_layer_surface =
 		wl_container_of(listener, wb_layer_surface, new_popup);
-#if WLR_CHECK_VERSION(0, 16, 0)
 	struct wlr_xdg_popup *wlr_popup = data;
 
 	create_popup(wlr_popup, wb_layer_surface->scene->node);
-#endif
 }
 
 void handle_layer_shell_surface(struct wl_listener *listener, void *data) {
@@ -333,10 +322,10 @@ void handle_layer_shell_surface(struct wl_listener *listener, void *data) {
 	}
 
 
-#if WLR_CHECK_VERSION(0, 16, 0)
 	enum zwlr_layer_shell_v1_layer layer_type = layer_surface->pending.layer;
 	struct wlr_scene_node *output_layer = wb_layer_get_scene(
 		output, layer_type);
+#if WLR_CHECK_VERSION(0, 16, 0)
 	struct wlr_scene_layer_surface_v1 *scene_surface =
 		wlr_scene_layer_surface_v1_create(output_layer, layer_surface);
 	if (!scene_surface) {
@@ -348,6 +337,9 @@ void handle_layer_shell_surface(struct wl_listener *listener, void *data) {
 #else
 	struct wb_layer_surface *surface =
 		wb_layer_surface_create(layer_surface);
+	surface->scene = calloc(1, sizeof(*surface->scene));
+	surface->scene->layer_surface = layer_surface;
+	surface->scene->node = output_layer;
 #endif
 	if (!surface) {
 		wlr_layer_surface_v1_destroy(layer_surface);
