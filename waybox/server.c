@@ -16,6 +16,7 @@ bool wb_create_backend(struct wb_server* server) {
 	 * if an X11 server is running. */
 	server->backend = wlr_backend_autocreate(server->wl_display);
 	if (server->backend == NULL) {
+		wlr_log(WLR_ERROR, "%s", _("Failed to create wlr_backend"));
 		return false;
 	}
 
@@ -24,6 +25,11 @@ bool wb_create_backend(struct wb_server* server) {
          * The renderer is responsible for defining the various pixel formats it
          * supports for shared memory, this configures that for clients. */
 	server->renderer = wlr_renderer_autocreate(server->backend);
+	if (server->renderer == NULL) {
+		wlr_log(WLR_ERROR, "%s", _("Failed to create wlr_renderer"));
+		return false;
+	}
+
 	wlr_renderer_init_wl_display(server->renderer, server->wl_display);
 
         /* Autocreates an allocator for us.
@@ -31,6 +37,10 @@ bool wb_create_backend(struct wb_server* server) {
          * handles the buffer creation, allowing wlroots to render onto the
          * screen */
         server->allocator = wlr_allocator_autocreate(server->backend, server->renderer);
+	if (server->allocator == NULL) {
+		wlr_log(WLR_ERROR, "%s", _("Failed to create wlr_allocator"));
+		return false;
+	}
 
 	server->compositor = wlr_compositor_create(server->wl_display,
 			server->renderer);
@@ -102,10 +112,15 @@ bool wb_start_server(struct wb_server* server) {
 bool wb_terminate(struct wb_server* server) {
 	wb_cursor_destroy(server->cursor);
 	wl_list_remove(&server->new_xdg_decoration.link); /* wb_decoration_destroy */
+#if !WLR_CHECK_VERSION(0, 16, 0)
 	wb_seat_destroy(server->seat);
+#endif
 	deinit_config(server->config);
 	wl_display_destroy_clients(server->wl_display);
 	wl_display_destroy(server->wl_display);
+#if WLR_CHECK_VERSION(0, 16, 0)
+	wb_seat_destroy(server->seat);
+#endif
 	wlr_output_layout_destroy(server->output_layout);
 
 	wlr_log(WLR_INFO, "%s", _("Display destroyed"));

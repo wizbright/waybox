@@ -46,9 +46,17 @@ void assign_scene_descriptor(struct wlr_scene_node *node,
 }
 
 static void arrange_surface(struct wb_output *output, struct wlr_box *full_area,
+#if WLR_CHECK_VERSION(0, 16, 0)
+		struct wlr_box *usable_area, struct wlr_scene_tree *scene_tree) {
+#else
 		struct wlr_box *usable_area, struct wlr_scene_node *scene_node) {
+#endif
 	struct wlr_scene_node *node;
+#if WLR_CHECK_VERSION(0, 16, 0)
+	wl_list_for_each(node, &scene_tree->children, link) {
+#else
 	wl_list_for_each(node, &scene_node->state.children, state.link) {
+#endif
 		struct wb_scene_descriptor *desc = node->data;
 
 		if (desc->type == WB_SCENE_DESC_LAYER_SHELL) {
@@ -75,7 +83,11 @@ void arrange_layers(struct wb_output *output) {
 	arrange_surface(output, &full_area, &usable_area, output->layers.shell_overlay);
 }
 
+#if WLR_CHECK_VERSION(0, 16, 0)
+static struct wlr_scene_tree *wb_layer_get_scene(struct wb_output *output,
+#else
 static struct wlr_scene_node *wb_layer_get_scene(struct wb_output *output,
+#endif
 		enum zwlr_layer_shell_v1_layer type) {
 	switch (type) {
 		case ZWLR_LAYER_SHELL_V1_LAYER_BACKGROUND:
@@ -122,11 +134,20 @@ static void handle_surface_commit(struct wl_listener *listener, void *data) {
 	uint32_t committed = layer_surface->current.committed;
 
 	enum zwlr_layer_shell_v1_layer layer_type = layer_surface->current.layer;
+#if WLR_CHECK_VERSION(0, 16, 0)
+	struct wlr_scene_tree *output_layer = wb_layer_get_scene(
+		surface->output, layer_type);
+#else
 	struct wlr_scene_node *output_layer = wb_layer_get_scene(
 		surface->output, layer_type);
+#endif
 
 	if (committed & WLR_LAYER_SURFACE_V1_STATE_LAYER) {
+#if WLR_CHECK_VERSION(0, 16, 0)
+		wlr_scene_node_reparent(&surface->scene->tree->node, output_layer);
+#else
 		wlr_scene_node_reparent(surface->scene->node, output_layer);
+#endif
 	}
 
 	if (committed || layer_surface->mapped != surface->mapped) {
@@ -139,7 +160,11 @@ static void handle_surface_commit(struct wl_listener *listener, void *data) {
 	}
 
 	if (layer_surface->current.layer != ZWLR_LAYER_SHELL_V1_LAYER_BACKGROUND) {
+#if WLR_CHECK_VERSION(0, 16, 0)
+		wlr_scene_node_raise_to_top(&output_layer->node);
+#else
 		wlr_scene_node_raise_to_top(output_layer);
+#endif
 	}
 
 	if (layer_surface == surface->server->seat->focused_layer) {
@@ -219,7 +244,11 @@ static void popup_handle_destroy(struct wl_listener *listener, void *data) {
 
 static struct wb_layer_surface *popup_get_layer(
 		struct wb_layer_popup *popup) {
+#if WLR_CHECK_VERSION(0, 16, 0)
+	struct wlr_scene_node *current = &popup->scene->node;
+#else
 	struct wlr_scene_node *current = popup->scene;
+#endif
 	while (current) {
 		if (current->data) {
 			struct wb_scene_descriptor *desc = current->data;
@@ -228,7 +257,11 @@ static struct wb_layer_surface *popup_get_layer(
 			}
 		}
 
+#if WLR_CHECK_VERSION(0, 16, 0)
+		current = &current->parent->node;
+#else
 		current = current->parent;
+#endif
 	}
 
 	return NULL;
@@ -244,7 +277,11 @@ static void popup_unconstrain(struct wb_layer_popup *popup) {
 	struct wb_output *output = surface->output;
 
 	int lx, ly;
+#if WLR_CHECK_VERSION(0, 16, 0)
+	wlr_scene_node_coords(&popup->scene->node, &lx, &ly);
+#else
 	wlr_scene_node_coords(popup->scene, &lx, &ly);
+#endif
 
 	/* The output box expressed in the coordinate system of the toplevel
 	 * parent of the popup. */
@@ -261,7 +298,11 @@ static void popup_unconstrain(struct wb_layer_popup *popup) {
 static void popup_handle_new_popup(struct wl_listener *listener, void *data);
 
 static struct wb_layer_popup *create_popup(struct wlr_xdg_popup *wlr_popup,
+#if WLR_CHECK_VERSION(0, 16, 0)
+			struct wlr_scene_tree *parent) {
+#else
 			struct wlr_scene_node *parent) {
+#endif
 	struct wb_layer_popup *popup =
 		calloc(1, sizeof(struct wb_layer_popup));
 	if (popup == NULL) {
@@ -278,7 +319,11 @@ static struct wb_layer_popup *create_popup(struct wlr_xdg_popup *wlr_popup,
 		return NULL;
 	}
 
+#if WLR_CHECK_VERSION(0, 16, 0)
+	assign_scene_descriptor(&popup->scene->node, WB_SCENE_DESC_LAYER_SHELL_POPUP,
+#else
 	assign_scene_descriptor(popup->scene, WB_SCENE_DESC_LAYER_SHELL_POPUP,
+#endif
 			popup);
 
 	popup->destroy.notify = popup_handle_destroy;
@@ -304,7 +349,11 @@ static void handle_new_popup(struct wl_listener *listener, void *data) {
 		wl_container_of(listener, wb_layer_surface, new_popup);
 	struct wlr_xdg_popup *wlr_popup = data;
 
+#if WLR_CHECK_VERSION(0, 16, 0)
+	create_popup(wlr_popup, wb_layer_surface->scene->tree);
+#else
 	create_popup(wlr_popup, wb_layer_surface->scene->node);
+#endif
 }
 
 void handle_layer_shell_surface(struct wl_listener *listener, void *data) {
@@ -326,9 +375,9 @@ void handle_layer_shell_surface(struct wl_listener *listener, void *data) {
 
 
 	enum zwlr_layer_shell_v1_layer layer_type = layer_surface->pending.layer;
-	struct wlr_scene_node *output_layer = wb_layer_get_scene(
-			output, layer_type);
 #if WLR_CHECK_VERSION(0, 16, 0)
+	struct wlr_scene_tree *output_layer = wb_layer_get_scene(
+			output, layer_type);
 	struct wlr_scene_layer_surface_v1 *scene_surface =
 		wlr_scene_layer_surface_v1_create(output_layer, layer_surface);
 	if (!scene_surface) {
@@ -337,22 +386,27 @@ void handle_layer_shell_surface(struct wl_listener *listener, void *data) {
 
 	struct wb_layer_surface *surface =
 		wb_layer_surface_create(scene_surface);
+
+	assign_scene_descriptor(&scene_surface->tree->node,
+		WB_SCENE_DESC_LAYER_SHELL, surface);
+	if (!scene_surface->tree->node.data) {
+		wlr_layer_surface_v1_destroy(layer_surface);
+		return;
+	}
 #else
+	struct wlr_scene_node *output_layer = wb_layer_get_scene(
+			output, layer_type);
 	struct wb_layer_surface *surface =
 		wb_layer_surface_create(layer_surface);
 	surface->scene = calloc(1, sizeof(*surface->scene));
 	surface->scene->layer_surface = layer_surface;
 	surface->scene->node = output_layer;
-#endif
 	if (!surface) {
 		wlr_layer_surface_v1_destroy(layer_surface);
 		return;
 	}
-
-#if WLR_CHECK_VERSION(0, 16, 0)
-	assign_scene_descriptor(scene_surface->node,
-		WB_SCENE_DESC_LAYER_SHELL, surface);
 #endif
+
 	surface->output = output;
 	surface->server = output->server;
 

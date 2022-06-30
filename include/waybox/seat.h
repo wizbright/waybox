@@ -17,7 +17,8 @@ struct wb_seat {
 struct wb_keyboard {
 	struct wl_list link;
 	struct wb_server *server;
-	struct wlr_input_device *device;
+	struct wlr_input_device *device; /* wlroots 0.15.x */
+	struct wlr_keyboard *keyboard;
 
 	struct wl_listener destroy;
 	struct wl_listener modifiers;

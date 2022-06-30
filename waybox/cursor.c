@@ -4,10 +4,18 @@
 static void process_cursor_move(struct wb_server *server) {
 	/* Move the grabbed view to the new position. */
 	struct wb_view *view = server->grabbed_view;
+#if WLR_CHECK_VERSION(0, 16, 0)
+	if (view->scene_tree->node.type == WLR_SCENE_NODE_TREE) {
+#else
 	if (view->scene_node->parent->type == WLR_SCENE_NODE_ROOT) {
+#endif
 		view->current_position.x = server->cursor->cursor->x - server->grab_x;
 		view->current_position.y = server->cursor->cursor->y - server->grab_y;
+#if WLR_CHECK_VERSION(0, 16, 0)
+		wlr_scene_node_set_position(&view->scene_tree->node,
+#else
 		wlr_scene_node_set_position(view->scene_node,
+#endif
 				view->current_position.x, view->current_position.y);
 	}
 }
@@ -48,6 +56,12 @@ static void process_cursor_resize(struct wb_server *server) {
 	wlr_xdg_surface_get_geometry(view->xdg_toplevel->base, &geo_box);
 	view->current_position.x = new_left - geo_box.x;
 	view->current_position.y = new_top - geo_box.y;
+#if WLR_CHECK_VERSION(0, 16, 0)
+		wlr_scene_node_set_position(&view->scene_tree->node,
+#else
+		wlr_scene_node_set_position(view->scene_node,
+#endif
+				view->current_position.x, view->current_position.y);
 
 	int new_width = new_right - new_left;
 	int new_height = new_bottom - new_top;
@@ -100,16 +114,31 @@ static void process_cursor_motion(struct wb_server *server, uint32_t time) {
 }
 
 static void handle_cursor_motion(struct wl_listener *listener, void *data) {
-	struct wb_cursor *cursor = wl_container_of(listener, cursor, cursor_motion);
+	struct wb_cursor *cursor =
+		wl_container_of(listener, cursor, cursor_motion);
+#if WLR_CHECK_VERSION(0, 16, 0)
+	struct wlr_pointer_motion_event *event = data;
+	wlr_cursor_move(cursor->cursor, &event->pointer->base,
+			event->delta_x, event->delta_y);
+#else
 	struct wlr_event_pointer_motion *event = data;
 	wlr_cursor_move(cursor->cursor, event->device, event->delta_x, event->delta_y);
+#endif
 	process_cursor_motion(cursor->server, event->time_msec);
 }
 
 static void handle_cursor_motion_absolute(struct wl_listener *listener, void *data) {
-	struct wb_cursor *cursor = wl_container_of(listener, cursor, cursor_motion_absolute);
+	struct wb_cursor *cursor =
+		wl_container_of(listener, cursor, cursor_motion_absolute);
+#if WLR_CHECK_VERSION(0, 16, 0)
+	struct wlr_pointer_motion_absolute_event *event = data;
+	wlr_cursor_warp_absolute(cursor->cursor, &event->pointer->base,
+			event->x, event->y);
+#else
 	struct wlr_event_pointer_motion_absolute *event = data;
-	wlr_cursor_warp_absolute(cursor->cursor, event->device, event->x, event->y);
+	wlr_cursor_warp_absolute(cursor->cursor, event->device,
+			event->x, event->y);
+#endif
 	process_cursor_motion(cursor->server, event->time_msec);
 }
 
@@ -118,7 +147,11 @@ static void handle_cursor_button(struct wl_listener *listener, void *data) {
 	 * event. */
 	struct wb_cursor *cursor =
 		wl_container_of(listener, cursor, cursor_button);
+#if WLR_CHECK_VERSION(0, 16, 0)
+	struct wlr_pointer_button_event *event = data;
+#else
 	struct wlr_event_pointer_button *event = data;
+#endif
 	/* Notify the client with pointer focus that a button press has occurred */
 	wlr_seat_pointer_notify_button(cursor->server->seat->seat,
 			event->time_msec, event->button, event->state);
@@ -140,7 +173,11 @@ static void handle_cursor_axis(struct wl_listener *listener, void *data) {
 	 * for example when you move the scroll wheel. */
 	struct wb_cursor *cursor =
 		wl_container_of(listener, cursor, cursor_axis);
+#if WLR_CHECK_VERSION(0, 16, 0)
+	struct wlr_pointer_axis_event *event = data;
+#else
 	struct wlr_event_pointer_axis *event = data;
+#endif
 	/* Notify the client with pointer focus of the axis event. */
 	wlr_seat_pointer_notify_axis(cursor->server->seat->seat,
 			event->time_msec, event->orientation, event->delta,
@@ -180,6 +217,7 @@ static void handle_cursor_request(struct wl_listener *listener, void *data) {
 struct wb_cursor *wb_cursor_create(struct wb_server *server) {
 	struct wb_cursor *cursor = malloc(sizeof(struct wb_cursor));
 	cursor->cursor = wlr_cursor_create();
+	cursor->cursor_mode = WB_CURSOR_PASSTHROUGH;
 	cursor->server = server;
 
 	const char *xcursor_size = getenv("XCURSOR_SIZE");

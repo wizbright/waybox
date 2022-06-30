@@ -81,13 +81,14 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 			if (key_binding->action & ACTION_CLOSE) {
 				struct wb_view *current_view = wl_container_of(
 						server->views.next, current_view, link);
-				if (current_view->scene_node->state.enabled)
 #if WLR_CHECK_VERSION(0, 16, 0)
+				if (current_view->scene_tree->node.enabled)
 					wlr_xdg_toplevel_send_close(current_view->xdg_toplevel);
 #else
+				if (current_view->scene_node->state.enabled)
 					wlr_xdg_toplevel_send_close(current_view->xdg_surface);
 #endif
-			 }
+			}
 			if (key_binding->action & ACTION_EXECUTE) {
 				if (fork() == 0) {
 					execl("/bin/sh", "/bin/sh", "-c", key_binding->cmd, (char *) NULL);
@@ -95,19 +96,31 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 			}
 			if (key_binding->action & ACTION_TOGGLE_MAXIMIZE) {
 				struct wb_view *view = wl_container_of(server->views.next, view, link);
+#if WLR_CHECK_VERSION(0, 16, 0)
+				if (view->scene_tree->node.enabled)
+#else
 				if (view->scene_node->state.enabled)
+#endif
 					wl_signal_emit(&view->xdg_toplevel->events.request_maximize, NULL);
 			}
 			if (key_binding->action & ACTION_ICONIFY) {
 				struct wb_view *view = wl_container_of(server->views.next, view, link);
+#if WLR_CHECK_VERSION(0, 16, 0)
+				if (view->scene_tree->node.enabled) {
+#else
 				if (view->scene_node->state.enabled) {
+#endif
 					view->xdg_toplevel->requested.minimized = true;
 					wl_signal_emit(&view->xdg_toplevel->events.request_minimize, NULL);
 				}
 			}
 			if (key_binding->action & ACTION_SHADE) {
 				struct wb_view *view = wl_container_of(server->views.next, view, link);
+#if WLR_CHECK_VERSION(0, 16, 0)
+				if (view->scene_tree->node.enabled) {
+#else
 				if (view->scene_node->state.enabled) {
+#endif
 					struct wlr_box geo_box;
 					wlr_xdg_surface_get_geometry(view->xdg_toplevel->base, &geo_box);
 					int decoration_height = MAX(geo_box.y - view->current_position.y, TITLEBAR_HEIGHT);
@@ -124,11 +137,12 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 			}
 			if (key_binding->action & ACTION_UNSHADE) {
 				struct wb_view *view = wl_container_of(server->views.next, view, link);
-				if (view->scene_node->state.enabled) {
 #if WLR_CHECK_VERSION(0, 16, 0)
+				if (view->scene_tree->node.enabled) {
 					wlr_xdg_toplevel_set_size(view->xdg_toplevel,
 							view->previous_position.width, view->previous_position.height);
 #else
+				if (view->scene_node->state.enabled) {
 					wlr_xdg_toplevel_set_size(view->xdg_surface,
 							view->previous_position.width, view->previous_position.height);
 #endif
@@ -171,10 +185,14 @@ static void keyboard_handle_modifiers(
 	 * same seat. You can swap out the underlying wlr_keyboard like this and
 	 * wlr_seat handles this transparently.
 	 */
+#if WLR_CHECK_VERSION(0, 16, 0)
+	wlr_seat_set_keyboard(keyboard->server->seat->seat, keyboard->keyboard);
+#else
 	wlr_seat_set_keyboard(keyboard->server->seat->seat, keyboard->device);
+#endif
 	/* Send modifiers to the client. */
 	wlr_seat_keyboard_notify_modifiers(keyboard->server->seat->seat,
-		&keyboard->device->keyboard->modifiers);
+		&keyboard->keyboard->modifiers);
 }
 
 static void keyboard_handle_key(
@@ -183,7 +201,11 @@ static void keyboard_handle_key(
 	struct wb_keyboard *keyboard =
 		wl_container_of(listener, keyboard, key);
 	struct wb_server *server = keyboard->server;
+#if WLR_CHECK_VERSION(0, 16, 0)
+	struct wlr_keyboard_key_event *event = data;
+#else
 	struct wlr_event_keyboard_key *event = data;
+#endif
 	struct wlr_seat *seat = server->seat->seat;
 
 	/* Translate libinput keycode -> xkbcommon */
@@ -191,10 +213,10 @@ static void keyboard_handle_key(
 	/* Get a list of keysyms based on the keymap for this keyboard */
 	const xkb_keysym_t *syms;
 	int nsyms = xkb_state_key_get_syms(
-			keyboard->device->keyboard->xkb_state, keycode, &syms);
+			keyboard->keyboard->xkb_state, keycode, &syms);
 
 	bool handled = false;
-	uint32_t modifiers = wlr_keyboard_get_modifiers(keyboard->device->keyboard);
+	uint32_t modifiers = wlr_keyboard_get_modifiers(keyboard->keyboard);
 	if (event->state == WL_KEYBOARD_KEY_STATE_PRESSED) {
 		for (int i = 0; i < nsyms; i++) {
 			handled = handle_keybinding(server, syms[i], modifiers);
@@ -203,7 +225,11 @@ static void keyboard_handle_key(
 
 	if (!handled) {
 		/* Otherwise, we pass it along to the client. */
+#if WLR_CHECK_VERSION(0, 16, 0)
+		wlr_seat_set_keyboard(seat, keyboard->keyboard);
+#else
 		wlr_seat_set_keyboard(seat, keyboard->device);
+#endif
 		wlr_seat_keyboard_notify_key(seat, event->time_msec,
 			event->keycode, event->state);
 	}
@@ -214,7 +240,12 @@ static void handle_new_keyboard(struct wb_server *server,
 	struct wb_keyboard *keyboard =
 		calloc(1, sizeof(struct wb_keyboard));
 	keyboard->server = server;
+#if WLR_CHECK_VERSION(0, 16, 0)
+	keyboard->keyboard = wlr_keyboard_from_input_device(device);
+#else
 	keyboard->device = device;
+	keyboard->keyboard = device->keyboard;
+#endif
 
 	/* We need to prepare an XKB keymap and assign it to the keyboard. */
 	struct xkb_rule_names *rules = malloc(sizeof(struct xkb_rule_names));
@@ -241,8 +272,8 @@ static void handle_new_keyboard(struct wb_server *server,
 		XKB_KEYMAP_COMPILE_NO_FLAGS);
 
 	if (keymap != NULL) {
-		wlr_keyboard_set_keymap(device->keyboard, keymap);
-		wlr_keyboard_set_repeat_info(device->keyboard, 25, 600);
+		wlr_keyboard_set_keymap(keyboard->keyboard, keymap);
+		wlr_keyboard_set_repeat_info(keyboard->keyboard, 25, 600);
 	}
 	free(rules);
 	xkb_keymap_unref(keymap);
@@ -252,11 +283,15 @@ static void handle_new_keyboard(struct wb_server *server,
 	keyboard->destroy.notify = keyboard_handle_destroy;
 	wl_signal_add(&device->events.destroy, &keyboard->destroy);
 	keyboard->modifiers.notify = keyboard_handle_modifiers;
-	wl_signal_add(&device->keyboard->events.modifiers, &keyboard->modifiers);
+	wl_signal_add(&keyboard->keyboard->events.modifiers, &keyboard->modifiers);
 	keyboard->key.notify = keyboard_handle_key;
-	wl_signal_add(&device->keyboard->events.key, &keyboard->key);
+	wl_signal_add(&keyboard->keyboard->events.key, &keyboard->key);
 
-	wlr_seat_set_keyboard(server->seat->seat, device);
+#if WLR_CHECK_VERSION(0, 16, 0)
+	wlr_seat_set_keyboard(server->seat->seat, keyboard->keyboard);
+#else
+	wlr_seat_set_keyboard(server->seat->seat, keyboard->device);
+#endif
 
 	/* And add the keyboard to our list of keyboards */
 	wl_list_insert(&server->seat->keyboards, &keyboard->link);
@@ -293,8 +328,10 @@ void seat_focus_surface(struct wb_seat *seat, struct wlr_surface *surface) {
 	}
 
 	struct wlr_keyboard *kb = wlr_seat_get_keyboard(seat->seat);
-	wlr_seat_keyboard_notify_enter(seat->seat, surface, kb->keycodes,
-		kb->num_keycodes, &kb->modifiers);
+	if (kb != NULL) {
+		wlr_seat_keyboard_notify_enter(seat->seat, surface, kb->keycodes,
+			kb->num_keycodes, &kb->modifiers);
+	}
 }
 
 void seat_set_focus_layer(struct wb_seat *seat, struct wlr_layer_surface_v1 *layer) {
@@ -348,6 +385,8 @@ void wb_seat_destroy(struct wb_seat *seat) {
 	wl_list_remove(&seat->keyboards);
 	wl_list_remove(&seat->request_set_primary_selection.link);
 	wl_list_remove(&seat->request_set_selection.link);
+#if !WLR_CHECK_VERSION(0, 16, 0)
 	wlr_seat_destroy(seat->seat);
+#endif
 	free(seat);
 }
