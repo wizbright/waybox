@@ -170,6 +170,7 @@ static void xdg_toplevel_unmap(struct wl_listener *listener, void *data) {
 	struct wb_view *view = wl_container_of(listener, view, unmap);
 	if (view->xdg_toplevel->base->role != WLR_XDG_SURFACE_ROLE_TOPLEVEL)
 		return;
+	reset_cursor_mode(view->server);
 
 	/* Focus the next view, if any. */
 	struct wb_view *next_view = wl_container_of(view->link.next, next_view, link);

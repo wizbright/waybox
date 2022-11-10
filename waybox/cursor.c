@@ -1,6 +1,12 @@
 #include "waybox/cursor.h"
 #include "waybox/xdg_shell.h"
 
+void reset_cursor_mode(struct wb_server *server) {
+	/* Reset the cursor mode to passthrough */
+	server->cursor->cursor_mode = WB_CURSOR_PASSTHROUGH;
+	server->grabbed_view = NULL;
+}
+
 static void process_cursor_move(struct wb_server *server) {
 	/* Move the grabbed view to the new position. */
 	struct wb_view *view = server->grabbed_view;
@@ -161,7 +167,7 @@ static void handle_cursor_button(struct wl_listener *listener, void *data) {
 			cursor->server->cursor->cursor->x, cursor->server->cursor->cursor->y, &surface, &sx, &sy);
 	if (event->state == WLR_BUTTON_RELEASED) {
 		/* If you released any buttons, we exit interactive move/resize mode. */
-		cursor->cursor_mode = WB_CURSOR_PASSTHROUGH;
+		reset_cursor_mode(cursor->server);
 	} else {
 		/* Focus that client if the button was _pressed_ */
 		focus_view(view, surface);

@@ -30,5 +30,6 @@ struct wb_cursor {
 
 struct wb_cursor *wb_cursor_create(struct wb_server *server);
 void wb_cursor_destroy(struct wb_cursor *cursor);
+void reset_cursor_mode(struct wb_server *server);
 
 #endif /* cursor.h */
