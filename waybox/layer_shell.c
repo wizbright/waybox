@@ -204,7 +204,11 @@ static void handle_unmap(struct wl_listener *listener, void *data) {
 	}
 
 	struct wb_view *view = wl_container_of(surface->server->views.next, view, link);
-	if (view) {
+#if WLR_CHECK_VERSION(0, 16, 0)
+	if (view && view->scene_tree && view->scene_tree->node.enabled) {
+#else
+	if (view && view->scene_node && view->scene_node->state.enabled) {
+#endif
 		focus_view(view, view->xdg_toplevel->base->surface);
 	}
 }
