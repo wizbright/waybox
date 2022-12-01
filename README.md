@@ -20,7 +20,7 @@ contributing.](https://github.com/wizbright/waybox/blob/master/CONTRIBUTING.md)
 ### Build instructions
 
 ```
-meson build
+meson setup build
 cd build
 ninja
 ```

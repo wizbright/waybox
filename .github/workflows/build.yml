@@ -23,7 +23,7 @@ jobs:
             - uses: actions/checkout@v2
             - name: setup
               run: |
-                meson build
+                meson setup build
             - name: build
               run: |
                 ninja -C build

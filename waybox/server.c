@@ -14,7 +14,11 @@ bool wb_create_backend(struct wb_server* server) {
 	 * output hardware. The autocreate option will choose the most suitable
 	 * backend based on the current environment, such as opening an X11 window
 	 * if an X11 server is running. */
+#if ! WLR_CHECK_VERSION(0, 13, 0) || WLR_CHECK_VERSION(0, 17, 0)
+	server->backend = wlr_backend_autocreate(server->wl_display, NULL);
+#else
 	server->backend = wlr_backend_autocreate(server->wl_display);
+#endif
 	if (server->backend == NULL) {
 		wlr_log(WLR_ERROR, "%s", _("Failed to create wlr_backend"));
 		return false;
@@ -44,9 +48,7 @@ bool wb_create_backend(struct wb_server* server) {
 
 	server->compositor = wlr_compositor_create(server->wl_display,
 			server->renderer);
-#if WLR_CHECK_VERSION(0, 16, 0)
 	server->subcompositor = wlr_subcompositor_create(server->wl_display);
-#endif
 	server->output_layout = wlr_output_layout_create();
 	server->seat = wb_seat_create(server);
 	server->cursor = wb_cursor_create(server);
@@ -112,15 +114,10 @@ bool wb_start_server(struct wb_server* server) {
 bool wb_terminate(struct wb_server* server) {
 	wb_cursor_destroy(server->cursor);
 	wl_list_remove(&server->new_xdg_decoration.link); /* wb_decoration_destroy */
-#if !WLR_CHECK_VERSION(0, 16, 0)
-	wb_seat_destroy(server->seat);
-#endif
 	deinit_config(server->config);
 	wl_display_destroy_clients(server->wl_display);
 	wl_display_destroy(server->wl_display);
-#if WLR_CHECK_VERSION(0, 16, 0)
 	wb_seat_destroy(server->seat);
-#endif
 	wlr_output_layout_destroy(server->output_layout);
 
 	wlr_log(WLR_INFO, "%s", _("Display destroyed"));

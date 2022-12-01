@@ -8,16 +8,13 @@ void output_frame_notify(struct wl_listener *listener, void *data) {
 	struct wlr_scene_output *scene_output =
 		wlr_scene_get_scene_output(scene, output->wlr_output);
 
-#if WLR_CHECK_VERSION(0, 16, 0)
 	wlr_output_layout_get_box(output->server->output_layout,
 			output->wlr_output, &output->geometry);
-#else
-	output->geometry = *wlr_output_layout_get_box(
-			output->server->output_layout, output->wlr_output);
-#endif
+#if ! WLR_CHECK_VERSION(0, 17, 0)
 	/* Update the background for the current output size. */
 	wlr_scene_rect_set_size(output->background,
 			output->geometry.width, output->geometry.height);
+#endif
 
 	/* Render the scene if needed and commit the output */
 	wlr_scene_output_commit(scene_output);
@@ -74,24 +71,18 @@ void new_output_notify(struct wl_listener *listener, void *data) {
 	output->wlr_output = wlr_output;
 	wlr_output->data = output;
 
+#if ! WLR_CHECK_VERSION(0, 17, 0)
 	/* Set the background color */
 	float color[4] = {0.1875, 0.1875, 0.1875, 1.0};
-#if WLR_CHECK_VERSION(0, 16, 0)
 	output->background = wlr_scene_rect_create(&server->scene->tree, 0, 0, color);
-#else
-	output->background = wlr_scene_rect_create(&server->scene->node, 0, 0, color);
-#endif
 	wlr_scene_node_lower_to_bottom(&output->background->node);
+#endif
 
 	/* Initializes the layers */
 	size_t num_layers = sizeof(output->layers) / sizeof(struct wlr_scene_node *);
 	for (size_t i = 0; i < num_layers; i++) {
 		((struct wlr_scene_node **) &output->layers)[i] =
-#if WLR_CHECK_VERSION(0, 16, 0)
 			&wlr_scene_tree_create(&server->scene->tree)->node;
-#else
-			&wlr_scene_tree_create(&server->scene->node)->node;
-#endif
 	}
 
 	wl_list_insert(&server->outputs, &output->link);

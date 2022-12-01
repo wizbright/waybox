@@ -17,9 +17,7 @@
 #include <wlr/types/wlr_output_layout.h>
 #include <wlr/types/wlr_scene.h>
 #include <wlr/types/wlr_screencopy_v1.h>
-#if WLR_CHECK_VERSION(0, 16, 0)
 #include <wlr/types/wlr_subcompositor.h>
-#endif
 #include <wlr/types/wlr_xdg_output_v1.h>
 #include <wlr/types/wlr_xdg_shell.h>
 #include <wlr/util/log.h>
@@ -49,9 +47,7 @@ struct wb_server {
 	struct wlr_xdg_output_manager_v1 *output_manager;
 	struct wlr_renderer *renderer;
 	struct wlr_scene *scene;
-#if WLR_CHECK_VERSION(0, 16, 0)
 	struct wlr_subcompositor *subcompositor;
-#endif
 
 	struct wb_config *config;
 	char *config_file;

@@ -6,18 +6,11 @@ struct wb_view *get_view_at(
 	/* This returns the topmost node in the scene at the given layout coords.
 	 * we only care about surface nodes as we are specifically looking for a
 	 * surface in the surface tree of a wb_view. */
-#if WLR_CHECK_VERSION(0, 16, 0)
 	struct wlr_scene_node *node =
 		wlr_scene_node_at(&server->scene->tree.node, lx, ly, sx, sy);
 	if (node == NULL || node->type != WLR_SCENE_NODE_BUFFER) {
-#else
-	struct wlr_scene_node *node =
-		wlr_scene_node_at(&server->scene->node, lx, ly, sx, sy);
-	if (node == NULL || node->type != WLR_SCENE_NODE_SURFACE) {
-#endif
 		return NULL;
 	}
-#if WLR_CHECK_VERSION(0, 16, 0)
 	struct wlr_scene_buffer *scene_buffer = wlr_scene_buffer_from_node(node);
 	struct wlr_scene_surface *scene_surface =
 		wlr_scene_surface_from_buffer(scene_buffer);
@@ -26,23 +19,13 @@ struct wb_view *get_view_at(
 	}
 
 	*surface = scene_surface->surface;
-#else
-	*surface = wlr_scene_surface_from_node(node)->surface;
-#endif
 	/* Find the node corresponding to the wb_view at the root of this
 	 * surface tree, it is the only one for which we set the data field. */
-#if WLR_CHECK_VERSION(0, 16, 0)
 	struct wlr_scene_tree *tree = node->parent;
 	while (tree != NULL && tree->node.data == NULL) {
 		tree = tree->node.parent;
 	}
 	return tree->node.data;
-#else
-	while (node != NULL && node->data == NULL) {
-		node = node->parent;
-	}
-	return node->data;
-#endif
 }
 
 void focus_view(struct wb_view *view, struct wlr_surface *surface) {
@@ -71,28 +54,16 @@ void focus_view(struct wb_view *view, struct wlr_surface *surface) {
 		 */
 		struct wlr_xdg_surface *previous =
 			wlr_xdg_surface_from_wlr_surface(prev_surface);
-#if WLR_CHECK_VERSION(0, 16, 0)
 		wlr_xdg_toplevel_set_activated(previous->toplevel, false);
-#else
-		wlr_xdg_toplevel_set_activated(previous, false);
-#endif
 	}
 	/* Move the view to the front */
 	if (!server->seat->focused_layer) {
-#if WLR_CHECK_VERSION(0, 16, 0)
 		wlr_scene_node_raise_to_top(&view->scene_tree->node);
-#else
-		wlr_scene_node_raise_to_top(view->scene_node);
-#endif
 	}
 	wl_list_remove(&view->link);
 	wl_list_insert(&server->views, &view->link);
 	/* Activate the new surface */
-#if WLR_CHECK_VERSION(0, 16, 0)
 	wlr_xdg_toplevel_set_activated(view->xdg_toplevel, true);
-#else
-	wlr_xdg_toplevel_set_activated(view->xdg_surface, true);
-#endif
 	/*
 	 * Tell the seat to have the keyboard enter this surface. wlroots will keep
 	 * track of this and automatically send key events to the appropriate
@@ -147,21 +118,12 @@ static void xdg_toplevel_map(struct wl_listener *listener, void *data) {
 	if (view->current_position.height > TITLEBAR_HEIGHT &&
 			view->current_position.height > TITLEBAR_HEIGHT *
 			(usable_area.width / usable_area.height)) {
-#if WLR_CHECK_VERSION(0, 16, 0)
 		wlr_xdg_toplevel_set_size(view->xdg_toplevel,
 				view->current_position.width, view->current_position.height);
-#else
-		wlr_xdg_toplevel_set_size(view->xdg_surface,
-				view->current_position.width, view->current_position.height);
-#endif
 		focus_view(view, view->xdg_toplevel->base->surface);
 	}
 
-#if WLR_CHECK_VERSION(0, 16, 0)
 	wlr_scene_node_set_position(&view->scene_tree->node,
-#else
-	wlr_scene_node_set_position(view->scene_node,
-#endif
 			view->current_position.x, view->current_position.y);
 }
 
@@ -174,11 +136,7 @@ static void xdg_toplevel_unmap(struct wl_listener *listener, void *data) {
 
 	/* Focus the next view, if any. */
 	struct wb_view *next_view = wl_container_of(view->link.next, next_view, link);
-#if WLR_CHECK_VERSION(0, 16, 0)
 	if (next_view && next_view->scene_tree && next_view->scene_tree->node.enabled) {
-#else
-	if (next_view && next_view->scene_node && next_view->scene_node->state.enabled) {
-#endif
 		wlr_log(WLR_INFO, "%s: %s", _("Focusing next view"),
 				next_view->xdg_toplevel->app_id);
 		focus_view(next_view, next_view->xdg_toplevel->base->surface);
@@ -244,17 +202,10 @@ static void xdg_toplevel_request_maximize(struct wl_listener *listener, void *da
 		view->current_position.x = view->previous_position.x;
 		view->current_position.y = view->previous_position.y;
 	}
-#if WLR_CHECK_VERSION(0, 16, 0)
 	wlr_xdg_toplevel_set_size(view->xdg_toplevel, usable_area.width, usable_area.height);
 	wlr_xdg_toplevel_set_maximized(view->xdg_toplevel, !is_maximized);
 	wlr_scene_node_set_position(&view->scene_tree->node,
 			view->current_position.x, view->current_position.y);
-#else
-	wlr_xdg_toplevel_set_size(view->xdg_surface, usable_area.width, usable_area.height);
-	wlr_xdg_toplevel_set_maximized(view->xdg_surface, !is_maximized);
-	wlr_scene_node_set_position(view->scene_node,
-			view->current_position.x, view->current_position.y);
-#endif
 }
 
 static void xdg_toplevel_request_minimize(struct wl_listener *listener, void *data) {
@@ -270,11 +221,7 @@ static void xdg_toplevel_request_minimize(struct wl_listener *listener, void *da
 	struct wb_view *parent_view = wl_container_of(view->link.prev, parent_view, link);
 	struct wb_view *previous_view = wl_container_of(parent_view->link.prev, previous_view, link);
 	focus_view(previous_view, previous_view->xdg_toplevel->base->surface);
-#if WLR_CHECK_VERSION(0, 16, 0)
 	wlr_scene_node_set_position(&view->scene_tree->node,
-#else
-	wlr_scene_node_set_position(view->scene_node,
-#endif
 			view->current_position.x, view->current_position.y);
 }
 
@@ -340,13 +287,9 @@ static void handle_new_popup(struct wl_listener *listener, void *data) {
 
 	struct wlr_output *wlr_output = wlr_output_layout_output_at(
 			view->server->output_layout,
-#if WLR_CHECK_VERSION(0, 16, 0)
 			view->current_position.x + popup->current.geometry.x,
 			view->current_position.y + popup->current.geometry.y);
-#else
-			view->current_position.x + popup->geometry.x,
-			view->current_position.y + popup->geometry.y);
-#endif
+
 	if (!wlr_output) return;
 	struct wb_output *output = wlr_output->data;
 
@@ -377,15 +320,9 @@ static void handle_new_xdg_surface(struct wl_listener *listener, void *data) {
 		if (wlr_surface_is_xdg_surface(xdg_surface->popup->parent)) {
 			struct wlr_xdg_surface *parent = wlr_xdg_surface_from_wlr_surface(
 				xdg_surface->popup->parent);
-#if WLR_CHECK_VERSION(0, 16, 0)
 			struct wlr_scene_tree *parent_tree = parent->data;
 			xdg_surface->data = wlr_scene_xdg_surface_create(
 				parent_tree, xdg_surface);
-#else
-			struct wlr_scene_node *parent_node = parent->data;
-			xdg_surface->data = wlr_scene_xdg_surface_create(
-				parent_node, xdg_surface);
-#endif
 		}
 		/* The scene graph doesn't currently unconstrain popups, so keep going */
 		/* return; */
@@ -398,9 +335,6 @@ static void handle_new_xdg_surface(struct wl_listener *listener, void *data) {
 		calloc(1, sizeof(struct wb_view));
 	view->server = server;
 	view->xdg_toplevel = xdg_surface->toplevel;
-#if !WLR_CHECK_VERSION(0, 16, 0)
-	view->xdg_surface = xdg_surface;
-#endif
 
 	/* Listen to the various events it can emit */
 	view->map.notify = xdg_toplevel_map;
@@ -413,17 +347,10 @@ static void handle_new_xdg_surface(struct wl_listener *listener, void *data) {
 	wl_signal_add(&xdg_surface->events.new_popup, &view->new_popup);
 
 	if (xdg_surface->role == WLR_XDG_SURFACE_ROLE_TOPLEVEL) {
-#if WLR_CHECK_VERSION(0, 16, 0)
 		view->scene_tree = wlr_scene_xdg_surface_create(
 			&view->server->scene->tree, view->xdg_toplevel->base);
 		view->scene_tree->node.data = view;
 		xdg_surface->data = view->scene_tree;
-#else
-		view->scene_node = wlr_scene_xdg_surface_create(
-			&view->server->scene->node, view->xdg_toplevel->base);
-		view->scene_node->data = view;
-		xdg_surface->data = view->scene_node;
-#endif
 
 		struct wlr_xdg_toplevel *toplevel = view->xdg_toplevel;
 		view->request_fullscreen.notify = xdg_toplevel_request_fullscreen;
@@ -442,12 +369,8 @@ static void handle_new_xdg_surface(struct wl_listener *listener, void *data) {
 }
 
 void init_xdg_shell(struct wb_server *server) {
-#if WLR_CHECK_VERSION(0, 16, 0)
 	/* xdg-shell version 3 */
 	server->xdg_shell = wlr_xdg_shell_create(server->wl_display, 3);
-#else
-	server->xdg_shell = wlr_xdg_shell_create(server->wl_display);
-#endif
 	server->new_xdg_surface.notify = handle_new_xdg_surface;
 	wl_signal_add(&server->xdg_shell->events.new_surface, &server->new_xdg_surface);
 }

@@ -8,14 +8,7 @@ struct wb_layer_surface {
 	struct wb_output *output;
 	struct wb_server *server;
 
-#if WLR_CHECK_VERSION(0, 16, 0)
 	struct wlr_scene_layer_surface_v1 *scene;
-#else
-	struct {
-		struct wlr_layer_surface_v1 *layer_surface;
-		struct wlr_scene_node *node;
-	} *scene;
-#endif
 
 	bool mapped;
 
@@ -28,22 +21,14 @@ struct wb_layer_surface {
 
 struct wb_layer_popup {
 	struct wlr_xdg_popup *wlr_popup;
-#if WLR_CHECK_VERSION(0, 16, 0)
 	struct wlr_scene_tree *scene;
-#else
-	struct wlr_scene_node *scene;
-#endif
 
 	struct wl_listener destroy;
 	struct wl_listener new_popup;
 };
 
 struct wb_layer_subsurface {
-#if WLR_CHECK_VERSION(0, 16, 0)
 	struct wlr_scene_tree *scene;
-#else
-	struct wlr_scene_node *scene;
-#endif
 
 	struct wl_listener destroy;
 };

@@ -16,7 +16,7 @@ sources:
 tasks:
   - setup: |
       cd waybox
-      meson build
+      meson setup build
   - build: |
       cd waybox
       ninja -C build

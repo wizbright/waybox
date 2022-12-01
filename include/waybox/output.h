@@ -11,22 +11,17 @@ struct wb_output {
 	struct wb_server *server;
 
 	struct {
-#if WLR_CHECK_VERSION(0, 16, 0)
 		struct wlr_scene_tree *shell_background;
 		struct wlr_scene_tree *shell_bottom;
 		struct wlr_scene_tree *shell_fullscreen;
 		struct wlr_scene_tree *shell_overlay;
 		struct wlr_scene_tree *shell_top;
-#else
-		struct wlr_scene_node *shell_background;
-		struct wlr_scene_node *shell_bottom;
-		struct wlr_scene_node *shell_fullscreen;
-		struct wlr_scene_node *shell_overlay;
-		struct wlr_scene_node *shell_top;
-#endif
 	} layers;
 
+#if ! WLR_CHECK_VERSION(0, 17, 0)
+	/* DEPRECATED: Use a tool like swaybg instead */
 	struct wlr_scene_rect *background;
+#endif
 	struct wlr_box geometry;
 
 	struct wl_listener destroy;
@@ -39,12 +34,7 @@ struct wb_view {
 	struct wl_list link;
 	struct wb_server *server;
 	struct wlr_xdg_toplevel *xdg_toplevel;
-#if WLR_CHECK_VERSION(0, 16, 0)
 	struct wlr_scene_tree *scene_tree;
-#else
-	struct wlr_scene_node *scene_node;
-	struct wlr_xdg_surface *xdg_surface;
-#endif
 
 	struct wlr_xdg_toplevel_decoration_v1 *decoration;
 
