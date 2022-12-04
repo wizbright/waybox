@@ -214,13 +214,16 @@ static void xdg_toplevel_request_minimize(struct wl_listener *listener, void *da
 	if (minimize_requested) {
 		view->previous_position = view->current_position;
 		view->current_position.y = -view->current_position.height;
+
+		struct wb_view *next_view = wl_container_of(view->link.next, next_view, link);
+		if (wl_list_length(&view->link) > 1)
+			focus_view(next_view, next_view->xdg_toplevel->base->surface);
+		else
+			focus_view(view, view->xdg_toplevel->base->surface);
 	} else {
 		view->current_position = view->previous_position;
 	}
 
-	struct wb_view *parent_view = wl_container_of(view->link.prev, parent_view, link);
-	struct wb_view *previous_view = wl_container_of(parent_view->link.prev, previous_view, link);
-	focus_view(previous_view, previous_view->xdg_toplevel->base->surface);
 	wlr_scene_node_set_position(&view->scene_tree->node,
 			view->current_position.x, view->current_position.y);
 }
