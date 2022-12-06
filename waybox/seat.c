@@ -193,6 +193,8 @@ static void keyboard_handle_key(
 		wlr_seat_keyboard_notify_key(seat, event->time_msec,
 			event->keycode, event->state);
 	}
+
+	wlr_idle_notifier_v1_notify_activity(server->idle_notifier, seat);
 }
 
 static void handle_new_keyboard(struct wb_server *server,

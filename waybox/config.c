@@ -67,7 +67,6 @@ static void get_action(xmlNode *new_node, struct wb_key_binding *key_bind) {
 			key_bind->cmd = (char *) xmlStrdup(cur_node->children->content);
 		}
 	}
-
 }
 
 static bool parse_key_bindings(struct wb_config *config, xmlXPathContextPtr ctxt) {

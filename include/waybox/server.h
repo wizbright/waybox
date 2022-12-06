@@ -13,7 +13,7 @@
 #include <wlr/types/wlr_compositor.h>
 #include <wlr/types/wlr_data_device.h>
 #include <wlr/types/wlr_gamma_control_v1.h>
-#include <wlr/types/wlr_idle.h>
+#include <wlr/types/wlr_idle_notify_v1.h>
 #include <wlr/types/wlr_output_layout.h>
 #include <wlr/types/wlr_scene.h>
 #include <wlr/types/wlr_screencopy_v1.h>
@@ -43,6 +43,7 @@ struct wb_server {
 	struct wlr_allocator *allocator;
 	struct wlr_backend *backend;
 	struct wlr_compositor *compositor;
+	struct wlr_idle_notifier_v1 *idle_notifier;
 	struct wlr_output_layout *output_layout;
 	struct wlr_xdg_output_manager_v1 *output_manager;
 	struct wlr_renderer *renderer;

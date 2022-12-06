@@ -93,7 +93,7 @@ bool wb_start_server(struct wb_server* server) {
 
 	wlr_gamma_control_manager_v1_create(server->wl_display);
 	wlr_screencopy_manager_v1_create(server->wl_display);
-	wlr_idle_create(server->wl_display);
+	server->idle_notifier = wlr_idle_notifier_v1_create(server->wl_display);
 
 	wlr_data_device_manager_create(server->wl_display);
 	wl_list_init(&server->views);

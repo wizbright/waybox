@@ -101,6 +101,8 @@ static void process_cursor_motion(struct wb_server *server, uint32_t time) {
 		 * the last client to have the cursor over it. */
 		wlr_seat_pointer_clear_focus(seat);
 	}
+
+	wlr_idle_notifier_v1_notify_activity(server->idle_notifier, seat);
 }
 
 static void handle_cursor_motion(struct wl_listener *listener, void *data) {
@@ -141,6 +143,8 @@ static void handle_cursor_button(struct wl_listener *listener, void *data) {
 		/* Focus that client if the button was _pressed_ */
 		focus_view(view, surface);
 	}
+
+	wlr_idle_notifier_v1_notify_activity(cursor->server->idle_notifier, cursor->server->seat->seat);
 }
 
 static void handle_cursor_axis(struct wl_listener *listener, void *data) {
