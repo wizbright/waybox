@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Waybox 0.0.1\n"
 "Report-Msgid-Bugs-To: https://github.com/wizbright/waybox/issues\n"
-"POT-Creation-Date: 2022-02-22 21:19-0500\n"
-"PO-Revision-Date: 2022-02-22 21:21-0500\n"
+"POT-Creation-Date: 2022-12-06 22:27-0500\n"
+"PO-Revision-Date: 2022-12-06 22:33-0500\n"
 "Last-Translator: Keith <keith@localhost>\n"
 "Language-Team: Esperanto\n"
 "Language: eo\n"
@@ -112,12 +112,6 @@ msgstr "Sukcese startigis servilon"
 msgid "Failed to start server"
 msgstr "Malsukcesis startigi servilon"
 
-msgid "Couldn't get a surface texture"
-msgstr "Ne povis akiri surfacan teksturon"
-
-msgid "Couldn't attach renderer to output"
-msgstr "Ne povis almeti bildigilon al eligo"
-
 msgid "New output device detected"
 msgstr "Nova enigilo malkovrita"
 
@@ -136,6 +130,12 @@ msgstr "Nerekonata enigilo malkovrita"
 msgid "Failed to connect to a Wayland display"
 msgstr "Malsukcesis konektiĝi al Wayland-ekrano"
 
+msgid "Failed to create renderer"
+msgstr "Malsukesis krei servilan bildigilon"
+
+msgid "Failed to create allocator"
+msgstr "Malsukesis krei servilan asignilon"
+
 msgid "Failed to start backend"
 msgstr "Malsukesis startigi servilan dorson"
 
@@ -148,11 +148,21 @@ msgstr "Ekrano finigita"
 msgid "Keyboard focus is now on surface"
 msgstr "Klavara fokuso nun estas sur surfaco"
 
-msgid "Focusing current view"
-msgstr "Fokusas nunan vidon"
-
 msgid "Focusing next view"
 msgstr "Fokusas la sekvan vidon"
+
+#, fuzzy
+#~ msgid "Failed to create wlr_backend"
+#~ msgstr "Malsukesis krei servilan dorson"
+
+#~ msgid "Couldn't get a surface texture"
+#~ msgstr "Ne povis akiri surfacan teksturon"
+
+#~ msgid "Couldn't attach renderer to output"
+#~ msgstr "Ne povis almeti bildigilon al eligo"
+
+#~ msgid "Focusing current view"
+#~ msgstr "Fokusas nunan vidon"
 
 #~ msgid "Unable to parse XML file"
 #~ msgstr "Ne povas analizi XML-dosieron"

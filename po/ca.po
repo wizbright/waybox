@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Waybox 0.0.1\n"
 "Report-Msgid-Bugs-To: https://github.com/wizbright/waybox/issues\n"
-"POT-Creation-Date: 2022-02-22 21:19-0500\n"
+"POT-Creation-Date: 2022-12-06 22:27-0500\n"
 "PO-Revision-Date: 2020-03-10 14:06-0400\n"
 "Last-Translator: David Majà Martínez <davidmaja@gmail.com>\n"
 "Language-Team: catalan\n"
@@ -109,12 +109,6 @@ msgstr ""
 msgid "Failed to start server"
 msgstr ""
 
-msgid "Couldn't get a surface texture"
-msgstr ""
-
-msgid "Couldn't attach renderer to output"
-msgstr ""
-
 msgid "New output device detected"
 msgstr ""
 
@@ -133,6 +127,12 @@ msgstr ""
 msgid "Failed to connect to a Wayland display"
 msgstr ""
 
+msgid "Failed to create renderer"
+msgstr ""
+
+msgid "Failed to create allocator"
+msgstr ""
+
 msgid "Failed to start backend"
 msgstr ""
 
@@ -143,9 +143,6 @@ msgid "Display destroyed"
 msgstr ""
 
 msgid "Keyboard focus is now on surface"
-msgstr ""
-
-msgid "Focusing current view"
 msgstr ""
 
 msgid "Focusing next view"

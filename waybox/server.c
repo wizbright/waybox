@@ -20,7 +20,7 @@ bool wb_create_backend(struct wb_server* server) {
 	server->backend = wlr_backend_autocreate(server->wl_display);
 #endif
 	if (server->backend == NULL) {
-		wlr_log(WLR_ERROR, "%s", _("Failed to create wlr_backend"));
+		wlr_log(WLR_ERROR, "%s", _("Failed to create backend"));
 		return false;
 	}
 
@@ -30,7 +30,7 @@ bool wb_create_backend(struct wb_server* server) {
          * supports for shared memory, this configures that for clients. */
 	server->renderer = wlr_renderer_autocreate(server->backend);
 	if (server->renderer == NULL) {
-		wlr_log(WLR_ERROR, "%s", _("Failed to create wlr_renderer"));
+		wlr_log(WLR_ERROR, "%s", _("Failed to create renderer"));
 		return false;
 	}
 
@@ -42,7 +42,7 @@ bool wb_create_backend(struct wb_server* server) {
          * screen */
         server->allocator = wlr_allocator_autocreate(server->backend, server->renderer);
 	if (server->allocator == NULL) {
-		wlr_log(WLR_ERROR, "%s", _("Failed to create wlr_allocator"));
+		wlr_log(WLR_ERROR, "%s", _("Failed to create allocator"));
 		return false;
 	}
 
