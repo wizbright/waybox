@@ -11,10 +11,10 @@ static void process_cursor_move(struct wb_server *server) {
 	/* Move the grabbed view to the new position. */
 	struct wb_view *view = server->grabbed_view;
 	if (view->scene_tree->node.type == WLR_SCENE_NODE_TREE) {
-		view->current_position.x = server->cursor->cursor->x - server->grab_x;
-		view->current_position.y = server->cursor->cursor->y - server->grab_y;
+		view->geometry.x = server->cursor->cursor->x - server->grab_x;
+		view->geometry.y = server->cursor->cursor->y - server->grab_y;
 		wlr_scene_node_set_position(&view->scene_tree->node,
-				view->current_position.x, view->current_position.y);
+				view->geometry.x, view->geometry.y);
 	}
 }
 
@@ -52,10 +52,10 @@ static void process_cursor_resize(struct wb_server *server) {
 
 	struct wlr_box geo_box;
 	wlr_xdg_surface_get_geometry(view->xdg_toplevel->base, &geo_box);
-	view->current_position.x = new_left - geo_box.x;
-	view->current_position.y = new_top - geo_box.y;
+	view->geometry.x = new_left - geo_box.x;
+	view->geometry.y = new_top - geo_box.y;
 		wlr_scene_node_set_position(&view->scene_tree->node,
-				view->current_position.x, view->current_position.y);
+				view->geometry.x, view->geometry.y);
 
 	int new_width = new_right - new_left;
 	int new_height = new_bottom - new_top;

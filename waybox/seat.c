@@ -106,18 +106,18 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 				if (view->scene_tree->node.enabled) {
 					struct wlr_box geo_box;
 					wlr_xdg_surface_get_geometry(view->xdg_toplevel->base, &geo_box);
-					int decoration_height = MAX(geo_box.y - view->current_position.y, TITLEBAR_HEIGHT);
+					int decoration_height = MAX(geo_box.y - view->geometry.y, TITLEBAR_HEIGHT);
 
-					view->previous_position = view->current_position;
+					view->previous_geometry = view->geometry;
 					wlr_xdg_toplevel_set_size(view->xdg_toplevel,
-							view->current_position.width, decoration_height);
+							view->geometry.width, decoration_height);
 				}
 			}
 			if (key_binding->action & ACTION_UNSHADE) {
 				struct wb_view *view = wl_container_of(server->views.next, view, link);
 				if (view->scene_tree->node.enabled) {
 					wlr_xdg_toplevel_set_size(view->xdg_toplevel,
-							view->previous_position.width, view->previous_position.height);
+							view->previous_geometry.width, view->previous_geometry.height);
 				}
 			}
 			if (key_binding->action & ACTION_RECONFIGURE) {

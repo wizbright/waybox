@@ -76,8 +76,8 @@ struct wlr_output *get_active_output(struct wb_view *view) {
 	double closest_x, closest_y;
 	struct wlr_output *output = NULL;
 	wlr_output_layout_closest_point(view->server->output_layout, output,
-			view->current_position.x + view->current_position.width / 2,
-			view->current_position.y + view->current_position.height / 2,
+			view->geometry.x + view->geometry.width / 2,
+			view->geometry.y + view->geometry.height / 2,
 			&closest_x, &closest_y);
 	return wlr_output_layout_output_at(view->server->output_layout, closest_x, closest_y);
 }
@@ -101,30 +101,30 @@ static void xdg_toplevel_map(struct wl_listener *listener, void *data) {
 	wlr_xdg_surface_get_geometry(view->xdg_toplevel->base, &geo_box);
 
 	if (config) {
-		view->current_position.height = MIN(geo_box.height,
+		view->geometry.height = MIN(geo_box.height,
 				usable_area.height - config->margins.top - config->margins.bottom);
-		view->current_position.width = MIN(geo_box.width,
+		view->geometry.width = MIN(geo_box.width,
 				usable_area.width - config->margins.left - config->margins.right);
-		view->current_position.x = config->margins.left;
-		view->current_position.y = config->margins.top;
+		view->geometry.x = config->margins.left;
+		view->geometry.y = config->margins.top;
 	} else {
-		view->current_position.height = MIN(geo_box.height, usable_area.height);
-		view->current_position.width = MIN(geo_box.width, usable_area.width);
-		view->current_position.x = 0;
-		view->current_position.y = 0;
+		view->geometry.height = MIN(geo_box.height, usable_area.height);
+		view->geometry.width = MIN(geo_box.width, usable_area.width);
+		view->geometry.x = 0;
+		view->geometry.y = 0;
 	}
 
 	/* A view no larger than a title bar shouldn't be sized or focused */
-	if (view->current_position.height > TITLEBAR_HEIGHT &&
-			view->current_position.height > TITLEBAR_HEIGHT *
+	if (view->geometry.height > TITLEBAR_HEIGHT &&
+			view->geometry.height > TITLEBAR_HEIGHT *
 			(usable_area.width / usable_area.height)) {
 		wlr_xdg_toplevel_set_size(view->xdg_toplevel,
-				view->current_position.width, view->current_position.height);
+				view->geometry.width, view->geometry.height);
 		focus_view(view, view->xdg_toplevel->base->surface);
 	}
 
 	wlr_scene_node_set_position(&view->scene_tree->node,
-			view->current_position.x, view->current_position.y);
+			view->geometry.x, view->geometry.y);
 }
 
 static void xdg_toplevel_unmap(struct wl_listener *listener, void *data) {
@@ -187,33 +187,33 @@ static void xdg_toplevel_request_maximize(struct wl_listener *listener, void *da
 	bool is_maximized = view->xdg_toplevel->current.maximized;
 	if (!is_maximized) {
 		struct wb_config *config = view->server->config;
-		view->previous_position = view->current_position;
+		view->previous_geometry = view->geometry;
 		if (config) {
-			view->current_position.x = config->margins.left;
-			view->current_position.y = config->margins.top;
+			view->geometry.x = config->margins.left;
+			view->geometry.y = config->margins.top;
 			usable_area.height -= config->margins.top + config->margins.bottom;
 			usable_area.width -= config->margins.left + config->margins.right;
 		} else {
-			view->current_position.x = 0;
-			view->current_position.y = 0;
+			view->geometry.x = 0;
+			view->geometry.y = 0;
 		}
 	} else {
-		usable_area = view->previous_position;
-		view->current_position.x = view->previous_position.x;
-		view->current_position.y = view->previous_position.y;
+		usable_area = view->previous_geometry;
+		view->geometry.x = view->previous_geometry.x;
+		view->geometry.y = view->previous_geometry.y;
 	}
 	wlr_xdg_toplevel_set_size(view->xdg_toplevel, usable_area.width, usable_area.height);
 	wlr_xdg_toplevel_set_maximized(view->xdg_toplevel, !is_maximized);
 	wlr_scene_node_set_position(&view->scene_tree->node,
-			view->current_position.x, view->current_position.y);
+			view->geometry.x, view->geometry.y);
 }
 
 static void xdg_toplevel_request_minimize(struct wl_listener *listener, void *data) {
 	struct wb_view *view = wl_container_of(listener, view, request_minimize);
 	bool minimize_requested = view->xdg_toplevel->requested.minimized;
 	if (minimize_requested) {
-		view->previous_position = view->current_position;
-		view->current_position.y = -view->current_position.height;
+		view->previous_geometry = view->geometry;
+		view->geometry.y = -view->geometry.height;
 
 		struct wb_view *next_view = wl_container_of(view->link.next, next_view, link);
 		if (wl_list_length(&view->link) > 1)
@@ -221,11 +221,11 @@ static void xdg_toplevel_request_minimize(struct wl_listener *listener, void *da
 		else
 			focus_view(view, view->xdg_toplevel->base->surface);
 	} else {
-		view->current_position = view->previous_position;
+		view->geometry = view->previous_geometry;
 	}
 
 	wlr_scene_node_set_position(&view->scene_tree->node,
-			view->current_position.x, view->current_position.y);
+			view->geometry.x, view->geometry.y);
 }
 
 static void begin_interactive(struct wb_view *view,
@@ -244,22 +244,22 @@ static void begin_interactive(struct wb_view *view,
 	server->cursor->cursor_mode = mode;
 
 	if (mode == WB_CURSOR_MOVE) {
-		server->grab_x = server->cursor->cursor->x - view->current_position.x;
-		server->grab_y = server->cursor->cursor->y - view->current_position.y;
+		server->grab_x = server->cursor->cursor->x - view->geometry.x;
+		server->grab_y = server->cursor->cursor->y - view->geometry.y;
 	} else if (mode == WB_CURSOR_RESIZE) {
 		struct wlr_box geo_box;
 		wlr_xdg_surface_get_geometry(view->xdg_toplevel->base, &geo_box);
 
-		double border_x = (view->current_position.x + geo_box.x) +
+		double border_x = (view->geometry.x + geo_box.x) +
 			((edges & WLR_EDGE_RIGHT) ? geo_box.width : 0);
-		double border_y = (view->current_position.y + geo_box.y) +
+		double border_y = (view->geometry.y + geo_box.y) +
 			((edges & WLR_EDGE_BOTTOM) ? geo_box.height : 0);
 		server->grab_x = server->cursor->cursor->x - border_x;
 		server->grab_y = server->cursor->cursor->y - border_y;
 
 		server->grab_geo_box = geo_box;
-		server->grab_geo_box.x += view->current_position.x;
-		server->grab_geo_box.y += view->current_position.y;
+		server->grab_geo_box.x += view->geometry.x;
+		server->grab_geo_box.y += view->geometry.y;
 
 		server->resize_edges = edges;
 	}
@@ -290,8 +290,8 @@ static void handle_new_popup(struct wl_listener *listener, void *data) {
 
 	struct wlr_output *wlr_output = wlr_output_layout_output_at(
 			view->server->output_layout,
-			view->current_position.x + popup->current.geometry.x,
-			view->current_position.y + popup->current.geometry.y);
+			view->geometry.x + popup->current.geometry.x,
+			view->geometry.y + popup->current.geometry.y);
 
 	if (!wlr_output) return;
 	struct wb_output *output = wlr_output->data;
@@ -299,8 +299,8 @@ static void handle_new_popup(struct wl_listener *listener, void *data) {
 	int top_margin = (view->server->config) ?
 		view->server->config->margins.top : 0;
 	struct wlr_box output_toplevel_box = {
-		.x = output->geometry.x - view->current_position.x,
-		.y = output->geometry.y - view->current_position.y,
+		.x = output->geometry.x - view->geometry.x,
+		.y = output->geometry.y - view->geometry.y,
 		.width = output->geometry.width,
 		.height = output->geometry.height - top_margin,
 	};

@@ -31,7 +31,7 @@ static xmlChar *get_attribute(xmlNode *node, char *attr_name) {
 	xmlAttr *attr = node->properties;
 	while (attr && strcmp((char *) attr->name, attr_name) != 0)
 		attr = attr->next;
-	return attr->children->content;
+	return attr ? attr->children->content : (xmlChar *) "";
 }
 
 static void get_action(xmlNode *new_node, struct wb_key_binding *key_bind) {

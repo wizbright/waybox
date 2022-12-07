@@ -48,8 +48,8 @@ struct wb_view {
 	struct wl_listener request_move;
 	struct wl_listener request_resize;
 
-	struct wlr_box current_position;
-	struct wlr_box previous_position;
+	struct wlr_box geometry;
+	struct wlr_box previous_geometry;
 };
 
 void output_frame_notify(struct wl_listener* listener, void *data);
