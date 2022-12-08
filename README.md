@@ -12,9 +12,10 @@ contributing.](https://github.com/wizbright/waybox/blob/master/CONTRIBUTING.md)
 ### Dependencies
 
 * [Meson](https://mesonbuild.com/)
-* [wlroots](https://gitlab.freedesktop.org/wlroots/wlroots/)
-* [libxml2](http://xmlsoft.org/)
 * [Wayland](https://wayland.freedesktop.org/)
+* [libinput](http://www.freedesktop.org/wiki/Software/libinput)
+* [libxml2](http://xmlsoft.org/)
+* [wlroots](https://gitlab.freedesktop.org/wlroots/wlroots/)
 * [xkbcommon](https://xkbcommon.org/)
 
 ### Build instructions

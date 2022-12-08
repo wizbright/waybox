@@ -1,7 +1,7 @@
 project(
   'Waybox',
   'c',
-  version: '0.2.1',
+  version: '0.2.2',
   license: 'MIT',
   meson_version: '>=0.52.0',
   default_options: [
@@ -25,6 +25,7 @@ cc = meson.get_compiler('c')
 # Adding include directory
 inc_dir = include_directories('include')
 
+libinput = dependency('libinput', version: '>=1.21.0')
 libxml2 = dependency('libxml-2.0')
 wlroots = dependency('wlroots', version: '>=0.16.0')
 wayland_server = dependency('wayland-server', version: '>=1.15')

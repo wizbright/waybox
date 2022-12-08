@@ -166,15 +166,34 @@ bool init_config(struct wb_server *server) {
 		wlr_log(WLR_INFO, "%s", _("Couldn't register the namespace"));
 	}
 
-	config->keyboard_layout.use_config = parse_xpath_expr("//ob:keyboard//ob:keyboardLayout", ctxt) != NULL;
-
+	config->keyboard_layout.use_config = parse_xpath_expr("//ob:keyboard//ob:xkb", ctxt) != NULL;
 	if (config->keyboard_layout.use_config) {
-		config->keyboard_layout.layout = parse_xpath_expr("//ob:keyboard//ob:keyboardLayout//ob:layout", ctxt);
-		config->keyboard_layout.model = parse_xpath_expr("//ob:keyboard//ob:keyboardLayout//ob:model", ctxt);
-		config->keyboard_layout.options = parse_xpath_expr("//ob:keyboard//ob:keyboardLayout//ob:options", ctxt);
-		config->keyboard_layout.rules = parse_xpath_expr("//ob:keyboard//ob:keyboardLayout//ob:rules", ctxt);
-		config->keyboard_layout.variant = parse_xpath_expr("//ob:keyboard//ob:keyboardLayout//ob:variant", ctxt);
+		config->keyboard_layout.layout = parse_xpath_expr("//ob:keyboard//ob:xkb//ob:layout", ctxt);
+		config->keyboard_layout.model = parse_xpath_expr("//ob:keyboard//ob:xkb//ob:model", ctxt);
+		config->keyboard_layout.options = parse_xpath_expr("//ob:keyboard//ob:xkb//ob:options", ctxt);
+		config->keyboard_layout.rules = parse_xpath_expr("//ob:keyboard//ob:xkb//ob:rules", ctxt);
+		config->keyboard_layout.variant = parse_xpath_expr("//ob:keyboard//ob:xkb//ob:variant", ctxt);
 	}
+
+	config->libinput_config.use_config = parse_xpath_expr("//ob:mouse//ob:libinput", ctxt) != NULL;
+	if (config->libinput_config.use_config) {
+		config->libinput_config.accel_profile = parse_xpath_expr("//ob:mouse//ob:libinput/ob:accelProfile", ctxt);
+		config->libinput_config.accel_speed = parse_xpath_expr("//ob:mouse//ob:libinput/ob:accelSpeed", ctxt);
+		config->libinput_config.calibration_matrix = parse_xpath_expr("//ob:mouse//ob:libinput/ob:calibrationMatrix", ctxt);
+		config->libinput_config.click_method = parse_xpath_expr("//ob:mouse//ob:libinput/ob:clickMethod", ctxt);
+		config->libinput_config.dwt = parse_xpath_expr("//ob:mouse//ob:libinput/ob:disableWhileTyping", ctxt);
+		config->libinput_config.dwtp = parse_xpath_expr("//ob:mouse//ob:libinput/ob:disableWhileTrackpointing", ctxt);
+		config->libinput_config.left_handed = parse_xpath_expr("//ob:mouse//ob:libinput/ob:leftHanded", ctxt);
+		config->libinput_config.middle_emulation = parse_xpath_expr("//ob:mouse//ob:libinput/ob:middleEmulation", ctxt);
+		config->libinput_config.natural_scroll = parse_xpath_expr("//ob:mouse//ob:libinput/ob:naturalScroll", ctxt);
+		config->libinput_config.scroll_button_lock = parse_xpath_expr("//ob:mouse//ob:libinput/ob:scrollButtonLock", ctxt);
+		config->libinput_config.scroll_method = parse_xpath_expr("//ob:mouse//ob:libinput/ob:scrollMethod", ctxt);
+		config->libinput_config.tap = parse_xpath_expr("//ob:mouse//ob:libinput/ob:tap", ctxt);
+		config->libinput_config.tap_button_map = parse_xpath_expr("//ob:mouse//ob:libinput/ob:tapButtonMap", ctxt);
+		config->libinput_config.tap_drag = parse_xpath_expr("//ob:mouse//ob:libinput/ob:tapDrag", ctxt);
+		config->libinput_config.tap_drag = parse_xpath_expr("//ob:mouse//ob:libinput/ob:tapDragLock", ctxt);
+	}
+
 	if (!parse_key_bindings(config, ctxt)) {
 		xmlFreeDoc(doc);
 		return false;

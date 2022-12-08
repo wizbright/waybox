@@ -1,5 +1,6 @@
 #include <unistd.h>
 
+#include <wlr/backend/libinput.h>
 #include <wlr/types/wlr_primary_selection.h>
 #include <wlr/types/wlr_primary_selection_v1.h>
 
@@ -250,6 +251,103 @@ static void handle_new_keyboard(struct wb_server *server,
 	wl_list_insert(&server->seat->keyboards, &keyboard->link);
 }
 
+static bool libinput_config_get_enabled(char *config) {
+	return strcmp(config, "disabled") != 0;
+}
+
+static void handle_new_pointer(struct wb_server *server, struct wlr_input_device *device) {
+	struct wb_config *config = server->config;
+	if (wlr_input_device_is_libinput(device) && config->libinput_config.use_config) {
+		struct libinput_device *libinput_handle =
+			wlr_libinput_get_device_handle(device);
+
+		if (config->libinput_config.accel_profile) {
+			enum libinput_config_accel_profile accel_profile =
+				LIBINPUT_CONFIG_ACCEL_PROFILE_ADAPTIVE;
+			if (strcmp(config->libinput_config.accel_profile, "flat") == 0)
+				accel_profile = LIBINPUT_CONFIG_ACCEL_PROFILE_FLAT;
+			else if (strcmp(config->libinput_config.accel_profile, "none") == 0)
+				accel_profile = LIBINPUT_CONFIG_ACCEL_PROFILE_NONE;
+			libinput_device_config_accel_set_profile(libinput_handle, accel_profile);
+		}
+		if (config->libinput_config.accel_speed) {
+			double accel_speed = strtod(config->libinput_config.accel_speed, NULL);
+			libinput_device_config_accel_set_speed(libinput_handle, accel_speed);
+		}
+		if (config->libinput_config.calibration_matrix) {
+			float matrix[6];
+			unsigned short i = 0;
+			while ((matrix[i] = strtod(strtok(config->libinput_config.calibration_matrix, " "), NULL) && i < 6)) {
+				config->libinput_config.calibration_matrix = NULL;
+				i++;
+			}
+			libinput_device_config_calibration_set_matrix(libinput_handle, matrix);
+		}
+		if (config->libinput_config.click_method) {
+			enum libinput_config_click_method click_method = LIBINPUT_CONFIG_CLICK_METHOD_BUTTON_AREAS;
+			if (strcmp(config->libinput_config.click_method, "clickfinger") == 0)
+				click_method = LIBINPUT_CONFIG_CLICK_METHOD_CLICKFINGER;
+			else if (strcmp(config->libinput_config.scroll_method, "none") == 0)
+				click_method = LIBINPUT_CONFIG_CLICK_METHOD_NONE;
+			libinput_device_config_click_set_method(libinput_handle, click_method);
+		}
+		if (config->libinput_config.dwt) {
+			libinput_device_config_dwt_set_enabled(libinput_handle,
+					libinput_config_get_enabled(config->libinput_config.dwt));
+		}
+		if (config->libinput_config.dwtp) {
+			libinput_device_config_dwtp_set_enabled(libinput_handle,
+					libinput_config_get_enabled(config->libinput_config.dwtp));
+		}
+		if (config->libinput_config.left_handed) {
+			libinput_device_config_left_handed_set(libinput_handle,
+					libinput_config_get_enabled(config->libinput_config.left_handed));
+		}
+		if (config->libinput_config.middle_emulation) {
+			libinput_device_config_middle_emulation_set_enabled(libinput_handle,
+					libinput_config_get_enabled(config->libinput_config.middle_emulation));
+		}
+		if (config->libinput_config.natural_scroll) {
+			libinput_device_config_scroll_set_natural_scroll_enabled(libinput_handle,
+					libinput_config_get_enabled(config->libinput_config.natural_scroll));
+		}
+		if (config->libinput_config.scroll_button_lock) {
+			libinput_device_config_scroll_set_button_lock(libinput_handle,
+					libinput_config_get_enabled(config->libinput_config.scroll_button_lock));
+		}
+		if (config->libinput_config.scroll_method) {
+			enum libinput_config_scroll_method scroll_method = LIBINPUT_CONFIG_SCROLL_2FG;
+			if (strcmp(config->libinput_config.scroll_method, "edge") == 0)
+				scroll_method = LIBINPUT_CONFIG_SCROLL_EDGE;
+			else if (strcmp(config->libinput_config.scroll_method, "none") == 0)
+				scroll_method = LIBINPUT_CONFIG_SCROLL_NO_SCROLL;
+			else if (strcmp(config->libinput_config.scroll_method, "button") == 0)
+				scroll_method = LIBINPUT_CONFIG_SCROLL_ON_BUTTON_DOWN;
+			libinput_device_config_scroll_set_method(libinput_handle, scroll_method);
+		}
+		if (config->libinput_config.tap) {
+			libinput_device_config_tap_set_enabled(libinput_handle,
+					libinput_config_get_enabled(config->libinput_config.tap));
+		}
+		if (config->libinput_config.tap_button_map) {
+			enum libinput_config_tap_button_map map = LIBINPUT_CONFIG_TAP_MAP_LRM;
+			if (strcmp(config->libinput_config.tap_button_map, "lmr") == 0)
+				map = LIBINPUT_CONFIG_TAP_MAP_LMR;
+			libinput_device_config_tap_set_button_map(libinput_handle, map);
+		}
+		if (config->libinput_config.tap_drag) {
+			libinput_device_config_tap_set_drag_enabled(libinput_handle,
+					libinput_config_get_enabled(config->libinput_config.tap_drag));
+		};
+		if (config->libinput_config.tap_drag_lock) {
+			libinput_device_config_tap_set_drag_lock_enabled(libinput_handle,
+					libinput_config_get_enabled(config->libinput_config.tap_drag_lock));
+		};
+	}
+
+	wlr_cursor_attach_input_device(server->cursor->cursor, device);
+}
+
 static void new_input_notify(struct wl_listener *listener, void *data) {
 	struct wlr_input_device *device = data;
 	struct wb_server *server = wl_container_of(listener, server, new_input);
@@ -260,7 +358,7 @@ static void new_input_notify(struct wl_listener *listener, void *data) {
 			break;
 		case WLR_INPUT_DEVICE_POINTER:
 			wlr_log(WLR_INFO, "%s: %s", _("New pointer detected"), device->name);
-			wlr_cursor_attach_input_device(server->cursor->cursor, device);
+			handle_new_pointer(server, device);
 			break;
 		default:
 			wlr_log(WLR_INFO, "%s: %s", _("Unsupported input device detected"), device->name);

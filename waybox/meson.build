@@ -11,6 +11,7 @@ wb_src = files(
   )
 
 wb_dep = [
+  libinput,
   libxml2,
   wayland_server,
   wlroots,

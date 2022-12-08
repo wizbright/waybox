@@ -9,15 +9,15 @@
     <right>0</right>
   </margins>
   <keyboard>
-    <!-- Keyboard layout.  See `man xkeyboard-config` for more information -->
+    <!-- XKB configuration.  See `man xkeyboard-config` for more information -->
     <!-- You can use the XKB_* environment variables instead -->
-    <!-- <keyboardLayout>
+    <!-- <xkb>
       <model>105</model>
       <layout>us</layout>
       <options>ctrl:swapcaps,esperanto:dvorak,lv3:ralt_switch_multikey</options>
       <rules>evdev</rules>
       <variant>dvorak</variant>
-    </keyboardLayout> -->
+    </xkb> -->
     <!-- Keybindings for windows -->
     <keybind key="A-F4">
       <action name="Close"/>
@@ -42,25 +42,16 @@
     </keybind>
     <!-- Keybindings for window switching -->
     <keybind key="A-Tab">
-      <action name="NextWindow">
-        <finalactions>
-          <action name="Unshade"/>
-        </finalactions>
-      </action>
+      <action name="NextWindow"/>
+      <action name="Unshade"/>
     </keybind>
     <keybind key="A-S-ISO_Left_Tab">
-      <action name="PreviousWindow">
-        <finalactions>
-          <action name="Unshade"/>
-        </finalactions>
-      </action>
+      <action name="PreviousWindow"/>
+      <action name="Unshade"/>
     </keybind>
     <keybind key="C-A-Tab">
-      <action name="NextWindow">
-        <finalactions>
-          <action name="Unshade"/>
-        </finalactions>
-      </action>
+      <action name="NextWindow"/>
+      <action name="Unshade"/>
     </keybind>
     <!-- Keybindings for running applications -->
     <keybind key="W-Return">
@@ -115,4 +106,25 @@
       </action>
     </keybind>
   </keyboard>
+  <!-- Configuration for mice and other pointers. <mouse> instead of <pointer> only for backwards compatibility. -->
+  <mouse>
+    <!-- libinput configuration. -->
+    <!-- <libinput>
+      <accelProfile>adaptive</accelProfile>
+      <accelSpeed>0.9</accelSpeed>
+      <calibrationMatrix>0 0 0 0 0 0</calibrationMatrix>
+      <clickMethod>buttonAreas</clickMethod>
+      <disableWhileTrackpointing>enabled</disableWhileTrackpointing>
+      <disableWhileTyping>enabled</disableWhileTyping>
+      <leftHanded>disabled</leftHanded>
+      <middleEmulation>enabled</middleEmulation>
+      <naturalScroll>disabled</naturalScroll>
+      <scrollButtonLock>disabled</scrollButtonLock>
+      <scrollMethod>twofinger</scrollMethod>
+      <tap>enabled</tap>
+      <tapButtonMap>lrm</tapButtonMap>
+      <tapDrag>enabled</tapDrag>
+      <tapDragLock>enabled</tapDragLock>
+    </libinput> -->
+  </mouse>
 </openbox_config>

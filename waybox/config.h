@@ -28,6 +28,25 @@ struct wb_config {
 		bool use_config;
 	} keyboard_layout;
 	struct {
+		char *accel_profile;
+		char *accel_speed;
+		char *calibration_matrix;
+		char *click_method;
+		char *dwt;
+		char *dwtp;
+		char *left_handed;
+		char *middle_emulation;
+		char *natural_scroll;
+		char *scroll_button_lock;
+		char *scroll_method;
+		char *tap;
+		char *tap_button_map;
+		char *tap_drag;
+		char *tap_drag_lock;
+
+		bool use_config;
+	} libinput_config;
+	struct {
 		int bottom;
 		int left;
 		int right;
