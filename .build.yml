@@ -10,7 +10,7 @@ packages:
   - meson
   - wayland
   - wayland-protocols
-  - wlroots
+  - wlroots-git
   - xorg-server-xwayland
 sources:
   - https://github.com/wizbright/waybox

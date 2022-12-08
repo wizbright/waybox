@@ -12,15 +12,13 @@ on: [push, pull_request]
 jobs:
     build:
         runs-on: ubuntu-latest
-        container: archlinux:base-devel
+        container: alpine:edge
         steps:
             - name: packages
               run: |
-                pacman-key --init
-                pacman -Syu --noconfirm
-                pacman -S --noconfirm git libevdev libinput libxkbcommon libxml2 meson wayland wayland-protocols wlroots xorg-server-xwayland
-            # actions/checkout@v2 clones the repository
-            - uses: actions/checkout@v2
+                apk add gcc git libevdev-dev libinput-dev libxkbcommon-dev libxml2-dev meson musl-dev wayland-dev wayland-protocols wlroots-dev xwayland
+            # actions/checkout@v3 clones the repository
+            - uses: actions/checkout@v3
             - name: setup
               run: |
                 meson setup build
