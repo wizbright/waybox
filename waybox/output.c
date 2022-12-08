@@ -26,11 +26,22 @@ void output_frame_notify(struct wl_listener *listener, void *data) {
 	wlr_scene_output_send_frame_done(scene_output, &now);
 }
 
+#if WLR_CHECK_VERSION(0, 17, 0)
+void output_request_state_notify(struct wl_listener *listener, void *data) {
+	struct wb_output *output = wl_container_of(listener, output, request_state);
+	const struct wlr_output_event_request_state *event = data;
+	wlr_output_commit_state(output->wlr_output, event->state);
+}
+#endif
+
 void output_destroy_notify(struct wl_listener *listener, void *data) {
        	struct wb_output *output = wl_container_of(listener, output, destroy);
 
 	wl_list_remove(&output->destroy.link);
 	wl_list_remove(&output->frame.link);
+#if WLR_CHECK_VERSION(0, 17, 0)
+	wl_list_remove(&output->request_state.link);
+#endif
 
 	/* Frees the layers */
 	size_t num_layers = sizeof(output->layers) / sizeof(struct wlr_scene_node *);
@@ -91,6 +102,10 @@ void new_output_notify(struct wl_listener *listener, void *data) {
 	wl_signal_add(&wlr_output->events.destroy, &output->destroy);
 	output->frame.notify = output_frame_notify;
 	wl_signal_add(&wlr_output->events.frame, &output->frame);
+#if WLR_CHECK_VERSION(0, 17, 0)
+	output->request_state.notify = output_request_state_notify;
+	wl_signal_add(&wlr_output->events.request_state, &output->request_state);
+#endif
 
 	/* Adds this to the output layout. The add_auto function arranges outputs
 	 * from left-to-right in the order they appear. A more sophisticated

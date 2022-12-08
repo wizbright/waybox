@@ -360,7 +360,11 @@ void handle_layer_shell_surface(struct wl_listener *listener, void *data) {
 }
 
 void init_layer_shell(struct wb_server *server) {
+#if WLR_CHECK_VERSION(0, 17, 0)
+	server->layer_shell = wlr_layer_shell_v1_create(server->wl_display, 4);
+#else
 	server->layer_shell = wlr_layer_shell_v1_create(server->wl_display);
+#endif
 	server->new_layer_surface.notify = handle_layer_shell_surface;
 	wl_signal_add(&server->layer_shell->events.new_surface,
 			&server->new_layer_surface);
