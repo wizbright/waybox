@@ -3,12 +3,13 @@
 #
 image: archlinux
 packages:
-  - meson
-  - wayland
-  - wayland-protocols
+  - libevdev
   - libinput
   - libxkbcommon
   - libxml2
+  - meson
+  - wayland
+  - wayland-protocols
   - wlroots
   - xorg-server-xwayland
 sources:

@@ -18,7 +18,7 @@ jobs:
               run: |
                 pacman-key --init
                 pacman -Syu --noconfirm
-                pacman -S --noconfirm git meson libxkbcommon libinput libxml2 wayland wayland-protocols wlroots xorg-server-xwayland
+                pacman -S --noconfirm git libevdev libinput libxkbcommon libxml2 meson wayland wayland-protocols wlroots xorg-server-xwayland
             # actions/checkout@v2 clones the repository
             - uses: actions/checkout@v2
             - name: setup

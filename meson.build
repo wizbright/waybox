@@ -25,6 +25,7 @@ cc = meson.get_compiler('c')
 # Adding include directory
 inc_dir = include_directories('include')
 
+libevdev = dependency('libevdev')
 libinput = dependency('libinput', version: '>=1.21.0')
 libxml2 = dependency('libxml-2.0')
 wlroots = dependency('wlroots', version: '>=0.16.0')

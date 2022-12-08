@@ -119,6 +119,7 @@
       <leftHanded>disabled</leftHanded>
       <middleEmulation>enabled</middleEmulation>
       <naturalScroll>disabled</naturalScroll>
+      <scrollButton>BTN_MIDDLE</scrollButton>
       <scrollButtonLock>disabled</scrollButtonLock>
       <scrollMethod>twofinger</scrollMethod>
       <tap>enabled</tap>

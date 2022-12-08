@@ -186,6 +186,7 @@ bool init_config(struct wb_server *server) {
 		config->libinput_config.left_handed = parse_xpath_expr("//ob:mouse//ob:libinput/ob:leftHanded", ctxt);
 		config->libinput_config.middle_emulation = parse_xpath_expr("//ob:mouse//ob:libinput/ob:middleEmulation", ctxt);
 		config->libinput_config.natural_scroll = parse_xpath_expr("//ob:mouse//ob:libinput/ob:naturalScroll", ctxt);
+		config->libinput_config.scroll_button = parse_xpath_expr("//ob:mouse//ob:libinput/ob:scrollButton", ctxt);
 		config->libinput_config.scroll_button_lock = parse_xpath_expr("//ob:mouse//ob:libinput/ob:scrollButtonLock", ctxt);
 		config->libinput_config.scroll_method = parse_xpath_expr("//ob:mouse//ob:libinput/ob:scrollMethod", ctxt);
 		config->libinput_config.tap = parse_xpath_expr("//ob:mouse//ob:libinput/ob:tap", ctxt);

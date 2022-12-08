@@ -1,3 +1,4 @@
+#include <libevdev/libevdev.h>
 #include <unistd.h>
 
 #include <wlr/backend/libinput.h>
@@ -287,7 +288,7 @@ static void handle_new_pointer(struct wb_server *server, struct wlr_input_device
 			enum libinput_config_click_method click_method = LIBINPUT_CONFIG_CLICK_METHOD_BUTTON_AREAS;
 			if (strcmp(config->libinput_config.click_method, "clickfinger") == 0)
 				click_method = LIBINPUT_CONFIG_CLICK_METHOD_CLICKFINGER;
-			else if (strcmp(config->libinput_config.scroll_method, "none") == 0)
+			else if (strcmp(config->libinput_config.click_method, "none") == 0)
 				click_method = LIBINPUT_CONFIG_CLICK_METHOD_NONE;
 			libinput_device_config_click_set_method(libinput_handle, click_method);
 		}
@@ -310,6 +311,12 @@ static void handle_new_pointer(struct wb_server *server, struct wlr_input_device
 		if (config->libinput_config.natural_scroll) {
 			libinput_device_config_scroll_set_natural_scroll_enabled(libinput_handle,
 					libinput_config_get_enabled(config->libinput_config.natural_scroll));
+		}
+		if (config->libinput_config.scroll_button) {
+			int button = libevdev_event_code_from_name(EV_KEY, config->libinput_config.scroll_button);
+			if (button != -1) {
+				libinput_device_config_scroll_set_button(libinput_handle, button);
+			}
 		}
 		if (config->libinput_config.scroll_button_lock) {
 			libinput_device_config_scroll_set_button_lock(libinput_handle,

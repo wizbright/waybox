@@ -37,6 +37,7 @@ struct wb_config {
 		char *left_handed;
 		char *middle_emulation;
 		char *natural_scroll;
+		char *scroll_button;
 		char *scroll_button_lock;
 		char *scroll_method;
 		char *tap;

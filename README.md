@@ -13,6 +13,7 @@ contributing.](https://github.com/wizbright/waybox/blob/master/CONTRIBUTING.md)
 
 * [Meson](https://mesonbuild.com/)
 * [Wayland](https://wayland.freedesktop.org/)
+* [libevdev](https://www.freedesktop.org/wiki/Software/libevdev/)
 * [libinput](http://www.freedesktop.org/wiki/Software/libinput)
 * [libxml2](http://xmlsoft.org/)
 * [wlroots](https://gitlab.freedesktop.org/wlroots/wlroots/)
