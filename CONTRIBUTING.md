@@ -136,7 +136,7 @@ Try to break the line in the place which you think is the most appropriate.
 
 ### Line Length
 
-Try to keep your lines under 80 columns, but you can go up to 100 if it
+Try to keep your lines under 100 columns, but you can break this rule if it
 improves readability. Don't break lines indiscriminately, try to find nice
 breaking points so your code is easy to read.
 
