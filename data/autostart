@@ -31,7 +31,7 @@ do
     wpdir="$data_dir/wallpapers"
     test -d "$wpdir" && \
         find $wpdir -name '*.jpg' -o -name '*.png' -o -name '*.svg'
-done | (shuf -n 1 || tail -n 1) | xargs swaybg -m fill -i &
+done | (shuf -n 1 || tail -n 1) | xargs swaybg -c '#303030' -m fill -i &
 IFS=$oldifs
 
 # vim: ft=sh
