@@ -58,6 +58,18 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 	 * Returns true if the keybinding is handled, false to send it to the
 	 * client.
 	 */
+	
+	struct wlr_session *session = wlr_backend_get_session (server->backend);
+	
+	if (modifiers & (WLR_MODIFIER_CTRL|WLR_MODIFIER_ALT) &&
+		sym >= XKB_KEY_XF86Switch_VT_1 &&
+		sym <= XKB_KEY_XF86Switch_VT_12) {
+		unsigned int vt = sym - XKB_KEY_XF86Switch_VT_1 + 1;
+		wlr_session_change_vt (session, vt);
+			
+		return true;
+	}
+												      
 	if (!server->config) {
 		/* Some default key bindings, when the rc.xml file can't be
 		 * parsed. */
