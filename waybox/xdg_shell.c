@@ -13,7 +13,11 @@ struct wb_view *get_view_at(
 	}
 	struct wlr_scene_buffer *scene_buffer = wlr_scene_buffer_from_node(node);
 	struct wlr_scene_surface *scene_surface =
+#if WLR_CHECK_VERSION(0, 17, 0)
+		wlr_scene_surface_try_from_buffer(scene_buffer);
+#else
 		wlr_scene_surface_from_buffer(scene_buffer);
+#endif
 	if (!scene_surface) {
 		return NULL;
 	}
@@ -30,11 +34,18 @@ struct wb_view *get_view_at(
 
 void focus_view(struct wb_view *view, struct wlr_surface *surface) {
 	/* Note: this function only deals with keyboard focus. */
-	if (view == NULL || surface == NULL || !wlr_surface_is_xdg_surface(surface)) {
+	if (view == NULL) {
 		return;
 	}
 
+#if WLR_CHECK_VERSION(0, 17, 0)
+	struct wlr_xdg_surface *xdg_surface = wlr_xdg_surface_try_from_wlr_surface(surface);
+#else
+	if (surface == NULL || !wlr_surface_is_xdg_surface(surface))
+		return;
+
 	struct wlr_xdg_surface *xdg_surface = wlr_xdg_surface_from_wlr_surface(surface);
+#endif
 	if (xdg_surface)
 		wlr_log(WLR_INFO, "%s: %s", _("Keyboard focus is now on surface"),
 				xdg_surface->toplevel->app_id);
@@ -46,15 +57,24 @@ void focus_view(struct wb_view *view, struct wlr_surface *surface) {
 		/* Don't re-focus an already focused surface. */
 		return;
 	}
-	if (prev_surface && wlr_surface_is_xdg_surface(prev_surface)) {
+	if (prev_surface) {
 		/*
 		 * Deactivate the previously focused surface. This lets the client know
 		 * it no longer has focus and the client will repaint accordingly, e.g.
 		 * stop displaying a caret.
 		 */
+#if WLR_CHECK_VERSION(0, 17, 0)
 		struct wlr_xdg_surface *previous =
-			wlr_xdg_surface_from_wlr_surface(prev_surface);
-		wlr_xdg_toplevel_set_activated(previous->toplevel, false);
+			wlr_xdg_surface_try_from_wlr_surface(prev_surface);
+#else
+		struct wlr_xdg_surface *previous;
+		if (wlr_surface_is_xdg_surface(prev_surface)) {
+			previous = wlr_xdg_surface_from_wlr_surface(prev_surface);
+		}
+#endif
+		if (previous != NULL && previous->role == WLR_XDG_SURFACE_ROLE_TOPLEVEL) {
+			wlr_xdg_toplevel_set_activated(previous->toplevel, false);
+		}
 	}
 	/* Move the view to the front */
 	if (!server->seat->focused_layer) {
@@ -293,7 +313,9 @@ static void handle_new_popup(struct wl_listener *listener, void *data) {
 			view->geometry.x + popup->current.geometry.x,
 			view->geometry.y + popup->current.geometry.y);
 
-	if (!wlr_output) return;
+	if (!wlr_output) {
+		return;
+	}
 	struct wb_output *output = wlr_output->data;
 
 	int top_margin = (view->server->config) ?
@@ -320,9 +342,16 @@ static void handle_new_xdg_surface(struct wl_listener *listener, void *data) {
 	 * we always set the user data field of xdg_surfaces to the corresponding
 	 * scene node. */
 	if (xdg_surface->role == WLR_XDG_SURFACE_ROLE_POPUP) {
+#if WLR_CHECK_VERSION(0, 17, 0)
+		struct wlr_xdg_surface *parent = wlr_xdg_surface_try_from_wlr_surface(
+			xdg_surface->popup->parent);
+		if (parent != NULL) {
+#else
 		if (wlr_surface_is_xdg_surface(xdg_surface->popup->parent)) {
 			struct wlr_xdg_surface *parent = wlr_xdg_surface_from_wlr_surface(
 				xdg_surface->popup->parent);
+#endif
+
 			struct wlr_scene_tree *parent_tree = parent->data;
 			xdg_surface->data = wlr_scene_xdg_surface_create(
 				parent_tree, xdg_surface);

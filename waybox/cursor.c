@@ -83,7 +83,11 @@ static void process_cursor_motion(struct wb_server *server, uint32_t time) {
 		 * default. This is what makes the cursor image appear when you move it
 		 * around the screen, not over any views. */
 		wlr_xcursor_manager_set_cursor_image(
+#if WLR_CHECK_VERSION(0, 16, 2)
+				server->cursor->xcursor_manager, "default", server->cursor->cursor);
+#else
 				server->cursor->xcursor_manager, "left_ptr", server->cursor->cursor);
+#endif
 	}
 	if (surface) {
 		/*

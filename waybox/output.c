@@ -116,5 +116,12 @@ void new_output_notify(struct wl_listener *listener, void *data) {
 	 * display, which Wayland clients can see to find out information about the
 	 * output (such as DPI, scale factor, manufacturer, etc).
 	 */
+#if WLR_CHECK_VERSION(0, 17, 0)
+	if (!wlr_output_layout_add_auto(server->output_layout, wlr_output)) {
+		wlr_log(WLR_ERROR, "%s", _("Could not add an output layout."));
+		return;
+	}
+#else
 	wlr_output_layout_add_auto(server->output_layout, wlr_output);
+#endif
 }
