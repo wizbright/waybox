@@ -67,7 +67,7 @@ void focus_view(struct wb_view *view, struct wlr_surface *surface) {
 		struct wlr_xdg_surface *previous =
 			wlr_xdg_surface_try_from_wlr_surface(prev_surface);
 #else
-		struct wlr_xdg_surface *previous;
+		struct wlr_xdg_surface *previous = NULL;
 		if (wlr_surface_is_xdg_surface(prev_surface)) {
 			previous = wlr_xdg_surface_from_wlr_surface(prev_surface);
 		}

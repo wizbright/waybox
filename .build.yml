@@ -3,6 +3,8 @@
 #
 image: archlinux
 packages:
+  - clang
+  - gcc
   - libevdev
   - libinput
   - libxkbcommon
@@ -17,7 +19,11 @@ sources:
 tasks:
   - setup: |
       cd waybox
-      meson setup build
+      CC=gcc meson setup build-gcc
   - build: |
       cd waybox
-      ninja -C build
+      ninja -C build-gcc
+  - clang: |
+      cd waybox
+      CC=clang meson setup build-clang
+      ninja -C build-clang
