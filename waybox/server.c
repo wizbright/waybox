@@ -46,8 +46,13 @@ bool wb_create_backend(struct wb_server* server) {
 		return false;
 	}
 
+#if WLR_CHECK_VERSION(0, 17, 0)
+	server->compositor =
+		wlr_compositor_create(server->wl_display, 5, server->renderer);
+#else
 	server->compositor = wlr_compositor_create(server->wl_display,
 			server->renderer);
+#endif
 	server->subcompositor = wlr_subcompositor_create(server->wl_display);
 	server->output_layout = wlr_output_layout_create();
 	server->seat = wb_seat_create(server);
@@ -119,6 +124,7 @@ bool wb_terminate(struct wb_server* server) {
 	wl_display_destroy(server->wl_display);
 	wb_seat_destroy(server->seat);
 	wlr_output_layout_destroy(server->output_layout);
+	wlr_scene_node_destroy(&server->scene->tree.node);
 
 	wlr_log(WLR_INFO, "%s", _("Display destroyed"));
 
