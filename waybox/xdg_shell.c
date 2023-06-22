@@ -370,9 +370,17 @@ static void handle_new_xdg_surface(struct wl_listener *listener, void *data) {
 
 	/* Listen to the various events it can emit */
 	view->map.notify = xdg_toplevel_map;
+#if WLR_CHECK_VERSION(0, 17, 0)
+	wl_signal_add(&xdg_surface->surface->events.map, &view->map);
+#else
 	wl_signal_add(&xdg_surface->events.map, &view->map);
+#endif
 	view->unmap.notify = xdg_toplevel_unmap;
+#if WLR_CHECK_VERSION(0, 17, 0)
+	wl_signal_add(&xdg_surface->surface->events.unmap, &view->unmap);
+#else
 	wl_signal_add(&xdg_surface->events.unmap, &view->unmap);
+#endif
 	view->destroy.notify = xdg_toplevel_destroy;
 	wl_signal_add(&xdg_surface->events.destroy, &view->destroy);
 	view->new_popup.notify = handle_new_popup;

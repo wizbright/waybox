@@ -121,8 +121,13 @@ static void handle_surface_commit(struct wl_listener *listener, void *data) {
 		wlr_scene_node_reparent(&surface->scene->tree->node, output_layer);
 	}
 
+#if WLR_CHECK_VERSION(0, 17, 0)
+	if (committed || layer_surface->surface->mapped != surface->mapped) {
+		surface->mapped = layer_surface->surface->mapped;
+#else
 	if (committed || layer_surface->mapped != surface->mapped) {
 		surface->mapped = layer_surface->mapped;
+#endif
 		arrange_layers(surface->output);
 
 		struct timespec now;
@@ -343,9 +348,17 @@ void handle_layer_shell_surface(struct wl_listener *listener, void *data) {
 	wl_signal_add(&layer_surface->surface->events.commit,
 		&surface->surface_commit);
 	surface->map.notify = handle_map;
+#if WLR_CHECK_VERSION(0, 17, 0)
+	wl_signal_add(&layer_surface->surface->events.map, &surface->map);
+#else
 	wl_signal_add(&layer_surface->events.map, &surface->map);
+#endif
 	surface->unmap.notify = handle_unmap;
+#if WLR_CHECK_VERSION(0, 17, 0)
+	wl_signal_add(&layer_surface->surface->events.unmap, &surface->unmap);
+#else
 	wl_signal_add(&layer_surface->events.unmap, &surface->unmap);
+#endif
 	surface->destroy.notify = handle_destroy;
 	wl_signal_add(&layer_surface->events.destroy, &surface->destroy);
 	surface->new_popup.notify = handle_new_popup;

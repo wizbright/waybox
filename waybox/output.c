@@ -66,6 +66,22 @@ void new_output_notify(struct wl_listener *listener, void *data) {
          * and our renderer */
 	wlr_output_init_render(wlr_output, server->allocator, server->renderer);
 
+#if WLR_CHECK_VERSION(0, 17, 0)
+	struct wlr_output_mode *mode = wlr_output_preferred_mode(wlr_output);
+	if (mode != NULL) {
+		struct wlr_output_state state = {0};
+		wlr_output_state_set_mode(&state, mode);
+		wlr_output_state_set_enabled(&state, true);
+
+		if (!wlr_output_commit_state(wlr_output, &state)) {
+			wlr_output_state_finish(&state);
+			wlr_log_errno(WLR_ERROR, "%s", _("Couldn't commit state to output"));
+			return;
+		}
+
+		wlr_output_state_finish(&state);
+	}
+#else
 	if (!wl_list_empty(&wlr_output->modes)) {
 		struct wlr_output_mode *mode = wlr_output_preferred_mode(wlr_output);
 		wlr_output_set_mode(wlr_output, mode);
@@ -76,6 +92,7 @@ void new_output_notify(struct wl_listener *listener, void *data) {
 			return;
 		}
 	}
+#endif
 
 	struct wb_output *output = calloc(1, sizeof(struct wb_output));
 	output->server = server;

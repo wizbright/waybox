@@ -82,8 +82,13 @@ static void process_cursor_motion(struct wb_server *server, uint32_t time) {
 		/* If there's no view under the cursor, set the cursor image to a
 		 * default. This is what makes the cursor image appear when you move it
 		 * around the screen, not over any views. */
+#if WLR_CHECK_VERSION(0, 17, 0)
+		wlr_cursor_set_xcursor(
+				server->cursor->cursor, server->cursor->xcursor_manager, "default");
+#else
 		wlr_xcursor_manager_set_cursor_image(
-				server->cursor->xcursor_manager, "default", server->cursor->cursor);
+				server->cursor->xcursor_manager, "left_ptr", server->cursor->cursor);
+#endif
 	}
 	if (surface) {
 		/*
@@ -198,7 +203,9 @@ struct wb_cursor *wb_cursor_create(struct wb_server *server) {
 	const char *xcursor_size = getenv("XCURSOR_SIZE");
 	cursor->xcursor_manager = wlr_xcursor_manager_create(getenv("XCURSOR_THEME"),
 				xcursor_size ? strtoul(xcursor_size, (char **) NULL, 10) : 24);
+#if !WLR_CHECK_VERSION(0, 17, 0)
 	wlr_xcursor_manager_load(cursor->xcursor_manager, 1);
+#endif
 
 	cursor->cursor_motion.notify = handle_cursor_motion;
 	wl_signal_add(&cursor->cursor->events.motion, &cursor->cursor_motion);
