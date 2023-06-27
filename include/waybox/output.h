@@ -18,10 +18,11 @@ struct wb_output {
 		struct wlr_scene_tree *shell_top;
 	} layers;
 
-#if ! WLR_CHECK_VERSION(0, 17, 0)
-	/* DEPRECATED: Use a tool like swaybg instead */
+#if ! WLR_CHECK_VERSION(0, 18, 0)
+	/* DEPRECATED: Use a tool like swaybg or hyprpaper instead */
 	struct wlr_scene_rect *background;
 #endif
+	bool gamma_lut_changed;
 	struct wlr_box geometry;
 
 	struct wl_listener destroy;
@@ -53,8 +54,9 @@ struct wb_view {
 	struct wlr_box previous_geometry;
 };
 
-void output_frame_notify(struct wl_listener* listener, void *data);
-void output_destroy_notify(struct wl_listener* listener, void *data);
-void new_output_notify(struct wl_listener* listener, void *data);
+void handle_gamma_control_set_gamma(struct wl_listener *listener, void *data);
+void output_frame_notify(struct wl_listener *listener, void *data);
+void output_destroy_notify(struct wl_listener *listener, void *data);
+void new_output_notify(struct wl_listener *listener, void *data);
 
 #endif /* output.h */

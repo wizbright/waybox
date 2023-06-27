@@ -43,6 +43,7 @@ struct wb_server {
 	struct wlr_allocator *allocator;
 	struct wlr_backend *backend;
 	struct wlr_compositor *compositor;
+	struct wlr_gamma_control_manager_v1 *gamma_control_manager;
 	struct wlr_idle_notifier_v1 *idle_notifier;
 	struct wlr_output_layout *output_layout;
 	struct wlr_xdg_output_manager_v1 *output_manager;
@@ -65,6 +66,7 @@ struct wb_server {
 	struct wlr_layer_shell_v1 *layer_shell;
 	struct wlr_xdg_shell *xdg_shell;
 
+	struct wl_listener gamma_control_set_gamma;
 	struct wl_listener new_layer_surface;
 	struct wl_listener new_xdg_surface;
 	struct wl_listener new_xdg_decoration;

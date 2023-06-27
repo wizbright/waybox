@@ -10,11 +10,29 @@ void output_frame_notify(struct wl_listener *listener, void *data) {
 
 	wlr_output_layout_get_box(output->server->output_layout,
 			output->wlr_output, &output->geometry);
-#if ! WLR_CHECK_VERSION(0, 17, 0)
+#if ! WLR_CHECK_VERSION(0, 18, 0)
 	/* Update the background for the current output size. */
 	wlr_scene_rect_set_size(output->background,
 			output->geometry.width, output->geometry.height);
 #endif
+
+	if (output->gamma_lut_changed) {
+		output->gamma_lut_changed = false;
+#if WLR_CHECK_VERSION(0, 17, 0)
+		struct wlr_gamma_control_v1 *gamma_control =
+			wlr_gamma_control_manager_v1_get_control(output->server->gamma_control_manager,
+					output->wlr_output);
+		if (!wlr_gamma_control_v1_apply(gamma_control, &output->wlr_output->pending)) {
+			return;
+		}
+#endif
+		if (!wlr_output_test(output->wlr_output)) {
+			wlr_output_rollback(output->wlr_output);
+#if WLR_CHECK_VERSION(0, 17, 0)
+			wlr_gamma_control_v1_send_failed_and_destroy(gamma_control);
+#endif
+		}
+	}
 
 	/* Render the scene if needed and commit the output */
 	wlr_scene_output_commit(scene_output);
@@ -31,6 +49,13 @@ void output_request_state_notify(struct wl_listener *listener, void *data) {
 	struct wb_output *output = wl_container_of(listener, output, request_state);
 	const struct wlr_output_event_request_state *event = data;
 	wlr_output_commit_state(output->wlr_output, event->state);
+}
+
+void handle_gamma_control_set_gamma(struct wl_listener *listener, void *data) {
+	const struct wlr_gamma_control_manager_v1_set_gamma_event *event = data;
+	struct wb_output *output = event->output->data;
+	output->gamma_lut_changed = true;
+	wlr_output_schedule_frame(output->wlr_output);
 }
 #endif
 
@@ -68,19 +93,16 @@ void new_output_notify(struct wl_listener *listener, void *data) {
 
 #if WLR_CHECK_VERSION(0, 17, 0)
 	struct wlr_output_mode *mode = wlr_output_preferred_mode(wlr_output);
+	struct wlr_output_state state;
+	wlr_output_state_init(&state);
+	wlr_output_state_set_enabled(&state, true);
+
 	if (mode != NULL) {
-		struct wlr_output_state state = {0};
 		wlr_output_state_set_mode(&state, mode);
-		wlr_output_state_set_enabled(&state, true);
-
-		if (!wlr_output_commit_state(wlr_output, &state)) {
-			wlr_output_state_finish(&state);
-			wlr_log_errno(WLR_ERROR, "%s", _("Couldn't commit state to output"));
-			return;
-		}
-
-		wlr_output_state_finish(&state);
 	}
+
+	wlr_output_state_finish(&state);
+	wlr_output_commit_state(wlr_output, &state);
 #else
 	if (!wl_list_empty(&wlr_output->modes)) {
 		struct wlr_output_mode *mode = wlr_output_preferred_mode(wlr_output);
@@ -99,7 +121,7 @@ void new_output_notify(struct wl_listener *listener, void *data) {
 	output->wlr_output = wlr_output;
 	wlr_output->data = output;
 
-#if ! WLR_CHECK_VERSION(0, 17, 0)
+#if ! WLR_CHECK_VERSION(0, 18, 0)
 	/* Set the background color */
 	float color[4] = {0.1875, 0.1875, 0.1875, 1.0};
 	output->background = wlr_scene_rect_create(&server->scene->tree, 0, 0, color);

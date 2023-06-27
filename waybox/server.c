@@ -96,11 +96,18 @@ bool wb_start_server(struct wb_server* server) {
 	wlr_log(WLR_INFO, "%s: WAYLAND_DISPLAY=%s", _("Running Wayland compositor on Wayland display"), socket);
 	setenv("WAYLAND_DISPLAY", socket, true);
 
-	wlr_gamma_control_manager_v1_create(server->wl_display);
+	wlr_data_device_manager_create(server->wl_display);
+
+	server->gamma_control_manager =
+		wlr_gamma_control_manager_v1_create(server->wl_display);
+#if WLR_CHECK_VERSION(0, 17, 0)
+	server->gamma_control_set_gamma.notify = handle_gamma_control_set_gamma;
+	wl_signal_add(&server->gamma_control_manager->events.set_gamma, &server->gamma_control_set_gamma);
+#endif
+
 	wlr_screencopy_manager_v1_create(server->wl_display);
 	server->idle_notifier = wlr_idle_notifier_v1_create(server->wl_display);
 
-	wlr_data_device_manager_create(server->wl_display);
 	wl_list_init(&server->views);
 	init_xdg_decoration(server);
 	init_layer_shell(server);
