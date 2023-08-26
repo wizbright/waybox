@@ -49,6 +49,7 @@ struct wb_server {
 	struct wlr_xdg_output_manager_v1 *output_manager;
 	struct wlr_renderer *renderer;
 	struct wlr_scene *scene;
+	struct wlr_scene_output_layout *scene_layout;
 	struct wlr_subcompositor *subcompositor;
 
 	struct wb_config *config;

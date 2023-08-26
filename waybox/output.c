@@ -35,7 +35,11 @@ void output_frame_notify(struct wl_listener *listener, void *data) {
 	}
 
 	/* Render the scene if needed and commit the output */
+#if WLR_CHECK_VERSION(0, 17, 0)
+	wlr_scene_output_commit(scene_output, NULL);
+#else
 	wlr_scene_output_commit(scene_output);
+#endif
 
 	/* This lets the client know that we've displayed that frame and it can
 	 * prepare another one now if it likes. */
@@ -101,8 +105,8 @@ void new_output_notify(struct wl_listener *listener, void *data) {
 		wlr_output_state_set_mode(&state, mode);
 	}
 
-	wlr_output_state_finish(&state);
 	wlr_output_commit_state(wlr_output, &state);
+	wlr_output_state_finish(&state);
 #else
 	if (!wl_list_empty(&wlr_output->modes)) {
 		struct wlr_output_mode *mode = wlr_output_preferred_mode(wlr_output);
@@ -156,10 +160,15 @@ void new_output_notify(struct wl_listener *listener, void *data) {
 	 * output (such as DPI, scale factor, manufacturer, etc).
 	 */
 #if WLR_CHECK_VERSION(0, 17, 0)
-	if (!wlr_output_layout_add_auto(server->output_layout, wlr_output)) {
+	struct wlr_output_layout_output *l_output =
+		wlr_output_layout_add_auto(server->output_layout, wlr_output);
+	if (!l_output) {
 		wlr_log(WLR_ERROR, "%s", _("Could not add an output layout."));
 		return;
 	}
+
+	struct wlr_scene_output *scene_output = wlr_scene_output_create(server->scene, wlr_output);
+	wlr_scene_output_layout_add_output(server->scene_layout, l_output, scene_output);
 #else
 	wlr_output_layout_add_auto(server->output_layout, wlr_output);
 #endif

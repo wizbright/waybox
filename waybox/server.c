@@ -78,7 +78,10 @@ bool wb_start_server(struct wb_server* server) {
 	 * necessary.
 	 */
 	server->scene = wlr_scene_create();
-	wlr_scene_attach_output_layout(server->scene, server->output_layout);
+#if WLR_CHECK_VERSION(0, 17, 0)
+	server->scene_layout =
+#endif
+		wlr_scene_attach_output_layout(server->scene, server->output_layout);
 
 	const char *socket = wl_display_add_socket_auto(server->wl_display);
 	if (!socket) {

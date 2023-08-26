@@ -72,7 +72,8 @@ void focus_view(struct wb_view *view, struct wlr_surface *surface) {
 			previous = wlr_xdg_surface_from_wlr_surface(prev_surface);
 		}
 #endif
-		if (previous != NULL && previous->role == WLR_XDG_SURFACE_ROLE_TOPLEVEL) {
+		if (previous != NULL && previous->role == WLR_XDG_SURFACE_ROLE_TOPLEVEL &&
+				previous->toplevel != NULL) {
 			wlr_xdg_toplevel_set_activated(previous->toplevel, false);
 		}
 	}
@@ -155,11 +156,13 @@ static void xdg_toplevel_unmap(struct wl_listener *listener, void *data) {
 	reset_cursor_mode(view->server);
 
 	/* Focus the next view, if any. */
-	struct wb_view *next_view = wl_container_of(view->link.next, next_view, link);
-	if (next_view && next_view->scene_tree && next_view->scene_tree->node.enabled) {
-		wlr_log(WLR_INFO, "%s: %s", _("Focusing next view"),
-				next_view->xdg_toplevel->app_id);
-		focus_view(next_view, next_view->xdg_toplevel->base->surface);
+	if (wl_list_length(&view->link) > 1) {
+		struct wb_view *next_view = wl_container_of(view->link.next, next_view, link);
+		if (next_view && next_view->xdg_toplevel && next_view->scene_tree && next_view->scene_tree->node.enabled) {
+			wlr_log(WLR_INFO, "%s: %s", _("Focusing next view"),
+					next_view->xdg_toplevel->app_id);
+			focus_view(next_view, next_view->xdg_toplevel->base->surface);
+		}
 	}
 }
 
