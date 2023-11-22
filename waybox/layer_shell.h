@@ -2,7 +2,7 @@
 #define _WB_LAYERS_H
 #include <wlr/types/wlr_layer_shell_v1.h>
 
-struct wb_server;
+#include "waybox/output.h"
 
 struct wb_layer_surface {
 	struct wb_output *output;

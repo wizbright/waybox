@@ -18,28 +18,21 @@ void output_frame_notify(struct wl_listener *listener, void *data) {
 
 	if (output->gamma_lut_changed) {
 		output->gamma_lut_changed = false;
-#if WLR_CHECK_VERSION(0, 17, 0)
 		struct wlr_gamma_control_v1 *gamma_control =
 			wlr_gamma_control_manager_v1_get_control(output->server->gamma_control_manager,
 					output->wlr_output);
 		if (!wlr_gamma_control_v1_apply(gamma_control, &output->wlr_output->pending)) {
 			return;
 		}
-#endif
+
 		if (!wlr_output_test(output->wlr_output)) {
 			wlr_output_rollback(output->wlr_output);
-#if WLR_CHECK_VERSION(0, 17, 0)
 			wlr_gamma_control_v1_send_failed_and_destroy(gamma_control);
-#endif
 		}
 	}
 
 	/* Render the scene if needed and commit the output */
-#if WLR_CHECK_VERSION(0, 17, 0)
 	wlr_scene_output_commit(scene_output, NULL);
-#else
-	wlr_scene_output_commit(scene_output);
-#endif
 
 	/* This lets the client know that we've displayed that frame and it can
 	 * prepare another one now if it likes. */
@@ -48,7 +41,6 @@ void output_frame_notify(struct wl_listener *listener, void *data) {
 	wlr_scene_output_send_frame_done(scene_output, &now);
 }
 
-#if WLR_CHECK_VERSION(0, 17, 0)
 void output_request_state_notify(struct wl_listener *listener, void *data) {
 	struct wb_output *output = wl_container_of(listener, output, request_state);
 	const struct wlr_output_event_request_state *event = data;
@@ -61,16 +53,13 @@ void handle_gamma_control_set_gamma(struct wl_listener *listener, void *data) {
 	output->gamma_lut_changed = true;
 	wlr_output_schedule_frame(output->wlr_output);
 }
-#endif
 
 void output_destroy_notify(struct wl_listener *listener, void *data) {
        	struct wb_output *output = wl_container_of(listener, output, destroy);
 
 	wl_list_remove(&output->destroy.link);
 	wl_list_remove(&output->frame.link);
-#if WLR_CHECK_VERSION(0, 17, 0)
 	wl_list_remove(&output->request_state.link);
-#endif
 
 	/* Frees the layers */
 	size_t num_layers = sizeof(output->layers) / sizeof(struct wlr_scene_node *);
@@ -95,7 +84,6 @@ void new_output_notify(struct wl_listener *listener, void *data) {
          * and our renderer */
 	wlr_output_init_render(wlr_output, server->allocator, server->renderer);
 
-#if WLR_CHECK_VERSION(0, 17, 0)
 	struct wlr_output_mode *mode = wlr_output_preferred_mode(wlr_output);
 	struct wlr_output_state state;
 	wlr_output_state_init(&state);
@@ -107,18 +95,6 @@ void new_output_notify(struct wl_listener *listener, void *data) {
 
 	wlr_output_commit_state(wlr_output, &state);
 	wlr_output_state_finish(&state);
-#else
-	if (!wl_list_empty(&wlr_output->modes)) {
-		struct wlr_output_mode *mode = wlr_output_preferred_mode(wlr_output);
-		wlr_output_set_mode(wlr_output, mode);
-		wlr_output_enable(wlr_output, true);
-
-		if (!wlr_output_commit(wlr_output)) {
-			wlr_log_errno(WLR_ERROR, "%s", _("Couldn't commit pending frame to output"));
-			return;
-		}
-	}
-#endif
 
 	struct wb_output *output = calloc(1, sizeof(struct wb_output));
 	output->server = server;
@@ -145,10 +121,8 @@ void new_output_notify(struct wl_listener *listener, void *data) {
 	wl_signal_add(&wlr_output->events.destroy, &output->destroy);
 	output->frame.notify = output_frame_notify;
 	wl_signal_add(&wlr_output->events.frame, &output->frame);
-#if WLR_CHECK_VERSION(0, 17, 0)
 	output->request_state.notify = output_request_state_notify;
 	wl_signal_add(&wlr_output->events.request_state, &output->request_state);
-#endif
 
 	/* Adds this to the output layout. The add_auto function arranges outputs
 	 * from left-to-right in the order they appear. A more sophisticated
@@ -159,7 +133,6 @@ void new_output_notify(struct wl_listener *listener, void *data) {
 	 * display, which Wayland clients can see to find out information about the
 	 * output (such as DPI, scale factor, manufacturer, etc).
 	 */
-#if WLR_CHECK_VERSION(0, 17, 0)
 	struct wlr_output_layout_output *l_output =
 		wlr_output_layout_add_auto(server->output_layout, wlr_output);
 	if (!l_output) {
@@ -169,7 +142,4 @@ void new_output_notify(struct wl_listener *listener, void *data) {
 
 	struct wlr_scene_output *scene_output = wlr_scene_output_create(server->scene, wlr_output);
 	wlr_scene_output_layout_add_output(server->scene_layout, l_output, scene_output);
-#else
-	wlr_output_layout_add_auto(server->output_layout, wlr_output);
-#endif
 }

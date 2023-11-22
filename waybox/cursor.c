@@ -4,22 +4,22 @@
 void reset_cursor_mode(struct wb_server *server) {
 	/* Reset the cursor mode to passthrough */
 	server->cursor->cursor_mode = WB_CURSOR_PASSTHROUGH;
-	server->grabbed_view = NULL;
+	server->grabbed_toplevel = NULL;
 }
 
 static void process_cursor_move(struct wb_server *server) {
-	/* Move the grabbed view to the new position. */
-	struct wb_view *view = server->grabbed_view;
-	if (view->scene_tree->node.type == WLR_SCENE_NODE_TREE) {
-		view->geometry.x = server->cursor->cursor->x - server->grab_x;
-		view->geometry.y = server->cursor->cursor->y - server->grab_y;
-		wlr_scene_node_set_position(&view->scene_tree->node,
-				view->geometry.x, view->geometry.y);
+	/* Move the grabbed toplevel to the new position. */
+	struct wb_toplevel *toplevel = server->grabbed_toplevel;
+	if (toplevel->scene_tree->node.type == WLR_SCENE_NODE_TREE) {
+		toplevel->geometry.x = server->cursor->cursor->x - server->grab_x;
+		toplevel->geometry.y = server->cursor->cursor->y - server->grab_y;
+		wlr_scene_node_set_position(&toplevel->scene_tree->node,
+				toplevel->geometry.x, toplevel->geometry.y);
 	}
 }
 
 static void process_cursor_resize(struct wb_server *server) {
-	struct wb_view *view = server->grabbed_view;
+	struct wb_toplevel *toplevel = server->grabbed_toplevel;
 	double border_x = server->cursor->cursor->x - server->grab_x;
 	double border_y = server->cursor->cursor->y - server->grab_y;
 	int new_left = server->grab_geo_box.x;
@@ -51,15 +51,15 @@ static void process_cursor_resize(struct wb_server *server) {
 	}
 
 	struct wlr_box geo_box;
-	wlr_xdg_surface_get_geometry(view->xdg_toplevel->base, &geo_box);
-	view->geometry.x = new_left - geo_box.x;
-	view->geometry.y = new_top - geo_box.y;
-		wlr_scene_node_set_position(&view->scene_tree->node,
-				view->geometry.x, view->geometry.y);
+	wlr_xdg_surface_get_geometry(toplevel->xdg_toplevel->base, &geo_box);
+	toplevel->geometry.x = new_left - geo_box.x;
+	toplevel->geometry.y = new_top - geo_box.y;
+		wlr_scene_node_set_position(&toplevel->scene_tree->node,
+				toplevel->geometry.x, toplevel->geometry.y);
 
 	int new_width = new_right - new_left;
 	int new_height = new_bottom - new_top;
-	wlr_xdg_toplevel_set_size(view->xdg_toplevel, new_width, new_height);
+	wlr_xdg_toplevel_set_size(toplevel->xdg_toplevel, new_width, new_height);
 }
 
 static void process_cursor_motion(struct wb_server *server, uint32_t time) {
@@ -72,23 +72,18 @@ static void process_cursor_motion(struct wb_server *server, uint32_t time) {
 		return;
 	}
 
-	/* Otherwise, find the view under the pointer and send the event along. */
+	/* Otherwise, find the toplevel under the pointer and send the event along. */
 	double sx, sy;
 	struct wlr_seat *seat = server->seat->seat;
 	struct wlr_surface *surface = NULL;
-	struct wb_view *view = get_view_at(server,
+	struct wb_toplevel *toplevel = get_toplevel_at(server,
 			server->cursor->cursor->x, server->cursor->cursor->y, &surface, &sx, &sy);
-	if (!view) {
-		/* If there's no view under the cursor, set the cursor image to a
+	if (!toplevel) {
+		/* If there's no toplevel under the cursor, set the cursor image to a
 		 * default. This is what makes the cursor image appear when you move it
-		 * around the screen, not over any views. */
-#if WLR_CHECK_VERSION(0, 17, 0)
+		 * around the screen, not over any toplevels. */
 		wlr_cursor_set_xcursor(
 				server->cursor->cursor, server->cursor->xcursor_manager, "default");
-#else
-		wlr_xcursor_manager_set_cursor_image(
-				server->cursor->xcursor_manager, "left_ptr", server->cursor->cursor);
-#endif
 	}
 	if (surface) {
 		/*
@@ -139,14 +134,14 @@ static void handle_cursor_button(struct wl_listener *listener, void *data) {
 			event->time_msec, event->button, event->state);
 	double sx, sy;
 	struct wlr_surface *surface = NULL;
-	struct wb_view *view = get_view_at(cursor->server,
+	struct wb_toplevel *toplevel = get_toplevel_at(cursor->server,
 			cursor->server->cursor->cursor->x, cursor->server->cursor->cursor->y, &surface, &sx, &sy);
 	if (event->state == WLR_BUTTON_RELEASED) {
 		/* If you released any buttons, we exit interactive move/resize mode. */
 		reset_cursor_mode(cursor->server);
 	} else {
 		/* Focus that client if the button was _pressed_ */
-		focus_view(view, surface);
+		focus_toplevel(toplevel, surface);
 	}
 
 	wlr_idle_notifier_v1_notify_activity(cursor->server->idle_notifier, cursor->server->seat->seat);
@@ -203,9 +198,6 @@ struct wb_cursor *wb_cursor_create(struct wb_server *server) {
 	const char *xcursor_size = getenv("XCURSOR_SIZE");
 	cursor->xcursor_manager = wlr_xcursor_manager_create(getenv("XCURSOR_THEME"),
 				xcursor_size ? strtoul(xcursor_size, (char **) NULL, 10) : 24);
-#if !WLR_CHECK_VERSION(0, 17, 0)
-	wlr_xcursor_manager_load(cursor->xcursor_manager, 1);
-#endif
 
 	cursor->cursor_motion.notify = handle_cursor_motion;
 	wl_signal_add(&cursor->cursor->events.motion, &cursor->cursor_motion);

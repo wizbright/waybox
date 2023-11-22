@@ -29,14 +29,14 @@ protocols = [
   [wl_protocol_dir, 'unstable/xdg-decoration/xdg-decoration-unstable-v1.xml'],
   [wl_protocol_dir, 'unstable/xdg-output/xdg-output-unstable-v1.xml'],
   'wlr-gamma-control-unstable-v1.xml',
-  'wlr-screencopy-unstable-v1.xml',
   'wlr-layer-shell-unstable-v1.xml',
+  'wlr-screencopy-unstable-v1.xml',
 ]
 
 client_protocols = [
   [wl_protocol_dir, 'unstable/idle-inhibit/idle-inhibit-unstable-v1.xml'],
-  'wlr-screencopy-unstable-v1.xml',
   'wlr-layer-shell-unstable-v1.xml',
+  'wlr-screencopy-unstable-v1.xml',
 ]
 
 wl_protos_src = []

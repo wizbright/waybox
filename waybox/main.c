@@ -28,8 +28,8 @@ void signal_handler(int sig) {
 			wl_display_terminate(server.wl_display);
 			break;
 		case SIGUSR1:
-			/* Openbox uses SIGUSR1 to restart. I'm not sure of the
-			 * difference between restarting and reconfiguring.
+			/* Openbox uses SIGUSR1 to restart and SIGUSR2 to reconfigure.
+			 * What's the difference?
 			 */
 		case SIGUSR2:
 			deinit_config(server.config);

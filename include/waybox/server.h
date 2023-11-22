@@ -22,6 +22,8 @@
 #include <wlr/types/wlr_xdg_shell.h>
 #include <wlr/util/log.h>
 
+#include <stdlib.h>
+
 #ifdef USE_NLS
 #	include <libintl.h>
 #	include <locale.h>
@@ -34,7 +36,7 @@
 #include "waybox/cursor.h"
 #include "decoration.h"
 #include "layer_shell.h"
-#include "waybox/output.h"
+#include "waybox/xdg_shell.h"
 #include "waybox/seat.h"
 
 struct wb_server {
@@ -58,11 +60,11 @@ struct wb_server {
 	struct wb_cursor *cursor;
 	struct wb_seat *seat;
 
-	struct wb_view *grabbed_view;
+	struct wb_toplevel *grabbed_toplevel;
 	struct wlr_box grab_geo_box;
 	double grab_x, grab_y;
 	uint32_t resize_edges;
-	struct wl_list views;
+	struct wl_list toplevels;
 
 	struct wlr_layer_shell_v1 *layer_shell;
 	struct wlr_xdg_shell *xdg_shell;

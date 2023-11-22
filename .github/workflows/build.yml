@@ -17,8 +17,8 @@ jobs:
             - name: packages
               run: |
                 apk add clang gcc libevdev-dev libinput-dev libxkbcommon-dev libxml2-dev meson musl-dev wayland-dev wayland-protocols wlroots-dev xwayland
-            # actions/checkout@v3 clones the repository
-            - uses: actions/checkout@v3
+            # actions/checkout@v4 clones the repository
+            - uses: actions/checkout@v4
             - name: build-gcc
               run: |
                 CC=gcc meson setup build-gcc

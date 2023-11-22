@@ -14,11 +14,7 @@ bool wb_create_backend(struct wb_server* server) {
 	 * output hardware. The autocreate option will choose the most suitable
 	 * backend based on the current environment, such as opening an X11 window
 	 * if an X11 server is running. */
-#if ! WLR_CHECK_VERSION(0, 13, 0) || WLR_CHECK_VERSION(0, 17, 0)
 	server->backend = wlr_backend_autocreate(server->wl_display, NULL);
-#else
-	server->backend = wlr_backend_autocreate(server->wl_display);
-#endif
 	if (server->backend == NULL) {
 		wlr_log(WLR_ERROR, "%s", _("Failed to create backend"));
 		return false;
@@ -46,13 +42,8 @@ bool wb_create_backend(struct wb_server* server) {
 		return false;
 	}
 
-#if WLR_CHECK_VERSION(0, 17, 0)
 	server->compositor =
 		wlr_compositor_create(server->wl_display, 5, server->renderer);
-#else
-	server->compositor = wlr_compositor_create(server->wl_display,
-			server->renderer);
-#endif
 	server->subcompositor = wlr_subcompositor_create(server->wl_display);
 	server->output_layout = wlr_output_layout_create();
 	server->seat = wb_seat_create(server);
@@ -78,9 +69,7 @@ bool wb_start_server(struct wb_server* server) {
 	 * necessary.
 	 */
 	server->scene = wlr_scene_create();
-#if WLR_CHECK_VERSION(0, 17, 0)
 	server->scene_layout =
-#endif
 		wlr_scene_attach_output_layout(server->scene, server->output_layout);
 
 	const char *socket = wl_display_add_socket_auto(server->wl_display);
@@ -103,22 +92,18 @@ bool wb_start_server(struct wb_server* server) {
 
 	server->gamma_control_manager =
 		wlr_gamma_control_manager_v1_create(server->wl_display);
-#if WLR_CHECK_VERSION(0, 17, 0)
 	server->gamma_control_set_gamma.notify = handle_gamma_control_set_gamma;
 	wl_signal_add(&server->gamma_control_manager->events.set_gamma, &server->gamma_control_set_gamma);
-#endif
 
 	wlr_screencopy_manager_v1_create(server->wl_display);
 	server->idle_notifier = wlr_idle_notifier_v1_create(server->wl_display);
 
-	wl_list_init(&server->views);
+	wl_list_init(&server->toplevels);
 	init_xdg_decoration(server);
 	init_layer_shell(server);
 
 	/* Set up the xdg-shell. The xdg-shell is a Wayland protocol which is used
-	 * for application windows. For more detail on shells, refer to Drew
-	 * DeVault's article:
-	 *
+	 * for application windows. For more detail on shells, refer to
 	 * https://drewdevault.com/2018/07/29/Wayland-shells.html
 	 */
 	init_xdg_shell(server);

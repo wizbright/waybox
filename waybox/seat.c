@@ -8,45 +8,45 @@
 #include "waybox/seat.h"
 #include "waybox/xdg_shell.h"
 
-static void deiconify_view(struct wb_view *view) {
-	if (view->xdg_toplevel->requested.minimized) {
-		view->xdg_toplevel->requested.minimized = false;
-		wl_signal_emit(&view->xdg_toplevel->events.request_minimize, NULL);
+static void deiconify_toplevel(struct wb_toplevel *toplevel) {
+	if (toplevel->xdg_toplevel->requested.minimized) {
+		toplevel->xdg_toplevel->requested.minimized = false;
+		wl_signal_emit(&toplevel->xdg_toplevel->events.request_minimize, NULL);
 	}
 }
 
-static void cycle_views(struct wb_server *server) {
-	/* Cycle to the next view */
-	if (wl_list_length(&server->views) < 1) {
+static void cycle_toplevels(struct wb_server *server) {
+	/* Cycle to the next toplevel */
+	if (wl_list_length(&server->toplevels) < 1) {
 		return;
 	}
 
-	struct wb_view *current_view = wl_container_of(
-		server->views.prev, current_view, link);
-	deiconify_view(current_view);
-	focus_view(current_view, current_view->xdg_toplevel->base->surface);
+	struct wb_toplevel *current_toplevel = wl_container_of(
+		server->toplevels.prev, current_toplevel, link);
+	deiconify_toplevel(current_toplevel);
+	focus_toplevel(current_toplevel, current_toplevel->xdg_toplevel->base->surface);
 
-	/* Move the current view to the beginning of the list */
-	wl_list_remove(&current_view->link);
-	wl_list_insert(&server->views, &current_view->link);
+	/* Move the current toplevel to the beginning of the list */
+	wl_list_remove(&current_toplevel->link);
+	wl_list_insert(&server->toplevels, &current_toplevel->link);
 }
 
-static void cycle_views_reverse(struct wb_server *server) {
-	/* Cycle to the previous view */
-	if (wl_list_length(&server->views) < 1) {
+static void cycle_toplevels_reverse(struct wb_server *server) {
+	/* Cycle to the previous toplevel */
+	if (wl_list_length(&server->toplevels) < 1) {
 		return;
 	}
 
-	struct wb_view *current_view = wl_container_of(
-		server->views.next, current_view, link);
-	struct wb_view *next_view = wl_container_of(
-		current_view->link.next, next_view, link);
-	deiconify_view(next_view);
-	focus_view(next_view, next_view->xdg_toplevel->base->surface);
+	struct wb_toplevel *current_toplevel = wl_container_of(
+		server->toplevels.next, current_toplevel, link);
+	struct wb_toplevel *next_toplevel = wl_container_of(
+		current_toplevel->link.next, next_toplevel, link);
+	deiconify_toplevel(next_toplevel);
+	focus_toplevel(next_toplevel, next_toplevel->xdg_toplevel->base->surface);
 
-	/* Move the current view to after the previous view in the list */
-	wl_list_remove(&current_view->link);
-	wl_list_insert(server->views.prev, &current_view->link);
+	/* Move the current toplevel to after the previous toplevel in the list */
+	wl_list_remove(&current_toplevel->link);
+	wl_list_insert(server->toplevels.prev, &current_toplevel->link);
 }
 
 static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32_t modifiers) {
@@ -62,10 +62,10 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 		/* Some default key bindings, when the rc.xml file can't be
 		 * parsed. */
 		if (modifiers & WLR_MODIFIER_ALT && sym == XKB_KEY_Tab)
-			cycle_views(server);
+			cycle_toplevels(server);
 		else if (modifiers & (WLR_MODIFIER_ALT|WLR_MODIFIER_SHIFT) &&
 				sym == XKB_KEY_Tab)
-			cycle_views_reverse(server);
+			cycle_toplevels_reverse(server);
 		else if (sym == XKB_KEY_Escape && modifiers & WLR_MODIFIER_CTRL)
 			wl_display_terminate(server->wl_display);
 		else
@@ -77,14 +77,14 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 	wl_list_for_each(key_binding, &server->config->key_bindings, link) {
 		if (sym == key_binding->sym && modifiers == key_binding->modifiers) {
 			if (key_binding->action & ACTION_NEXT_WINDOW)
-				cycle_views(server);
+				cycle_toplevels(server);
 			if (key_binding->action & ACTION_PREVIOUS_WINDOW)
-				cycle_views_reverse(server);
+				cycle_toplevels_reverse(server);
 			if (key_binding->action & ACTION_CLOSE) {
-				struct wb_view *current_view = wl_container_of(
-						server->views.next, current_view, link);
-				if (current_view->scene_tree->node.enabled)
-					wlr_xdg_toplevel_send_close(current_view->xdg_toplevel);
+				struct wb_toplevel *current_toplevel = wl_container_of(
+						server->toplevels.next, current_toplevel, link);
+				if (current_toplevel->scene_tree->node.enabled)
+					wlr_xdg_toplevel_send_close(current_toplevel->xdg_toplevel);
 			}
 			if (key_binding->action & ACTION_EXECUTE) {
 				if (fork() == 0) {
@@ -92,34 +92,34 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 				}
 			}
 			if (key_binding->action & ACTION_TOGGLE_MAXIMIZE) {
-				struct wb_view *view = wl_container_of(server->views.next, view, link);
-				if (view->scene_tree->node.enabled)
-					wl_signal_emit(&view->xdg_toplevel->events.request_maximize, NULL);
+				struct wb_toplevel *toplevel = wl_container_of(server->toplevels.next, toplevel, link);
+				if (toplevel->scene_tree->node.enabled)
+					wl_signal_emit(&toplevel->xdg_toplevel->events.request_maximize, NULL);
 			}
 			if (key_binding->action & ACTION_ICONIFY) {
-				struct wb_view *view = wl_container_of(server->views.next, view, link);
-				if (view->scene_tree->node.enabled) {
-					view->xdg_toplevel->requested.minimized = true;
-					wl_signal_emit(&view->xdg_toplevel->events.request_minimize, NULL);
+				struct wb_toplevel *toplevel = wl_container_of(server->toplevels.next, toplevel, link);
+				if (toplevel->scene_tree->node.enabled) {
+					toplevel->xdg_toplevel->requested.minimized = true;
+					wl_signal_emit(&toplevel->xdg_toplevel->events.request_minimize, NULL);
 				}
 			}
 			if (key_binding->action & ACTION_SHADE) {
-				struct wb_view *view = wl_container_of(server->views.next, view, link);
-				if (view->scene_tree->node.enabled) {
+				struct wb_toplevel *toplevel = wl_container_of(server->toplevels.next, toplevel, link);
+				if (toplevel->scene_tree->node.enabled) {
 					struct wlr_box geo_box;
-					wlr_xdg_surface_get_geometry(view->xdg_toplevel->base, &geo_box);
-					int decoration_height = MAX(geo_box.y - view->geometry.y, TITLEBAR_HEIGHT);
+					wlr_xdg_surface_get_geometry(toplevel->xdg_toplevel->base, &geo_box);
+					int decoration_height = MAX(geo_box.y - toplevel->geometry.y, TITLEBAR_HEIGHT);
 
-					view->previous_geometry = view->geometry;
-					wlr_xdg_toplevel_set_size(view->xdg_toplevel,
-							view->geometry.width, decoration_height);
+					toplevel->previous_geometry = toplevel->geometry;
+					wlr_xdg_toplevel_set_size(toplevel->xdg_toplevel,
+							toplevel->geometry.width, decoration_height);
 				}
 			}
 			if (key_binding->action & ACTION_UNSHADE) {
-				struct wb_view *view = wl_container_of(server->views.next, view, link);
-				if (view->scene_tree->node.enabled) {
-					wlr_xdg_toplevel_set_size(view->xdg_toplevel,
-							view->previous_geometry.width, view->previous_geometry.height);
+				struct wb_toplevel *toplevel = wl_container_of(server->toplevels.next, toplevel, link);
+				if (toplevel->scene_tree->node.enabled) {
+					wlr_xdg_toplevel_set_size(toplevel->xdg_toplevel,
+							toplevel->previous_geometry.width, toplevel->previous_geometry.height);
 				}
 			}
 			if (key_binding->action & ACTION_RECONFIGURE) {

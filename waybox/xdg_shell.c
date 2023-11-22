@@ -1,11 +1,11 @@
 #include "waybox/xdg_shell.h"
 
-struct wb_view *get_view_at(
+struct wb_toplevel *get_toplevel_at(
 		struct wb_server *server, double lx, double ly,
 		struct wlr_surface **surface, double *sx, double *sy) {
 	/* This returns the topmost node in the scene at the given layout coords.
 	 * we only care about surface nodes as we are specifically looking for a
-	 * surface in the surface tree of a wb_view. */
+	 * surface in the surface tree of a wb_toplevel. */
 	struct wlr_scene_node *node =
 		wlr_scene_node_at(&server->scene->tree.node, lx, ly, sx, sy);
 	if (node == NULL || node->type != WLR_SCENE_NODE_BUFFER) {
@@ -13,17 +13,13 @@ struct wb_view *get_view_at(
 	}
 	struct wlr_scene_buffer *scene_buffer = wlr_scene_buffer_from_node(node);
 	struct wlr_scene_surface *scene_surface =
-#if WLR_CHECK_VERSION(0, 17, 0)
 		wlr_scene_surface_try_from_buffer(scene_buffer);
-#else
-		wlr_scene_surface_from_buffer(scene_buffer);
-#endif
 	if (!scene_surface) {
 		return NULL;
 	}
 
 	*surface = scene_surface->surface;
-	/* Find the node corresponding to the wb_view at the root of this
+	/* Find the node corresponding to the wb_toplevel at the root of this
 	 * surface tree, it is the only one for which we set the data field. */
 	struct wlr_scene_tree *tree = node->parent;
 	while (tree != NULL && tree->node.data == NULL) {
@@ -32,25 +28,18 @@ struct wb_view *get_view_at(
 	return tree->node.data;
 }
 
-void focus_view(struct wb_view *view, struct wlr_surface *surface) {
+void focus_toplevel(struct wb_toplevel *toplevel, struct wlr_surface *surface) {
 	/* Note: this function only deals with keyboard focus. */
-	if (view == NULL) {
+	if (toplevel == NULL) {
 		return;
 	}
 
-#if WLR_CHECK_VERSION(0, 17, 0)
 	struct wlr_xdg_surface *xdg_surface = wlr_xdg_surface_try_from_wlr_surface(surface);
-#else
-	if (surface == NULL || !wlr_surface_is_xdg_surface(surface))
-		return;
-
-	struct wlr_xdg_surface *xdg_surface = wlr_xdg_surface_from_wlr_surface(surface);
-#endif
 	if (xdg_surface)
 		wlr_log(WLR_INFO, "%s: %s", _("Keyboard focus is now on surface"),
 				xdg_surface->toplevel->app_id);
 
-	struct wb_server *server = view->server;
+	struct wb_server *server = toplevel->server;
 	struct wlr_seat *seat = server->seat->seat;
 	struct wlr_surface *prev_surface = seat->keyboard_state.focused_surface;
 	if (prev_surface == surface) {
@@ -63,48 +52,40 @@ void focus_view(struct wb_view *view, struct wlr_surface *surface) {
 		 * it no longer has focus and the client will repaint accordingly, e.g.
 		 * stop displaying a caret.
 		 */
-#if WLR_CHECK_VERSION(0, 17, 0)
-		struct wlr_xdg_surface *previous =
-			wlr_xdg_surface_try_from_wlr_surface(prev_surface);
-#else
-		struct wlr_xdg_surface *previous = NULL;
-		if (wlr_surface_is_xdg_surface(prev_surface)) {
-			previous = wlr_xdg_surface_from_wlr_surface(prev_surface);
-		}
-#endif
-		if (previous != NULL && previous->role == WLR_XDG_SURFACE_ROLE_TOPLEVEL &&
-				previous->toplevel != NULL) {
-			wlr_xdg_toplevel_set_activated(previous->toplevel, false);
+		struct wlr_xdg_toplevel *prev_toplevel =
+			wlr_xdg_toplevel_try_from_wlr_surface(prev_surface);
+		if (prev_toplevel != NULL) {
+			wlr_xdg_toplevel_set_activated(prev_toplevel, false);
 		}
 	}
-	/* Move the view to the front */
+	/* Move the toplevel to the front */
 	if (!server->seat->focused_layer) {
-		wlr_scene_node_raise_to_top(&view->scene_tree->node);
+		wlr_scene_node_raise_to_top(&toplevel->scene_tree->node);
 	}
-	wl_list_remove(&view->link);
-	wl_list_insert(&server->views, &view->link);
+	wl_list_remove(&toplevel->link);
+	wl_list_insert(&server->toplevels, &toplevel->link);
 	/* Activate the new surface */
-	wlr_xdg_toplevel_set_activated(view->xdg_toplevel, true);
+	wlr_xdg_toplevel_set_activated(toplevel->xdg_toplevel, true);
 	/*
 	 * Tell the seat to have the keyboard enter this surface. wlroots will keep
 	 * track of this and automatically send key events to the appropriate
 	 * clients without additional work on your part.
 	 */
-	seat_focus_surface(server->seat, view->xdg_toplevel->base->surface);
+	seat_focus_surface(server->seat, toplevel->xdg_toplevel->base->surface);
 }
 
-struct wlr_output *get_active_output(struct wb_view *view) {
+struct wlr_output *get_active_output(struct wb_toplevel *toplevel) {
 	double closest_x, closest_y;
 	struct wlr_output *output = NULL;
-	wlr_output_layout_closest_point(view->server->output_layout, output,
-			view->geometry.x + view->geometry.width / 2,
-			view->geometry.y + view->geometry.height / 2,
+	wlr_output_layout_closest_point(toplevel->server->output_layout, output,
+			toplevel->geometry.x + toplevel->geometry.width / 2,
+			toplevel->geometry.y + toplevel->geometry.height / 2,
 			&closest_x, &closest_y);
-	return wlr_output_layout_output_at(view->server->output_layout, closest_x, closest_y);
+	return wlr_output_layout_output_at(toplevel->server->output_layout, closest_x, closest_y);
 }
 
-static struct wlr_box get_usable_area(struct wb_view *view) {
-	struct wlr_output *output = get_active_output(view);
+static struct wlr_box get_usable_area(struct wb_toplevel *toplevel) {
+	struct wlr_output *output = get_active_output(toplevel);
 	struct wlr_box usable_area = {0};
 	wlr_output_effective_resolution(output, &usable_area.width, &usable_area.height);
 	return usable_area;
@@ -112,79 +93,79 @@ static struct wlr_box get_usable_area(struct wb_view *view) {
 
 static void xdg_toplevel_map(struct wl_listener *listener, void *data) {
 	/* Called when the surface is mapped, or ready to display on-screen. */
-	struct wb_view *view = wl_container_of(listener, view, map);
-	if (view->xdg_toplevel->base->role != WLR_XDG_SURFACE_ROLE_TOPLEVEL)
+	struct wb_toplevel *toplevel = wl_container_of(listener, toplevel, map);
+	if (toplevel->xdg_toplevel->base->role != WLR_XDG_SURFACE_ROLE_TOPLEVEL)
 		return;
 
-	struct wb_config *config = view->server->config;
+	struct wb_config *config = toplevel->server->config;
 	struct wlr_box geo_box = {0};
-	struct wlr_box usable_area = get_usable_area(view);
-	wlr_xdg_surface_get_geometry(view->xdg_toplevel->base, &geo_box);
+	struct wlr_box usable_area = get_usable_area(toplevel);
+	wlr_xdg_surface_get_geometry(toplevel->xdg_toplevel->base, &geo_box);
 
 	if (config) {
-		view->geometry.height = MIN(geo_box.height,
+		toplevel->geometry.height = MIN(geo_box.height,
 				usable_area.height - config->margins.top - config->margins.bottom);
-		view->geometry.width = MIN(geo_box.width,
+		toplevel->geometry.width = MIN(geo_box.width,
 				usable_area.width - config->margins.left - config->margins.right);
-		view->geometry.x = config->margins.left;
-		view->geometry.y = config->margins.top;
+		toplevel->geometry.x = config->margins.left;
+		toplevel->geometry.y = config->margins.top;
 	} else {
-		view->geometry.height = MIN(geo_box.height, usable_area.height);
-		view->geometry.width = MIN(geo_box.width, usable_area.width);
-		view->geometry.x = 0;
-		view->geometry.y = 0;
+		toplevel->geometry.height = MIN(geo_box.height, usable_area.height);
+		toplevel->geometry.width = MIN(geo_box.width, usable_area.width);
+		toplevel->geometry.x = 0;
+		toplevel->geometry.y = 0;
 	}
 
-	/* A view no larger than a title bar shouldn't be sized or focused */
-	if (view->geometry.height > TITLEBAR_HEIGHT &&
-			view->geometry.height > TITLEBAR_HEIGHT *
+	/* A toplevel no larger than a title bar shouldn't be sized or focused */
+	if (toplevel->geometry.height > TITLEBAR_HEIGHT &&
+			toplevel->geometry.height > TITLEBAR_HEIGHT *
 			(usable_area.width / usable_area.height)) {
-		wlr_xdg_toplevel_set_size(view->xdg_toplevel,
-				view->geometry.width, view->geometry.height);
-		focus_view(view, view->xdg_toplevel->base->surface);
+		wlr_xdg_toplevel_set_size(toplevel->xdg_toplevel,
+				toplevel->geometry.width, toplevel->geometry.height);
+		focus_toplevel(toplevel, toplevel->xdg_toplevel->base->surface);
 	}
 
-	wlr_scene_node_set_position(&view->scene_tree->node,
-			view->geometry.x, view->geometry.y);
+	wlr_scene_node_set_position(&toplevel->scene_tree->node,
+			toplevel->geometry.x, toplevel->geometry.y);
 }
 
 static void xdg_toplevel_unmap(struct wl_listener *listener, void *data) {
 	/* Called when the surface is unmapped, and should no longer be shown. */
-	struct wb_view *view = wl_container_of(listener, view, unmap);
-	if (view->xdg_toplevel->base->role != WLR_XDG_SURFACE_ROLE_TOPLEVEL)
+	struct wb_toplevel *toplevel = wl_container_of(listener, toplevel, unmap);
+	if (toplevel->xdg_toplevel->base->role != WLR_XDG_SURFACE_ROLE_TOPLEVEL)
 		return;
-	reset_cursor_mode(view->server);
+	reset_cursor_mode(toplevel->server);
 
-	/* Focus the next view, if any. */
-	if (wl_list_length(&view->link) > 1) {
-		struct wb_view *next_view = wl_container_of(view->link.next, next_view, link);
-		if (next_view && next_view->xdg_toplevel && next_view->scene_tree && next_view->scene_tree->node.enabled) {
-			wlr_log(WLR_INFO, "%s: %s", _("Focusing next view"),
-					next_view->xdg_toplevel->app_id);
-			focus_view(next_view, next_view->xdg_toplevel->base->surface);
+	/* Focus the next toplevel, if any. */
+	if (wl_list_length(&toplevel->link) > 1) {
+		struct wb_toplevel *next_toplevel = wl_container_of(toplevel->link.next, next_toplevel, link);
+		if (next_toplevel && next_toplevel->xdg_toplevel && next_toplevel->scene_tree && next_toplevel->scene_tree->node.enabled) {
+			wlr_log(WLR_INFO, "%s: %s", _("Focusing next toplevel"),
+					next_toplevel->xdg_toplevel->app_id);
+			focus_toplevel(next_toplevel, next_toplevel->xdg_toplevel->base->surface);
 		}
 	}
 }
 
 static void xdg_toplevel_destroy(struct wl_listener *listener, void *data) {
-	/* Called when the surface is destroyed and should never be shown again. */
-	struct wb_view *view = wl_container_of(listener, view, destroy);
+	/* Called when the xdg_toplevel is destroyed and should never be shown again. */
+	struct wb_toplevel *toplevel = wl_container_of(listener, toplevel, destroy);
 
-	wl_list_remove(&view->map.link);
-	wl_list_remove(&view->unmap.link);
-	wl_list_remove(&view->destroy.link);
-	wl_list_remove(&view->new_popup.link);
+	wl_list_remove(&toplevel->map.link);
+	wl_list_remove(&toplevel->unmap.link);
+	wl_list_remove(&toplevel->destroy.link);
+	wl_list_remove(&toplevel->new_popup.link);
 
-	if (view->xdg_toplevel->base->role == WLR_XDG_SURFACE_ROLE_TOPLEVEL) {
-		wl_list_remove(&view->request_fullscreen.link);
-		wl_list_remove(&view->request_minimize.link);
-		wl_list_remove(&view->request_maximize.link);
-		wl_list_remove(&view->request_move.link);
-		wl_list_remove(&view->request_resize.link);
-		wl_list_remove(&view->link);
+	if (toplevel->xdg_toplevel->base->role == WLR_XDG_SURFACE_ROLE_TOPLEVEL) {
+		wl_list_remove(&toplevel->request_fullscreen.link);
+		wl_list_remove(&toplevel->request_minimize.link);
+		wl_list_remove(&toplevel->request_maximize.link);
+		wl_list_remove(&toplevel->request_move.link);
+		wl_list_remove(&toplevel->request_resize.link);
+		wl_list_remove(&toplevel->link);
 	}
 
-	free(view);
+	free(toplevel);
 }
 
 static void xdg_toplevel_request_fullscreen(
@@ -194,9 +175,9 @@ static void xdg_toplevel_request_fullscreen(
 	 * conform to xdg-shell protocol we still must send a configure.
 	 * wlr_xdg_surface_schedule_configure() is used to send an empty reply.
 	 */
-	struct wb_view *view =
-		wl_container_of(listener, view, request_fullscreen);
-	wlr_xdg_surface_schedule_configure(view->xdg_toplevel->base);
+	struct wb_toplevel *toplevel =
+		wl_container_of(listener, toplevel, request_fullscreen);
+	wlr_xdg_surface_schedule_configure(toplevel->xdg_toplevel->base);
 }
 
 static void xdg_toplevel_request_maximize(struct wl_listener *listener, void *data) {
@@ -204,85 +185,85 @@ static void xdg_toplevel_request_maximize(struct wl_listener *listener, void *da
 	 * typically because the user clicked on the maximize button on
 	 * client-side decorations.
 	 */
-	struct wb_view *view = wl_container_of(listener, view, request_maximize);
-	struct wlr_box usable_area = get_usable_area(view);
+	struct wb_toplevel *toplevel = wl_container_of(listener, toplevel, request_maximize);
+	struct wlr_box usable_area = get_usable_area(toplevel);
 
-	bool is_maximized = view->xdg_toplevel->current.maximized;
+	bool is_maximized = toplevel->xdg_toplevel->current.maximized;
 	if (!is_maximized) {
-		struct wb_config *config = view->server->config;
-		view->previous_geometry = view->geometry;
+		struct wb_config *config = toplevel->server->config;
+		toplevel->previous_geometry = toplevel->geometry;
 		if (config) {
-			view->geometry.x = config->margins.left;
-			view->geometry.y = config->margins.top;
+			toplevel->geometry.x = config->margins.left;
+			toplevel->geometry.y = config->margins.top;
 			usable_area.height -= config->margins.top + config->margins.bottom;
 			usable_area.width -= config->margins.left + config->margins.right;
 		} else {
-			view->geometry.x = 0;
-			view->geometry.y = 0;
+			toplevel->geometry.x = 0;
+			toplevel->geometry.y = 0;
 		}
 	} else {
-		usable_area = view->previous_geometry;
-		view->geometry.x = view->previous_geometry.x;
-		view->geometry.y = view->previous_geometry.y;
+		usable_area = toplevel->previous_geometry;
+		toplevel->geometry.x = toplevel->previous_geometry.x;
+		toplevel->geometry.y = toplevel->previous_geometry.y;
 	}
-	wlr_xdg_toplevel_set_size(view->xdg_toplevel, usable_area.width, usable_area.height);
-	wlr_xdg_toplevel_set_maximized(view->xdg_toplevel, !is_maximized);
-	wlr_scene_node_set_position(&view->scene_tree->node,
-			view->geometry.x, view->geometry.y);
+	wlr_xdg_toplevel_set_size(toplevel->xdg_toplevel, usable_area.width, usable_area.height);
+	wlr_xdg_toplevel_set_maximized(toplevel->xdg_toplevel, !is_maximized);
+	wlr_scene_node_set_position(&toplevel->scene_tree->node,
+			toplevel->geometry.x, toplevel->geometry.y);
 }
 
 static void xdg_toplevel_request_minimize(struct wl_listener *listener, void *data) {
-	struct wb_view *view = wl_container_of(listener, view, request_minimize);
-	bool minimize_requested = view->xdg_toplevel->requested.minimized;
+	struct wb_toplevel *toplevel = wl_container_of(listener, toplevel, request_minimize);
+	bool minimize_requested = toplevel->xdg_toplevel->requested.minimized;
 	if (minimize_requested) {
-		view->previous_geometry = view->geometry;
-		view->geometry.y = -view->geometry.height;
+		toplevel->previous_geometry = toplevel->geometry;
+		toplevel->geometry.y = -toplevel->geometry.height;
 
-		struct wb_view *next_view = wl_container_of(view->link.next, next_view, link);
-		if (wl_list_length(&view->link) > 1)
-			focus_view(next_view, next_view->xdg_toplevel->base->surface);
+		struct wb_toplevel *next_toplevel = wl_container_of(toplevel->link.next, next_toplevel, link);
+		if (wl_list_length(&toplevel->link) > 1)
+			focus_toplevel(next_toplevel, next_toplevel->xdg_toplevel->base->surface);
 		else
-			focus_view(view, view->xdg_toplevel->base->surface);
+			focus_toplevel(toplevel, toplevel->xdg_toplevel->base->surface);
 	} else {
-		view->geometry = view->previous_geometry;
+		toplevel->geometry = toplevel->previous_geometry;
 	}
 
-	wlr_scene_node_set_position(&view->scene_tree->node,
-			view->geometry.x, view->geometry.y);
+	wlr_scene_node_set_position(&toplevel->scene_tree->node,
+			toplevel->geometry.x, toplevel->geometry.y);
 }
 
-static void begin_interactive(struct wb_view *view,
+static void begin_interactive(struct wb_toplevel *toplevel,
 		enum wb_cursor_mode mode, uint32_t edges) {
 	/* This function sets up an interactive move or resize operation, where the
 	 * compositor stops propagating pointer events to clients and instead
 	 * consumes them itself, to move or resize windows. */
-	struct wb_server *server = view->server;
+	struct wb_server *server = toplevel->server;
 	struct wlr_surface *focused_surface =
 		server->seat->seat->pointer_state.focused_surface;
-	if (view->xdg_toplevel->base->surface != wlr_surface_get_root_surface(focused_surface)) {
+	if (toplevel->xdg_toplevel->base->surface != wlr_surface_get_root_surface(focused_surface)) {
 		/* Deny move/resize requests from unfocused clients. */
 		return;
 	}
-	server->grabbed_view = view;
+	server->grabbed_toplevel = toplevel;
 	server->cursor->cursor_mode = mode;
 
 	if (mode == WB_CURSOR_MOVE) {
-		server->grab_x = server->cursor->cursor->x - view->geometry.x;
-		server->grab_y = server->cursor->cursor->y - view->geometry.y;
+		server->grab_x = server->cursor->cursor->x - toplevel->geometry.x;
+		server->grab_y = server->cursor->cursor->y - toplevel->geometry.y;
 	} else if (mode == WB_CURSOR_RESIZE) {
 		struct wlr_box geo_box;
-		wlr_xdg_surface_get_geometry(view->xdg_toplevel->base, &geo_box);
+		wlr_xdg_surface_get_geometry(toplevel->xdg_toplevel->base, &geo_box);
 
-		double border_x = (view->geometry.x + geo_box.x) +
+		double border_x = (toplevel->geometry.x + geo_box.x) +
 			((edges & WLR_EDGE_RIGHT) ? geo_box.width : 0);
-		double border_y = (view->geometry.y + geo_box.y) +
+		double border_y = (toplevel->geometry.y + geo_box.y) +
 			((edges & WLR_EDGE_BOTTOM) ? geo_box.height : 0);
 		server->grab_x = server->cursor->cursor->x - border_x;
 		server->grab_y = server->cursor->cursor->y - border_y;
 
 		server->grab_geo_box = geo_box;
-		server->grab_geo_box.x += view->geometry.x;
-		server->grab_geo_box.y += view->geometry.y;
+		server->grab_geo_box.x += toplevel->geometry.x;
+		server->grab_geo_box.y += toplevel->geometry.y;
 
 		server->resize_edges = edges;
 	}
@@ -293,8 +274,8 @@ static void xdg_toplevel_request_move(
 	/* This event is raised when a client would like to begin an interactive
 	 * move, typically because the user clicked on their client-side
 	 * decorations. */
-	struct wb_view *view = wl_container_of(listener, view, request_move);
-	begin_interactive(view, WB_CURSOR_MOVE, 0);
+	struct wb_toplevel *toplevel = wl_container_of(listener, toplevel, request_move);
+	begin_interactive(toplevel, WB_CURSOR_MOVE, 0);
 }
 
 static void xdg_toplevel_request_resize(
@@ -303,29 +284,29 @@ static void xdg_toplevel_request_resize(
 	 * resize, typically because the user clicked on their client-side
 	 * decorations. */
 	struct wlr_xdg_toplevel_resize_event *event = data;
-	struct wb_view *view = wl_container_of(listener, view, request_resize);
-	begin_interactive(view, WB_CURSOR_RESIZE, event->edges);
+	struct wb_toplevel *toplevel = wl_container_of(listener, toplevel, request_resize);
+	begin_interactive(toplevel, WB_CURSOR_RESIZE, event->edges);
 }
 
 static void handle_new_popup(struct wl_listener *listener, void *data) {
 	struct wlr_xdg_popup *popup = data;
-	struct wb_view *view = wl_container_of(listener, view, new_popup);
+	struct wb_toplevel *toplevel = wl_container_of(listener, toplevel, new_popup);
 
 	struct wlr_output *wlr_output = wlr_output_layout_output_at(
-			view->server->output_layout,
-			view->geometry.x + popup->current.geometry.x,
-			view->geometry.y + popup->current.geometry.y);
+			toplevel->server->output_layout,
+			toplevel->geometry.x + popup->current.geometry.x,
+			toplevel->geometry.y + popup->current.geometry.y);
 
 	if (!wlr_output) {
 		return;
 	}
 	struct wb_output *output = wlr_output->data;
 
-	int top_margin = (view->server->config) ?
-		view->server->config->margins.top : 0;
+	int top_margin = (toplevel->server->config) ?
+		toplevel->server->config->margins.top : 0;
 	struct wlr_box output_toplevel_box = {
-		.x = output->geometry.x - view->geometry.x,
-		.y = output->geometry.y - view->geometry.y,
+		.x = output->geometry.x - toplevel->geometry.x,
+		.y = output->geometry.y - toplevel->geometry.y,
 		.width = output->geometry.width,
 		.height = output->geometry.height - top_margin,
 	};
@@ -345,15 +326,9 @@ static void handle_new_xdg_surface(struct wl_listener *listener, void *data) {
 	 * we always set the user data field of xdg_surfaces to the corresponding
 	 * scene node. */
 	if (xdg_surface->role == WLR_XDG_SURFACE_ROLE_POPUP) {
-#if WLR_CHECK_VERSION(0, 17, 0)
 		struct wlr_xdg_surface *parent = wlr_xdg_surface_try_from_wlr_surface(
 			xdg_surface->popup->parent);
 		if (parent != NULL) {
-#else
-		if (wlr_surface_is_xdg_surface(xdg_surface->popup->parent)) {
-			struct wlr_xdg_surface *parent = wlr_xdg_surface_from_wlr_surface(
-				xdg_surface->popup->parent);
-#endif
 
 			struct wlr_scene_tree *parent_tree = parent->data;
 			xdg_surface->data = wlr_scene_xdg_surface_create(
@@ -365,49 +340,41 @@ static void handle_new_xdg_surface(struct wl_listener *listener, void *data) {
 	if (xdg_surface->role == WLR_XDG_SURFACE_ROLE_NONE)
 		return;
 
-	/* Allocate a wb_view for this surface */
-	struct wb_view *view =
-		calloc(1, sizeof(struct wb_view));
-	view->server = server;
-	view->xdg_toplevel = xdg_surface->toplevel;
+	/* Allocate a wb_toplevel for this surface */
+	struct wb_toplevel *toplevel =
+		calloc(1, sizeof(struct wb_toplevel));
+	toplevel->server = server;
+	toplevel->xdg_toplevel = xdg_surface->toplevel;
 
 	/* Listen to the various events it can emit */
-	view->map.notify = xdg_toplevel_map;
-#if WLR_CHECK_VERSION(0, 17, 0)
-	wl_signal_add(&xdg_surface->surface->events.map, &view->map);
-#else
-	wl_signal_add(&xdg_surface->events.map, &view->map);
-#endif
-	view->unmap.notify = xdg_toplevel_unmap;
-#if WLR_CHECK_VERSION(0, 17, 0)
-	wl_signal_add(&xdg_surface->surface->events.unmap, &view->unmap);
-#else
-	wl_signal_add(&xdg_surface->events.unmap, &view->unmap);
-#endif
-	view->destroy.notify = xdg_toplevel_destroy;
-	wl_signal_add(&xdg_surface->events.destroy, &view->destroy);
-	view->new_popup.notify = handle_new_popup;
-	wl_signal_add(&xdg_surface->events.new_popup, &view->new_popup);
+	toplevel->map.notify = xdg_toplevel_map;
+	wl_signal_add(&xdg_surface->surface->events.map, &toplevel->map);
+	toplevel->unmap.notify = xdg_toplevel_unmap;
+	wl_signal_add(&xdg_surface->surface->events.unmap, &toplevel->unmap);
+	toplevel->destroy.notify = xdg_toplevel_destroy;
+	wl_signal_add(&xdg_surface->events.destroy, &toplevel->destroy);
+	toplevel->new_popup.notify = handle_new_popup;
+	wl_signal_add(&xdg_surface->events.new_popup, &toplevel->new_popup);
 
 	if (xdg_surface->role == WLR_XDG_SURFACE_ROLE_TOPLEVEL) {
-		view->scene_tree = wlr_scene_xdg_surface_create(
-			&view->server->scene->tree, view->xdg_toplevel->base);
-		view->scene_tree->node.data = view;
-		xdg_surface->data = view->scene_tree;
+		toplevel->scene_tree = wlr_scene_xdg_surface_create(
+			&toplevel->server->scene->tree, toplevel->xdg_toplevel->base);
+		toplevel->scene_tree->node.data = toplevel;
+		xdg_surface->data = toplevel->scene_tree;
 
-		struct wlr_xdg_toplevel *toplevel = view->xdg_toplevel;
-		view->request_fullscreen.notify = xdg_toplevel_request_fullscreen;
-		wl_signal_add(&toplevel->events.request_fullscreen, &view->request_fullscreen);
-		view->request_maximize.notify = xdg_toplevel_request_maximize;
-		wl_signal_add(&toplevel->events.request_maximize, &view->request_maximize);
-		view->request_minimize.notify = xdg_toplevel_request_minimize;
-		wl_signal_add(&toplevel->events.request_minimize, &view->request_minimize);
-		view->request_move.notify = xdg_toplevel_request_move;
-		wl_signal_add(&toplevel->events.request_move, &view->request_move);
-		view->request_resize.notify = xdg_toplevel_request_resize;
-		wl_signal_add(&toplevel->events.request_resize, &view->request_resize);
+		struct wlr_xdg_toplevel *xdg_toplevel = toplevel->xdg_toplevel;
+		toplevel->request_fullscreen.notify = xdg_toplevel_request_fullscreen;
+		wl_signal_add(&xdg_toplevel->events.request_fullscreen, &toplevel->request_fullscreen);
+		toplevel->request_maximize.notify = xdg_toplevel_request_maximize;
+		wl_signal_add(&xdg_toplevel->events.request_maximize, &toplevel->request_maximize);
+		toplevel->request_minimize.notify = xdg_toplevel_request_minimize;
+		wl_signal_add(&xdg_toplevel->events.request_minimize, &toplevel->request_minimize);
+		toplevel->request_move.notify = xdg_toplevel_request_move;
+		wl_signal_add(&xdg_toplevel->events.request_move, &toplevel->request_move);
+		toplevel->request_resize.notify = xdg_toplevel_request_resize;
+		wl_signal_add(&xdg_toplevel->events.request_resize, &toplevel->request_resize);
 
-		wl_list_insert(&view->server->views, &view->link);
+		wl_list_insert(&toplevel->server->toplevels, &toplevel->link);
 	}
 }
 

@@ -1,7 +1,6 @@
 #ifndef _WB_OUTPUT_H
 #define _WB_OUTPUT_H
 
-#include <stdlib.h>
 #include <time.h>
 
 #include "waybox/server.h"
@@ -30,28 +29,6 @@ struct wb_output {
 	struct wl_listener request_state;
 
 	struct wl_list link;
-};
-
-struct wb_view {
-	struct wl_list link;
-	struct wb_server *server;
-	struct wlr_xdg_toplevel *xdg_toplevel;
-	struct wlr_scene_tree *scene_tree;
-
-	struct wlr_xdg_toplevel_decoration_v1 *decoration;
-
-	struct wl_listener map;
-	struct wl_listener unmap;
-	struct wl_listener destroy;
-	struct wl_listener new_popup;
-	struct wl_listener request_fullscreen;
-	struct wl_listener request_maximize;
-	struct wl_listener request_minimize;
-	struct wl_listener request_move;
-	struct wl_listener request_resize;
-
-	struct wlr_box geometry;
-	struct wlr_box previous_geometry;
 };
 
 void handle_gamma_control_set_gamma(struct wl_listener *listener, void *data);

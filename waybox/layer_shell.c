@@ -121,13 +121,8 @@ static void handle_surface_commit(struct wl_listener *listener, void *data) {
 		wlr_scene_node_reparent(&surface->scene->tree->node, output_layer);
 	}
 
-#if WLR_CHECK_VERSION(0, 17, 0)
 	if (committed || layer_surface->surface->mapped != surface->mapped) {
 		surface->mapped = layer_surface->surface->mapped;
-#else
-	if (committed || layer_surface->mapped != surface->mapped) {
-		surface->mapped = layer_surface->mapped;
-#endif
 		arrange_layers(surface->output);
 
 		struct timespec now;
@@ -175,9 +170,9 @@ static void handle_unmap(struct wl_listener *listener, void *data) {
 		seat_set_focus_layer(seat, NULL);
 	}
 
-	struct wb_view *view = wl_container_of(surface->server->views.next, view, link);
-	if (view && view->scene_tree && view->scene_tree->node.enabled) {
-		focus_view(view, view->xdg_toplevel->base->surface);
+	struct wb_toplevel *toplevel = wl_container_of(surface->server->toplevels.next, toplevel, link);
+	if (toplevel && toplevel->scene_tree && toplevel->scene_tree->node.enabled) {
+		focus_toplevel(toplevel, toplevel->xdg_toplevel->base->surface);
 	}
 }
 
@@ -310,9 +305,9 @@ void handle_layer_shell_surface(struct wl_listener *listener, void *data) {
 	if (layer_surface->output == NULL) {
 		struct wb_server *server =
 			wl_container_of(listener, server, new_layer_surface);
-		struct wb_view *view =
-			wl_container_of(server->views.next, view, link);
-		layer_surface->output = get_active_output(view);
+		struct wb_toplevel *toplevel =
+			wl_container_of(server->toplevels.next, toplevel, link);
+		layer_surface->output = get_active_output(toplevel);
 	}
 	struct wb_output *output = layer_surface->output->data;
 
@@ -348,17 +343,9 @@ void handle_layer_shell_surface(struct wl_listener *listener, void *data) {
 	wl_signal_add(&layer_surface->surface->events.commit,
 		&surface->surface_commit);
 	surface->map.notify = handle_map;
-#if WLR_CHECK_VERSION(0, 17, 0)
 	wl_signal_add(&layer_surface->surface->events.map, &surface->map);
-#else
-	wl_signal_add(&layer_surface->events.map, &surface->map);
-#endif
 	surface->unmap.notify = handle_unmap;
-#if WLR_CHECK_VERSION(0, 17, 0)
 	wl_signal_add(&layer_surface->surface->events.unmap, &surface->unmap);
-#else
-	wl_signal_add(&layer_surface->events.unmap, &surface->unmap);
-#endif
 	surface->destroy.notify = handle_destroy;
 	wl_signal_add(&layer_surface->events.destroy, &surface->destroy);
 	surface->new_popup.notify = handle_new_popup;
@@ -373,11 +360,7 @@ void handle_layer_shell_surface(struct wl_listener *listener, void *data) {
 }
 
 void init_layer_shell(struct wb_server *server) {
-#if WLR_CHECK_VERSION(0, 17, 0)
 	server->layer_shell = wlr_layer_shell_v1_create(server->wl_display, 4);
-#else
-	server->layer_shell = wlr_layer_shell_v1_create(server->wl_display);
-#endif
 	server->new_layer_surface.notify = handle_layer_shell_surface;
 	wl_signal_add(&server->layer_shell->events.new_surface,
 			&server->new_layer_surface);
