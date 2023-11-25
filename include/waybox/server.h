@@ -71,8 +71,13 @@ struct wb_server {
 
 	struct wl_listener gamma_control_set_gamma;
 	struct wl_listener new_layer_surface;
-	struct wl_listener new_xdg_surface;
 	struct wl_listener new_xdg_decoration;
+#if WLR_CHECK_VERSION(0, 18, 0)
+	struct wl_listener new_xdg_popup;
+	struct wl_listener new_xdg_toplevel;
+#else
+	struct wl_listener new_xdg_surface;
+#endif
 
 	struct wl_listener new_input;
 	struct wl_listener new_output;

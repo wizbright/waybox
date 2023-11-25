@@ -94,7 +94,7 @@ export WB_RC_XML
 
 if which dbus-launch >/dev/null 2>&1;
 then
-    DBUS_LANCH="dbus-launch --exit-with-session"
+    DBUS_LAUNCH="dbus-launch --exit-with-session"
 fi
 
 # No need to export these to Waybox

@@ -156,15 +156,13 @@ static void xdg_toplevel_destroy(struct wl_listener *listener, void *data) {
 	wl_list_remove(&toplevel->destroy.link);
 	wl_list_remove(&toplevel->new_popup.link);
 
-	if (toplevel->xdg_toplevel->base->role == WLR_XDG_SURFACE_ROLE_TOPLEVEL) {
-		wl_list_remove(&toplevel->request_fullscreen.link);
-		wl_list_remove(&toplevel->request_minimize.link);
-		wl_list_remove(&toplevel->request_maximize.link);
-		wl_list_remove(&toplevel->request_move.link);
-		wl_list_remove(&toplevel->request_resize.link);
-		wl_list_remove(&toplevel->link);
-	}
+	wl_list_remove(&toplevel->request_fullscreen.link);
+	wl_list_remove(&toplevel->request_minimize.link);
+	wl_list_remove(&toplevel->request_maximize.link);
+	wl_list_remove(&toplevel->request_move.link);
+	wl_list_remove(&toplevel->request_resize.link);
 
+	wl_list_remove(&toplevel->link);
 	free(toplevel);
 }
 
@@ -313,74 +311,93 @@ static void handle_new_popup(struct wl_listener *listener, void *data) {
 	wlr_xdg_popup_unconstrain_from_box(popup, &output_toplevel_box);
 }
 
-static void handle_new_xdg_surface(struct wl_listener *listener, void *data) {
-	/* This event is raised when wlr_xdg_shell receives a new xdg surface from a
-	 * client, either a toplevel (application window) or popup. */
-	struct wb_server *server =
-		wl_container_of(listener, server, new_xdg_surface);
-	struct wlr_xdg_surface *xdg_surface = data;
-
+static void handle_new_xdg_popup(struct wl_listener *listener, void *data) {
 	/* We must add xdg popups to the scene graph so they get rendered. The
 	 * wlroots scene graph provides a helper for this, but to use it we must
 	 * provide the proper parent scene node of the xdg popup. To enable this,
 	 * we always set the user data field of xdg_surfaces to the corresponding
 	 * scene node. */
-	if (xdg_surface->role == WLR_XDG_SURFACE_ROLE_POPUP) {
-		struct wlr_xdg_surface *parent = wlr_xdg_surface_try_from_wlr_surface(
-			xdg_surface->popup->parent);
-		if (parent != NULL) {
-
-			struct wlr_scene_tree *parent_tree = parent->data;
-			xdg_surface->data = wlr_scene_xdg_surface_create(
-				parent_tree, xdg_surface);
-		}
-		/* The scene graph doesn't currently unconstrain popups, so keep going */
-		/* return; */
+	struct wlr_xdg_popup *xdg_popup = data;
+	struct wlr_xdg_surface *parent = wlr_xdg_surface_try_from_wlr_surface(
+		xdg_popup->parent);
+	if (parent != NULL) {
+		struct wlr_scene_tree *parent_tree = parent->data;
+		xdg_popup->base->data = wlr_scene_xdg_surface_create(
+			parent_tree, xdg_popup->base);
 	}
-	if (xdg_surface->role == WLR_XDG_SURFACE_ROLE_NONE)
-		return;
+}
 
-	/* Allocate a wb_toplevel for this surface */
+static void handle_new_xdg_toplevel(struct wl_listener *listener, void *data) {
+	struct wb_server *server =
+#if WLR_CHECK_VERSION (0, 18,0)
+		wl_container_of(listener, server, new_xdg_toplevel);
+#else
+		wl_container_of(listener, server, new_xdg_surface);
+#endif
+	struct wlr_xdg_toplevel *xdg_toplevel = data;
+
+	/* Allocate a wb_toplevel for this toplevel */
 	struct wb_toplevel *toplevel =
 		calloc(1, sizeof(struct wb_toplevel));
 	toplevel->server = server;
-	toplevel->xdg_toplevel = xdg_surface->toplevel;
+	toplevel->xdg_toplevel = xdg_toplevel;
 
 	/* Listen to the various events it can emit */
 	toplevel->map.notify = xdg_toplevel_map;
-	wl_signal_add(&xdg_surface->surface->events.map, &toplevel->map);
+	wl_signal_add(&xdg_toplevel->base->surface->events.map, &toplevel->map);
 	toplevel->unmap.notify = xdg_toplevel_unmap;
-	wl_signal_add(&xdg_surface->surface->events.unmap, &toplevel->unmap);
+	wl_signal_add(&xdg_toplevel->base->surface->events.unmap, &toplevel->unmap);
 	toplevel->destroy.notify = xdg_toplevel_destroy;
-	wl_signal_add(&xdg_surface->events.destroy, &toplevel->destroy);
+#if WLR_CHECK_VERSION (0, 18, 0)
+	wl_signal_add(&xdg_toplevel->events.destroy, &toplevel->destroy);
+#else
+	wl_signal_add(&xdg_toplevel->base->events.destroy, &toplevel->destroy);
+#endif
 	toplevel->new_popup.notify = handle_new_popup;
-	wl_signal_add(&xdg_surface->events.new_popup, &toplevel->new_popup);
+	wl_signal_add(&xdg_toplevel->base->events.new_popup, &toplevel->new_popup);
 
+	toplevel->scene_tree = wlr_scene_xdg_surface_create(
+		&toplevel->server->scene->tree, xdg_toplevel->base);
+	toplevel->scene_tree->node.data = toplevel;
+	xdg_toplevel->base->data = toplevel->scene_tree;
+
+	toplevel->request_fullscreen.notify = xdg_toplevel_request_fullscreen;
+	wl_signal_add(&xdg_toplevel->events.request_fullscreen, &toplevel->request_fullscreen);
+	toplevel->request_maximize.notify = xdg_toplevel_request_maximize;
+	wl_signal_add(&xdg_toplevel->events.request_maximize, &toplevel->request_maximize);
+	toplevel->request_minimize.notify = xdg_toplevel_request_minimize;
+	wl_signal_add(&xdg_toplevel->events.request_minimize, &toplevel->request_minimize);
+	toplevel->request_move.notify = xdg_toplevel_request_move;
+	wl_signal_add(&xdg_toplevel->events.request_move, &toplevel->request_move);
+	toplevel->request_resize.notify = xdg_toplevel_request_resize;
+	wl_signal_add(&xdg_toplevel->events.request_resize, &toplevel->request_resize);
+
+	wl_list_insert(&toplevel->server->toplevels, &toplevel->link);
+}
+
+#if !WLR_CHECK_VERSION(0, 18, 0)
+static void handle_new_xdg_surface(struct wl_listener *listener, void *data) {
+	struct wlr_xdg_surface *xdg_surface = data;
+
+	if (xdg_surface->role == WLR_XDG_SURFACE_ROLE_POPUP) {
+		handle_new_xdg_popup(listener, xdg_surface->popup);
+	}
 	if (xdg_surface->role == WLR_XDG_SURFACE_ROLE_TOPLEVEL) {
-		toplevel->scene_tree = wlr_scene_xdg_surface_create(
-			&toplevel->server->scene->tree, toplevel->xdg_toplevel->base);
-		toplevel->scene_tree->node.data = toplevel;
-		xdg_surface->data = toplevel->scene_tree;
-
-		struct wlr_xdg_toplevel *xdg_toplevel = toplevel->xdg_toplevel;
-		toplevel->request_fullscreen.notify = xdg_toplevel_request_fullscreen;
-		wl_signal_add(&xdg_toplevel->events.request_fullscreen, &toplevel->request_fullscreen);
-		toplevel->request_maximize.notify = xdg_toplevel_request_maximize;
-		wl_signal_add(&xdg_toplevel->events.request_maximize, &toplevel->request_maximize);
-		toplevel->request_minimize.notify = xdg_toplevel_request_minimize;
-		wl_signal_add(&xdg_toplevel->events.request_minimize, &toplevel->request_minimize);
-		toplevel->request_move.notify = xdg_toplevel_request_move;
-		wl_signal_add(&xdg_toplevel->events.request_move, &toplevel->request_move);
-		toplevel->request_resize.notify = xdg_toplevel_request_resize;
-		wl_signal_add(&xdg_toplevel->events.request_resize, &toplevel->request_resize);
-
-		wl_list_insert(&toplevel->server->toplevels, &toplevel->link);
+		handle_new_xdg_toplevel(listener, xdg_surface->toplevel);
 	}
 }
+#endif
 
 void init_xdg_shell(struct wb_server *server) {
 	/* xdg-shell version 3 */
 	server->xdg_shell = wlr_xdg_shell_create(server->wl_display, 3);
+#if WLR_CHECK_VERSION (0, 18, 0)
+	server->new_xdg_popup.notify = handle_new_xdg_popup;
+	wl_signal_add(&server->xdg_shell->events.new_popup, &server->new_xdg_popup);
+	server->new_xdg_toplevel.notify = handle_new_xdg_toplevel;
+	wl_signal_add(&server->xdg_shell->events.new_toplevel, &server->new_xdg_toplevel);
+#else
 	server->new_xdg_surface.notify = handle_new_xdg_surface;
 	wl_signal_add(&server->xdg_shell->events.new_surface, &server->new_xdg_surface);
+#endif
 }

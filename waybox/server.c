@@ -45,7 +45,11 @@ bool wb_create_backend(struct wb_server* server) {
 	server->compositor =
 		wlr_compositor_create(server->wl_display, 5, server->renderer);
 	server->subcompositor = wlr_subcompositor_create(server->wl_display);
+#if WLR_CHECK_VERSION(0, 18, 0)
+	server->output_layout = wlr_output_layout_create(server->wl_display);
+#else
 	server->output_layout = wlr_output_layout_create();
+#endif
 	server->seat = wb_seat_create(server);
 	server->cursor = wb_cursor_create(server);
 
@@ -116,9 +120,9 @@ bool wb_terminate(struct wb_server* server) {
 	wl_list_remove(&server->new_xdg_decoration.link); /* wb_decoration_destroy */
 	deinit_config(server->config);
 	wl_display_destroy_clients(server->wl_display);
+	wlr_output_layout_destroy(server->output_layout);
 	wl_display_destroy(server->wl_display);
 	wb_seat_destroy(server->seat);
-	wlr_output_layout_destroy(server->output_layout);
 	wlr_scene_node_destroy(&server->scene->tree.node);
 
 	wlr_log(WLR_INFO, "%s", _("Display destroyed"));
