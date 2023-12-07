@@ -116,14 +116,9 @@ static void xdg_toplevel_map(struct wl_listener *listener, void *data) {
 		toplevel->geometry.y = 0;
 	}
 
-	/* A toplevel no larger than a title bar shouldn't be sized or focused */
-	if (toplevel->geometry.height > TITLEBAR_HEIGHT &&
-			toplevel->geometry.height > TITLEBAR_HEIGHT *
-			(usable_area.width / usable_area.height)) {
-		wlr_xdg_toplevel_set_size(toplevel->xdg_toplevel,
-				toplevel->geometry.width, toplevel->geometry.height);
-		focus_toplevel(toplevel, toplevel->xdg_toplevel->base->surface);
-	}
+	wlr_xdg_toplevel_set_size(toplevel->xdg_toplevel,
+			toplevel->geometry.width, toplevel->geometry.height);
+	focus_toplevel(toplevel, toplevel->xdg_toplevel->base->surface);
 
 	wlr_scene_node_set_position(&toplevel->scene_tree->node,
 			toplevel->geometry.x, toplevel->geometry.y);
