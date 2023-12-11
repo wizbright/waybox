@@ -30,7 +30,7 @@ struct wb_toplevel *get_toplevel_at(
 
 void focus_toplevel(struct wb_toplevel *toplevel, struct wlr_surface *surface) {
 	/* Note: this function only deals with keyboard focus. */
-	if (toplevel == NULL) {
+	if (toplevel == NULL || toplevel->xdg_toplevel->base->role != WLR_XDG_SURFACE_ROLE_TOPLEVEL) {
 		return;
 	}
 
@@ -166,11 +166,15 @@ static void xdg_toplevel_request_fullscreen(
 	/* This event is raised when a client would like to set itself to
 	 * fullscreen. waybox currently doesn't support fullscreen, but to
 	 * conform to xdg-shell protocol we still must send a configure.
-	 * wlr_xdg_surface_schedule_configure() is used to send an empty reply.
+	 * wlr_xdg_surface_schedule_configure() is used to send an empty reply. However, if the
+	 * request was sent before an initial commit, we don't do anything and let the client finish
+	 * the initial surface setup.
 	 */
 	struct wb_toplevel *toplevel =
 		wl_container_of(listener, toplevel, request_fullscreen);
-	wlr_xdg_surface_schedule_configure(toplevel->xdg_toplevel->base);
+	if (toplevel->xdg_toplevel->base->initialized) {
+		wlr_xdg_surface_schedule_configure(toplevel->xdg_toplevel->base);
+	}
 }
 
 static void xdg_toplevel_request_maximize(struct wl_listener *listener, void *data) {
