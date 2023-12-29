@@ -1,8 +1,10 @@
 # Waybox
-An Openbox clone on Wayland (WIP)
+
+A \*box-style (minimalist) Wayland compositor modeled largely on Openbox (WIP)
 
 ### Goals
-The main goal of this project is to provide a similar feel to Openbox but on Wayland
+
+The main goal of this project is to provide a similar feel to \*box-style window managers but on Wayland
 
 ### Contributing
 
@@ -28,6 +30,26 @@ ninja
 ```
 
 After that, you should have an executable as waybox/waybox
+
+### Screenshots
+
+![Plain desktop with wallpaper, panel, and dock](raw/master/screenshots/emptydesktop.png)
+
+![Showing Firefox and some of the Waybox source code](raw/master/screenshots/work.png)
+
+![All work and no play](raw/master/screenshots/play.png)
+
+### Useful Programs
+
+Because \*box-style compositors are minimalist, most functionality is left to external programs.  As such, Waybox only functions as a box in which you can put whatever you need.  Here are some useful programs to complement Waybox if you desire:
+
+* Panel: You can use [Waybar](https://github.com/Alexays/Waybar) or [yambar](https://codeberg.org/dnkl/yambar), similar to tint2 or fbpanel in Openbox or Fluxbox.
+* Dock: You can use [Cairo Dock](https://www.glx-dock.org/) just like you did on Openbox.  There's also a [port with Wayland-specific enhancements](https://github.com/dkondor/cairo-dock-core/) that you may want to try.
+* Wallpaper utility: There are various utilities to set your wallpaper, each with their own advantages, including [wpaperd](https://github.com/danyspin97/wpaperd) (can select a random wallpaper from a directory), [swaybg](https://github.com/swaywm/swaybg) (can set the background color as well well as a wallpaper), and [hyprpaper](https://github.com/hyprwm/hyprpaper) (can change the wallpaper dynamically during runtime through IPC).
+* Notification client: [mako](https://wayland.emersion.fr/mako/)
+* [wl-clipboard](https://wayland.emersion.fr/mako/): Access the clipboard in scripts (also used by [neovim](https://neovim.io/))
+* Screenshots: [grim](https://git.sr.ht/~emersion/grim) and [slurp](https://github.com/emersion/slurp)
+* Screen recording: [wf-recorder](https://github.com/ammen99/wf-recorder)
 
 ### Contact
 I can be found as wiz on Rizon and wizbright on Libera. 

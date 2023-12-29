@@ -4,4 +4,5 @@ Comment=An Openbox-like compositor for Wayland
 Comment[de]=Ein Wayland-Compositor ähnlich zu Openbox
 Comment[eo]=Komponilo de Wayland, kiu similas je Openbox
 Exec=waybox
+Icon=waybox
 Type=Application

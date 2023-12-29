@@ -23,15 +23,43 @@ cairo-dock &
 mako &
 
 # Load a random wallpaper
-oldifs=$IFS
-IFS=:
-data_dirs=${XDG_DATA_DIRS:-${datadir:-/usr/share}}:${XDG_DATA_HOME:-~/.local/share}
-for data_dir in $data_dirs;
-do
-    wpdir="$data_dir/wallpapers"
-    test -d "$wpdir" && \
-        find $wpdir -name '*.jpg' -o -name '*.png' -o -name '*.svg'
-done | (shuf -n 1 || tail -n 1) | xargs swaybg -c '#303030' -m fill -i &
-IFS=$oldifs
+get_random_wallpaper()
+{
+    oldifs=$IFS
+    IFS=:
+    data_dirs=${XDG_DATA_DIRS:-${datadir:-/usr/share}}:${XDG_DATA_HOME:-~/.local/share}
+    for data_dir in $data_dirs;do
+        IFS=$oldifs
+        wpdir="$data_dir/wallpapers"
+        test -d "$wpdir" && \
+            find $wpdir -name '*.jpg' -o -name '*.png' -o -name '*.svg'
+    done | (shuf -n 1 || tail -n 1)
+}
+
+load_wallpaper() {
+    if (which hyprpaper && which socat && which wayland-info) >/dev/null 2>&1; then
+        hyprpaper &
+        HYPRPAPER_SOCKET=/tmp/hypr/.hyprpaper.sock
+        # Change the wallpaper every hour
+        while test -S $HYPRPAPER_SOCKET; do
+            #current_output=$(wayland-info -i wl_output | \
+            #    grep 'name:' | tail -n 1 | cut -d : -f 2 | tr -d ' ')
+            random_wallpaper="$(get_random_wallpaper)"
+            for cmd in "preload $random_wallpaper" \
+                "wallpaper $current_output,$random_wallpaper" \
+                'unload all';
+            do
+                printf "$cmd" | socat UNIX-CONNECT:$HYPRPAPER_SOCKET -
+            done
+            [ $? -eq 0 ] && sleep 60m
+        done
+    elif which swaybg >/dev/null 2>&1; then
+        get_random_wallpaper | xargs swaybg -c '#303030' -m fill -i &
+    elif which wpaperd >/dev/null 2>&1; then
+        wpaperd &
+    fi
+}
+
+load_wallpaper &
 
 # vim: ft=sh
