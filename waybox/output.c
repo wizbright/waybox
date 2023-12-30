@@ -41,9 +41,19 @@ void output_frame_notify(struct wl_listener *listener, void *data) {
 	wlr_scene_output_send_frame_done(scene_output, &now);
 }
 
+void output_configuration_applied(struct wl_listener *listener, void *data) {
+	struct wb_server *server = wl_container_of(listener, server, wlr_output_manager);
+	struct wlr_output_configuration_v1 *configuration = data;
+	wlr_output_configuration_v1_send_succeeded(configuration);
+}
+
 void output_request_state_notify(struct wl_listener *listener, void *data) {
 	struct wb_output *output = wl_container_of(listener, output, request_state);
 	const struct wlr_output_event_request_state *event = data;
+
+	struct wlr_output_configuration_v1 *configuration = wlr_output_configuration_v1_create();
+	wlr_output_manager_v1_set_configuration(output->server->wlr_output_manager, configuration);
+
 	wlr_output_commit_state(output->wlr_output, event->state);
 }
 
@@ -140,6 +150,22 @@ void new_output_notify(struct wl_listener *listener, void *data) {
 		return;
 	}
 
+	struct wlr_output_configuration_v1 *configuration = wlr_output_configuration_v1_create();
+	wlr_output_configuration_head_v1_create(configuration, wlr_output);
+	wlr_output_manager_v1_set_configuration(server->wlr_output_manager, configuration);
+
 	struct wlr_scene_output *scene_output = wlr_scene_output_create(server->scene, wlr_output);
 	wlr_scene_output_layout_add_output(server->scene_layout, l_output, scene_output);
+}
+
+void init_output(struct wb_server *server) {
+	wl_list_init(&server->outputs);
+
+	server->new_output.notify = new_output_notify;
+	wl_signal_add(&server->backend->events.new_output, &server->new_output);
+
+	server->wlr_output_manager = wlr_output_manager_v1_create(server->wl_display);
+	server->output_configuration_applied.notify = output_configuration_applied;
+	wl_signal_add(&server->wlr_output_manager->events.apply, &server->output_configuration_applied);
+	wl_signal_add(&server->wlr_output_manager->events.test, &server->output_configuration_applied);
 }

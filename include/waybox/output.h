@@ -4,6 +4,7 @@
 #include <time.h>
 
 #include "waybox/server.h"
+#include <wlr/types/wlr_output_management_v1.h>
 
 struct wb_output {
 	struct wlr_output *wlr_output;
@@ -34,6 +35,6 @@ struct wb_output {
 void handle_gamma_control_set_gamma(struct wl_listener *listener, void *data);
 void output_frame_notify(struct wl_listener *listener, void *data);
 void output_destroy_notify(struct wl_listener *listener, void *data);
-void new_output_notify(struct wl_listener *listener, void *data);
+void init_output(struct wb_server *server);
 
 #endif /* output.h */

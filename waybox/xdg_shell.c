@@ -1,3 +1,4 @@
+#include "idle.h"
 #include "waybox/xdg_shell.h"
 
 struct wb_toplevel *get_toplevel_at(
@@ -35,7 +36,7 @@ void focus_toplevel(struct wb_toplevel *toplevel, struct wlr_surface *surface) {
 	}
 
 	struct wlr_xdg_surface *xdg_surface = wlr_xdg_surface_try_from_wlr_surface(surface);
-	if (xdg_surface)
+	if (xdg_surface != NULL)
 		wlr_log(WLR_INFO, "%s: %s", _("Keyboard focus is now on surface"),
 				xdg_surface->toplevel->app_id);
 
@@ -46,7 +47,7 @@ void focus_toplevel(struct wb_toplevel *toplevel, struct wlr_surface *surface) {
 		/* Don't re-focus an already focused surface. */
 		return;
 	}
-	if (prev_surface) {
+	if (prev_surface != NULL) {
 		/*
 		 * Deactivate the previously focused surface. This lets the client know
 		 * it no longer has focus and the client will repaint accordingly, e.g.
@@ -72,6 +73,7 @@ void focus_toplevel(struct wb_toplevel *toplevel, struct wlr_surface *surface) {
 	 * clients without additional work on your part.
 	 */
 	seat_focus_surface(server->seat, toplevel->xdg_toplevel->base->surface);
+	wlr_idle_notifier_v1_set_inhibited(server->idle_notifier, toplevel->inhibited);
 }
 
 struct wlr_output *get_active_output(struct wb_toplevel *toplevel) {
@@ -354,6 +356,8 @@ static void handle_new_xdg_toplevel(struct wl_listener *listener, void *data) {
 #endif
 	toplevel->new_popup.notify = handle_new_popup;
 	wl_signal_add(&xdg_toplevel->base->events.new_popup, &toplevel->new_popup);
+
+	install_inhibitor(toplevel);
 
 	toplevel->scene_tree = wlr_scene_xdg_surface_create(
 		&toplevel->server->scene->tree, xdg_toplevel->base);

@@ -1,3 +1,4 @@
+#include "idle.h"
 #include "waybox/server.h"
 #include "waybox/xdg_shell.h"
 
@@ -61,10 +62,7 @@ bool wb_create_backend(struct wb_server* server) {
 
 bool wb_start_server(struct wb_server* server) {
 	init_config(server);
-	wl_list_init(&server->outputs);
-
-	server->new_output.notify = new_output_notify;
-	wl_signal_add(&server->backend->events.new_output, &server->new_output);
+	init_output(server);
 
 	/* Create a scene graph. This is a wlroots abstraction that handles all
 	 * rendering and damage tracking. All the compositor author needs to do
@@ -100,7 +98,7 @@ bool wb_start_server(struct wb_server* server) {
 	wl_signal_add(&server->gamma_control_manager->events.set_gamma, &server->gamma_control_set_gamma);
 
 	wlr_screencopy_manager_v1_create(server->wl_display);
-	server->idle_notifier = wlr_idle_notifier_v1_create(server->wl_display);
+	create_idle_manager(server);
 
 	wl_list_init(&server->toplevels);
 	init_xdg_decoration(server);
