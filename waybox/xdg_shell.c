@@ -41,10 +41,14 @@ void focus_toplevel(struct wb_toplevel *toplevel, struct wlr_surface *surface) {
 				xdg_surface->toplevel->app_id);
 
 	struct wb_server *server = toplevel->server;
+	if (server->seat->focused_layer != NULL) {
+		/* If a layer is focused, don't focus a toplevel. */
+		return;
+	}
 	struct wlr_seat *seat = server->seat->seat;
 	struct wlr_surface *prev_surface = seat->keyboard_state.focused_surface;
 	if (prev_surface == surface) {
-		/* Don't re-focus an already focused surface. */
+		/* Don't focus a surface that's already focused. */
 		return;
 	}
 	if (prev_surface != NULL) {
@@ -60,9 +64,7 @@ void focus_toplevel(struct wb_toplevel *toplevel, struct wlr_surface *surface) {
 		}
 	}
 	/* Move the toplevel to the front */
-	if (!server->seat->focused_layer) {
-		wlr_scene_node_raise_to_top(&toplevel->scene_tree->node);
-	}
+	wlr_scene_node_raise_to_top(&toplevel->scene_tree->node);
 	wl_list_remove(&toplevel->link);
 	wl_list_insert(&server->toplevels, &toplevel->link);
 	/* Activate the new surface */
