@@ -105,8 +105,10 @@ static struct wb_layer_surface *wb_layer_surface_create(
 static void handle_surface_commit(struct wl_listener *listener, void *data) {
 	struct wb_layer_surface *surface =
 		wl_container_of(listener, surface, surface_commit);
+	struct wb_toplevel *current_toplevel =
+		wl_container_of(surface->server->toplevels.next, current_toplevel, link);
 
-	if (!surface->output) {
+	if (!surface->output || current_toplevel->xdg_toplevel->current.fullscreen) {
 		return;
 	}
 

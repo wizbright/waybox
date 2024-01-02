@@ -166,17 +166,26 @@ static void xdg_toplevel_destroy(struct wl_listener *listener, void *data) {
 static void xdg_toplevel_request_fullscreen(
 		struct wl_listener *listener, void *data) {
 	/* This event is raised when a client would like to set itself to
-	 * fullscreen. waybox currently doesn't support fullscreen, but to
-	 * conform to xdg-shell protocol we still must send a configure.
-	 * wlr_xdg_surface_schedule_configure() is used to send an empty reply. However, if the
-	 * request was sent before an initial commit, we don't do anything and let the client finish
-	 * the initial surface setup.
-	 */
+	 * fullscreen. */
 	struct wb_toplevel *toplevel =
 		wl_container_of(listener, toplevel, request_fullscreen);
-	if (toplevel->xdg_toplevel->base->initialized) {
-		wlr_xdg_surface_schedule_configure(toplevel->xdg_toplevel->base);
+	bool is_fullscreen = toplevel->xdg_toplevel->current.fullscreen;
+	if (!is_fullscreen) {
+		struct wlr_output *wlr_output = get_active_output(toplevel);
+		struct wb_output *output = wlr_output->data;
+		toplevel->previous_geometry = toplevel->geometry;
+		toplevel->geometry.x = 0;
+		toplevel->geometry.y = 0;
+		toplevel->geometry.height = output->geometry.height;
+		toplevel->geometry.width = output->geometry.width;
+		wlr_scene_node_raise_to_top(&toplevel->scene_tree->node);
+	} else {
+		toplevel->geometry = toplevel->previous_geometry;
 	}
+
+	wlr_xdg_toplevel_set_size(toplevel->xdg_toplevel, toplevel->geometry.width, toplevel->geometry.height);
+	wlr_xdg_toplevel_set_fullscreen(toplevel->xdg_toplevel, !is_fullscreen);
+	wlr_scene_node_set_position(&toplevel->scene_tree->node, toplevel->geometry.x, toplevel->geometry.y);
 }
 
 static void xdg_toplevel_request_maximize(struct wl_listener *listener, void *data) {
