@@ -3,7 +3,7 @@ project(
   'c',
   version: '0.2.3',
   license: 'MIT',
-  meson_version: '>=0.52.0',
+  meson_version: '>=0.59.0',
   default_options: [
     'c_std=c11',
     'warning_level=2',
@@ -36,7 +36,9 @@ xkbcommon = dependency('xkbcommon')
 msgfmt = find_program('msgfmt', required: false)
 if msgfmt.found()
   source_root = meson.current_source_dir()
-  add_project_arguments('-DUSE_NLS=1', language: 'c')
+  add_project_arguments('-DGETTEXT_PACKAGE="' + meson.project_name().to_lower() + '"',
+    '-DLOCALEDIR="' + get_option('prefix') / get_option('localedir') + '"',
+    '-DUSE_NLS=1', language: 'c')
   subdir('po')
 endif
 
