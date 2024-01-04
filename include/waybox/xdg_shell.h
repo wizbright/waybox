@@ -20,12 +20,9 @@ struct wb_toplevel {
 	struct wl_listener request_minimize;
 	struct wl_listener request_move;
 	struct wl_listener request_resize;
-	struct wl_listener new_inhibitor;
-	struct wl_listener destroy_inhibitor;
 
 	struct wlr_box geometry;
 	struct wlr_box previous_geometry;
-	bool inhibited;
 };
 
 void init_xdg_shell(struct wb_server *server);

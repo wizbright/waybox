@@ -46,7 +46,7 @@ struct wb_server {
 	struct wlr_backend *backend;
 	struct wlr_compositor *compositor;
 	struct wlr_gamma_control_manager_v1 *gamma_control_manager;
-	struct wlr_idle_inhibit_manager_v1 *idle_inhibitor;
+	struct wlr_idle_inhibit_manager_v1 *idle_inhibit_manager;
 	struct wlr_idle_notifier_v1 *idle_notifier;
 	struct wlr_output_layout *output_layout;
 	struct wlr_xdg_output_manager_v1 *output_manager;
@@ -54,6 +54,7 @@ struct wb_server {
 	struct wlr_scene *scene;
 	struct wlr_scene_output_layout *scene_layout;
 	struct wlr_subcompositor *subcompositor;
+	struct wlr_output_manager_v1 *wlr_output_manager;
 
 	struct wb_config *config;
 	char *config_file;
@@ -70,8 +71,6 @@ struct wb_server {
 	struct wlr_layer_shell_v1 *layer_shell;
 	struct wlr_xdg_shell *xdg_shell;
 
-	struct wlr_output_manager_v1 *wlr_output_manager;
-
 	struct wl_listener gamma_control_set_gamma;
 	struct wl_listener new_layer_surface;
 	struct wl_listener new_xdg_decoration;
@@ -81,6 +80,11 @@ struct wb_server {
 #else
 	struct wl_listener new_xdg_surface;
 #endif
+
+	struct wl_listener destroy_inhibit_manager;
+	struct wl_listener destroy_inhibitor;
+	struct wl_listener new_inhibitor;
+	struct wl_list inhibitors;
 
 	struct wl_listener new_input;
 	struct wl_listener new_output;
