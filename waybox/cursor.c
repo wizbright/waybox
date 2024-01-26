@@ -156,7 +156,11 @@ static void handle_cursor_axis(struct wl_listener *listener, void *data) {
 	/* Notify the client with pointer focus of the axis event. */
 	wlr_seat_pointer_notify_axis(cursor->server->seat->seat,
 			event->time_msec, event->orientation, event->delta,
-			event->delta_discrete, event->source);
+			event->delta_discrete, event->source
+#if WLR_CHECK_VERSION(0, 18, 0)
+			, event->relative_direction
+#endif
+			);
 }
 
 static void handle_cursor_frame(struct wl_listener *listener, void *data) {

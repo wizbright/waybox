@@ -21,6 +21,24 @@ void output_frame_notify(struct wl_listener *listener, void *data) {
 		struct wlr_gamma_control_v1 *gamma_control =
 			wlr_gamma_control_manager_v1_get_control(output->server->gamma_control_manager,
 					output->wlr_output);
+#if WLR_CHECK_VERSION(0, 18, 0)
+		struct wlr_output_state pending;
+		if (!wlr_scene_output_build_state(scene_output, &pending, NULL))
+			return;
+
+		if (!wlr_gamma_control_v1_apply(gamma_control, &pending)) {
+			wlr_output_state_finish(&pending);
+			return;
+		}
+
+		if (!wlr_output_test_state(output->wlr_output, &pending)) {
+			wlr_gamma_control_v1_send_failed_and_destroy(gamma_control);
+			wlr_output_state_finish(&pending);
+			return;
+		}
+
+		wlr_output_state_finish(&pending);
+#else
 		if (!wlr_gamma_control_v1_apply(gamma_control, &output->wlr_output->pending)) {
 			return;
 		}
@@ -29,6 +47,7 @@ void output_frame_notify(struct wl_listener *listener, void *data) {
 			wlr_output_rollback(output->wlr_output);
 			wlr_gamma_control_v1_send_failed_and_destroy(gamma_control);
 		}
+#endif
 	}
 
 	/* Render the scene if needed and commit the output */

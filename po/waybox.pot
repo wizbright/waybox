@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: waybox\n"
 "Report-Msgid-Bugs-To: https://github.com/wizbright/waybox/issues\n"
-"POT-Creation-Date: 2023-11-21 15:47-0500\n"
+"POT-Creation-Date: 2024-01-25 21:21-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -120,6 +120,9 @@ msgid "Unsupported input device detected"
 msgstr ""
 
 msgid "Failed to connect to a Wayland display"
+msgstr ""
+
+msgid "Failed to get an event loop"
 msgstr ""
 
 msgid "Failed to create renderer"

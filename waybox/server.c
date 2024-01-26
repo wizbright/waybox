@@ -11,11 +11,21 @@ bool wb_create_backend(struct wb_server* server) {
 		return false;
 	}
 
+	server->wl_event_loop = wl_display_get_event_loop(server->wl_display);
+	if (server->wl_event_loop == NULL) {
+		wlr_log(WLR_ERROR, "%s", _("Failed to get an event loop"));
+		return false;
+	}
+
 	/* The backend is a wlroots feature which abstracts the underlying input and
 	 * output hardware. The autocreate option will choose the most suitable
 	 * backend based on the current environment, such as opening an X11 window
 	 * if an X11 server is running. */
+#if WLR_CHECK_VERSION(0, 18, 0)
+	server->backend = wlr_backend_autocreate(server->wl_event_loop, NULL);
+#else
 	server->backend = wlr_backend_autocreate(server->wl_display, NULL);
+#endif
 	if (server->backend == NULL) {
 		wlr_log(WLR_ERROR, "%s", _("Failed to create backend"));
 		return false;

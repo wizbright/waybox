@@ -36,9 +36,6 @@ xkbcommon = dependency('xkbcommon')
 msgfmt = find_program('msgfmt', required: false)
 if msgfmt.found()
   source_root = meson.current_source_dir()
-  add_project_arguments('-DGETTEXT_PACKAGE="' + meson.project_name().to_lower() + '"',
-    '-DLOCALEDIR="' + get_option('prefix') / get_option('localedir') + '"',
-    '-DUSE_NLS=1', language: 'c')
   subdir('po')
 endif
 

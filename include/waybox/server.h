@@ -41,6 +41,7 @@
 
 struct wb_server {
 	struct wl_display *wl_display;
+	struct wl_event_loop *wl_event_loop;
 
 	struct wlr_allocator *allocator;
 	struct wlr_backend *backend;
