@@ -22,10 +22,10 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "WARNING: Using files from Openbox. These may not work correctly."
-msgstr "WARNUNG: Benutzt Dateien aus Openbox. Das wird nicht richtig werken."
+msgstr "WARNUNG: Benutze Dateien von Openbox, was nicht richtig funktionieren wird."
 
 msgid "ERROR: No configuration file found."
-msgstr "FEHLER: Keine Einstellungsdatei gefunden."
+msgstr "FEHLER: Keine Konfigurationsdatei gefunden."
 
 msgid "Unable to evaluate expression"
 msgstr "Konnte den Ausdruck nicht evaluieren"
@@ -39,18 +39,18 @@ msgstr "Kein nodeset"
 msgid ""
 "Unable to parse the configuration file. Consult stderr for more information."
 msgstr ""
-"Kann nicht die Einstellungsdatei analisieren. Für weitere Informationen die "
-"Standardfehlerausgabe lesen."
+"Kann die Konfigurationsdatei nicht verarbeiten. Für weitere Informationen siehe "
+"die Standardfehlerausgabe."
 
 msgid "Couldn't create new context!"
-msgstr "Konnte keinen neuen Zusammenhang erstellen"
+msgstr "Konnte keinen neuen Kontext erstellen!"
 
 msgid "Couldn't register the namespace"
-msgstr "Konnte dem Namensraum nicht registrieren"
+msgstr "Konnte den Namensraum nicht registrieren"
 
 #, c-format
 msgid "Syntax: %s [options]\n"
-msgstr "Eingabe: %s [Optionen]\n"
+msgstr "Syntax: %s [Optionen]\n"
 
 #, c-format
 msgid ""
@@ -75,7 +75,7 @@ msgstr "  --config-file DATEI Pfad zur Konfigurationsdatei\n"
 
 #, c-format
 msgid "  --sm-disable        Disable connection to the session manager\n"
-msgstr "  --sm-disable        Verbindung zum Sitzungsmanager trennen\n"
+msgstr "  --sm-disable        Deaktiviere Verbindung zum Sitzungsmanager\n"
 
 #, c-format
 msgid "  --startup CMD       Run CMD after starting\n"
@@ -83,7 +83,7 @@ msgstr "  --startup CMD       CMD nach Start ausführen\n"
 
 #, c-format
 msgid "  --debug             Display debugging output\n"
-msgstr "  --debug             Fehlersuche-Ergebnis anzeigen\n"
+msgstr "  --debug             Ausgabe von Debug-Informationen\n"
 
 #, c-format
 msgid ""
@@ -92,8 +92,8 @@ msgid ""
 "on Wayland.\n"
 msgstr ""
 "\n"
-"Weitere Openbox-Optionen sind nicht angenommen, meistens wegen sie sind "
-"sinnlos auf Wayland.\n"
+"Weitere Openbox-Optionen werden nicht angenommen, da sie überwiegend "
+"sinnlos unter Wayland sind.\n"
 
 #, c-format
 msgid "%s requires an argument\n"
@@ -101,22 +101,22 @@ msgstr "%s erfordert einen Parameter\n"
 
 #, c-format
 msgid "%s hasn't been implemented yet.\n"
-msgstr "%s ist schon nicht implementiert.\n"
+msgstr "%s wurde bisher nicht implementiert.\n"
 
 msgid "Successfully created backend"
-msgstr "Das Backend wurde erfolgreich hergestellt"
+msgstr "Das Backend wurde erfolgreich erstellt"
 
 msgid "Failed to create backend"
-msgstr "Das Backend wurde nicht erfolgreich hergestellt"
+msgstr "Das Backend wurde nicht erstellt"
 
 msgid "Successfully started server"
 msgstr "Der Server wurde erfolgreich gestartet"
 
 msgid "Failed to start server"
-msgstr "Der Server wurde nicht erfolgreich gestartet"
+msgstr "Der Server wurde nicht gestartet"
 
 msgid "New output device detected"
-msgstr "Neue Ausgabegerät entdeckt"
+msgstr "Neues Ausgabegerät entdeckt"
 
 msgid "Could not add an output layout."
 msgstr "Konnte keine neue Ausgabenanordnung hinzufügen."
@@ -128,25 +128,25 @@ msgid "New pointer detected"
 msgstr "Neuer Zeiger entdeckt"
 
 msgid "Unsupported input device detected"
-msgstr "Unerkanntes Eingabegerät entdeckt"
+msgstr "Unbekanntes Eingabegerät entdeckt"
 
 msgid "Failed to connect to a Wayland display"
-msgstr "Scheiterte an ein Wayland-Display verbinden"
+msgstr "Scheiterte mit Verbindung an ein Wayland-Display"
 
 msgid "Failed to get an event loop"
 msgstr "Scheiterte eine Ereignisschleife zu bekommen"
 
 msgid "Failed to create renderer"
-msgstr "Das Renderer wurde nicht erfolgreich hergestellt"
+msgstr "Der Renderer wurde nicht erstellt"
 
 msgid "Failed to create allocator"
-msgstr "Das Allokator wurde nicht erfolgreich hergestellt"
+msgstr "Der Allokator wurde nicht erstellt"
 
 msgid "Failed to start backend"
 msgstr "Starten des Backend gescheitert"
 
 msgid "Running Wayland compositor on Wayland display"
-msgstr "Ausführt Wayland-Compositor auf Wayland-Display"
+msgstr "Führe Wayland-Compositor auf Wayland-Display aus"
 
 msgid "Display destroyed"
 msgstr "Display zerstört"
@@ -155,31 +155,31 @@ msgid "Keyboard focus is now on surface"
 msgstr "Tastaturfokus ist jetzt auf Oberfläche"
 
 msgid "Focusing next toplevel"
-msgstr "Fokussiert nächstes Spitzenniveau"
+msgstr "Fokussiere nächst höhere Ebene"
 
 #~ msgid "Couldn't commit pending frame to output"
 #~ msgstr ""
-#~ "Konnte sich nicht an den anstehenden Rahmen an die Ausgabe eintragen"
+#~ "Der anstehende Frame konnte nicht an die Ausgabe übergeben werden"
 
 #, fuzzy
 #~ msgid "Failed to create wlr_backend"
-#~ msgstr "Das Backend wurde nicht erfolgreich hergestellt"
+#~ msgstr "wlr_backend wurde nicht erstellt"
 
 #~ msgid "Couldn't get a surface texture"
 #~ msgstr "Konnte keine Oberflächentextur bekommen"
 
 #~ msgid "Couldn't attach renderer to output"
-#~ msgstr "Konnte nicht einen Renderer an die Ausgabe nicht anbringen"
+#~ msgstr "Konnte Renderer nicht an die Ausgabe binden"
 
 #~ msgid "Focusing current view"
 #~ msgstr "Fokussiert jetzige Ansicht"
 
 #~ msgid "Unable to parse XML file"
-#~ msgstr "Konnte die XML-Datei nicht analisieren"
+#~ msgstr "Konnte die XML-Datei nicht analysieren"
 
 #, c-format
 #~ msgid "Invalid action \"%s\" requested. No such action exists."
-#~ msgstr "Ungültige Aktion \"%s\" angefordert. Es gibt keine solche."
+#~ msgstr "Ungültige Aktion \"%s\" angefordert. Diese existiert nicht."
 
 #~ msgid "No"
 #~ msgstr "Nein"
@@ -262,7 +262,7 @@ msgstr "Fokussiert nächstes Spitzenniveau"
 #~ msgstr "Immer im _Hintergrund"
 
 #~ msgid "_Send to desktop"
-#~ msgstr "_Verschieben nach"
+#~ msgstr "_Sende an Desktop"
 
 #~ msgid "Client menu"
 #~ msgstr "Anwendungsmenü"
@@ -299,8 +299,8 @@ msgstr "Fokussiert nächstes Spitzenniveau"
 #~ "Waybox was compiled without image loading support. Icons in menus will "
 #~ "not be loaded."
 #~ msgstr ""
-#~ "Waybox wurde ohne Bildladungsunterstützung kompiliert. Ikone in Menüs "
-#~ "werden nicht geladen werden."
+#~ "Waybox wurde ohne Unterstützung für Bilder kompiliert. Diese werden in Menüs "
+#~ "daher nicht geladen."
 
 #~ msgid "Conflict with key binding in config file"
 #~ msgstr "Störende Tastenkombination in Konfigurationsdatei"
@@ -319,18 +319,18 @@ msgstr "Fokussiert nächstes Spitzenniveau"
 
 #, c-format
 #~ msgid "Attempted to access menu \"%s\" but it does not exist"
-#~ msgstr "Versuchter Zugriff auf Menü \"%s\", doch es existiert nicht"
+#~ msgstr "Versuchter Zugriff auf Menü \"%s\", welches nicht existiert"
 
 #~ msgid "More..."
 #~ msgstr "Mehr..."
 
 #, c-format
 #~ msgid "Invalid button \"%s\" in mouse binding"
-#~ msgstr "Maus-Einbindung mit ungültiger Taste \"%s\""
+#~ msgstr "Maus-Kombination mit ungültiger Taste \"%s\""
 
 #, c-format
 #~ msgid "Invalid context \"%s\" in mouse binding"
-#~ msgstr "Maus-Einbindung mit ungültigem Kontext \"%s\""
+#~ msgstr "Maus-Kombination mit ungültigem Kontext \"%s\""
 
 #, c-format
 #~ msgid "Unable to change to home directory \"%s\": %s"
@@ -338,8 +338,8 @@ msgstr "Fokussiert nächstes Spitzenniveau"
 
 #~ msgid "Unable to find a valid config file, using some simple defaults"
 #~ msgstr ""
-#~ "Keine gültige Konfigurationsdatei vorhanden, benutze einfache "
-#~ "Standardwerte"
+#~ "Keine gültige Konfigurationsdatei vorhanden, daher werden einfache "
+#~ "Standardwerte benutzt"
 
 #~ msgid "Unable to load a theme."
 #~ msgstr "Kann kein Thema laden."
@@ -379,12 +379,12 @@ msgstr "Fokussiert nächstes Spitzenniveau"
 
 #~ msgid "  --debug-focus       Display debugging output for focus handling\n"
 #~ msgstr ""
-#~ "  --debug-focus       Fehlersuche-Ergebnis für Fokus-Handling anzeigen\n"
+#~ "  --debug-focus       Debug-Informationen für Fokus-Handling anzeigen\n"
 
 #~ msgid ""
 #~ "  --debug-session     Display debugging output for session management\n"
 #~ msgstr ""
-#~ "  --debug-session     Fehler-Ergebnis für Sitzungsmanager anzeigen\n"
+#~ "  --debug-session     Debug-Informationen für Sitzungsmanager anzeigen\n"
 
 #, c-format
 #~ msgid ""
@@ -418,7 +418,7 @@ msgstr "Fokussiert nächstes Spitzenniveau"
 
 #, c-format
 #~ msgid "Unable to make directory \"%s\": %s"
-#~ msgstr "Kann nicht Verzeichnis \"%s\" machen: %s"
+#~ msgstr "Kann Verzeichnis \"%s\" nicht erstellen: %s"
 
 #, c-format
 #~ msgid "Unable to save the session to \"%s\": %s"
@@ -426,10 +426,10 @@ msgstr "Fokussiert nächstes Spitzenniveau"
 
 #, c-format
 #~ msgid "Error while saving the session to \"%s\": %s"
-#~ msgstr "Fehler während die Sitzung in \"%s\" speichern: %s"
+#~ msgstr "Fehler beim Speichern der Sitzung in \"%s\": %s"
 
 #~ msgid "Not connected to a session manager"
-#~ msgstr "An einer Sitzungsmanager nicht verbindet"
+#~ msgstr "Nicht mit Sitzungsmanager verbunden"
 
 #, c-format
 #~ msgid "Running %s"
@@ -437,7 +437,7 @@ msgstr "Fokussiert nächstes Spitzenniveau"
 
 #, c-format
 #~ msgid "Invalid modifier key \"%s\" in key/mouse binding"
-#~ msgstr "Ungültige Modifier-Taste \"%s\" in Tasten/Maus-Einbindung"
+#~ msgstr "Ungültige Modifier-Taste \"%s\" in Tasten/Maus-Kombination"
 
 #, c-format
 #~ msgid "Invalid key code \"%s\" in key binding"
