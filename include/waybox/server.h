@@ -54,6 +54,7 @@ struct wb_server {
 	struct wlr_renderer *renderer;
 	struct wlr_scene *scene;
 	struct wlr_scene_output_layout *scene_layout;
+	struct wlr_session *session;
 	struct wlr_subcompositor *subcompositor;
 	struct wlr_output_manager_v1 *wlr_output_manager;
 

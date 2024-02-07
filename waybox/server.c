@@ -1,3 +1,5 @@
+#include <wlr/types/wlr_fractional_scale_v1.h>
+
 #include "idle.h"
 #include "waybox/server.h"
 #include "waybox/xdg_shell.h"
@@ -22,9 +24,9 @@ bool wb_create_backend(struct wb_server* server) {
 	 * backend based on the current environment, such as opening an X11 window
 	 * if an X11 server is running. */
 #if WLR_CHECK_VERSION(0, 18, 0)
-	server->backend = wlr_backend_autocreate(server->wl_event_loop, NULL);
+	server->backend = wlr_backend_autocreate(server->wl_event_loop, &server->session);
 #else
-	server->backend = wlr_backend_autocreate(server->wl_display, NULL);
+	server->backend = wlr_backend_autocreate(server->wl_display, &server->session);
 #endif
 	if (server->backend == NULL) {
 		wlr_log(WLR_ERROR, "%s", _("Failed to create backend"));
@@ -119,6 +121,8 @@ bool wb_start_server(struct wb_server* server) {
 	 * https://drewdevault.com/2018/07/29/Wayland-shells.html
 	 */
 	init_xdg_shell(server);
+
+	wlr_fractional_scale_manager_v1_create(server->wl_display, 1);
 
 	return true;
 }

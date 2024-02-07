@@ -1,10 +1,17 @@
 #ifndef _WB_XDG_SHELL_H
 #define _WB_XDG_SHELL_H
 
+#include <wlr/types/wlr_fractional_scale_v1.h>
+
 #include "waybox/server.h"
 
+struct wb_popup {
+	struct wlr_xdg_popup *xdg_popup;
+	struct wl_listener commit;
+	struct wl_listener destroy;
+};
+
 struct wb_toplevel {
-	struct wl_list link;
 	struct wb_server *server;
 	struct wlr_xdg_toplevel *xdg_toplevel;
 	struct wlr_scene_tree *scene_tree;
@@ -13,6 +20,7 @@ struct wb_toplevel {
 
 	struct wl_listener map;
 	struct wl_listener unmap;
+	struct wl_listener commit;
 	struct wl_listener destroy;
 	struct wl_listener new_popup;
 	struct wl_listener request_fullscreen;
@@ -23,6 +31,8 @@ struct wb_toplevel {
 
 	struct wlr_box geometry;
 	struct wlr_box previous_geometry;
+
+	struct wl_list link;
 };
 
 void init_xdg_shell(struct wb_server *server);

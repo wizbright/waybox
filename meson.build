@@ -15,6 +15,7 @@ add_project_arguments(
   '-Wno-unused-parameter',
   '-D_DEFAULT_SOURCE',
   '-D_POSIX_C_SOURCE=200112L',
+  '-DWL_HIDE_DEPRECATED', # Hide the deprecated parts of the Wayland API
   '-DWLR_USE_UNSTABLE',
   '-DPACKAGE_NAME="' + meson.project_name() + '"',
   '-DPACKAGE_VERSION="' + meson.project_version() + '"',

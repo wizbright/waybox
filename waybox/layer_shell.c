@@ -111,6 +111,7 @@ static void handle_surface_commit(struct wl_listener *listener, void *data) {
 	if (!surface->output || current_toplevel->xdg_toplevel->current.fullscreen) {
 		return;
 	}
+	wlr_fractional_scale_v1_notify_scale(surface->scene->layer_surface->surface, surface->output->wlr_output->scale);
 
 	struct wlr_layer_surface_v1 *layer_surface = surface->scene->layer_surface;
 	uint32_t committed = layer_surface->current.committed;
@@ -182,6 +183,8 @@ static void wb_layer_surface_destroy(struct wb_layer_surface *surface) {
 	if (surface == NULL) {
 		return;
 	}
+
+	wlr_fractional_scale_v1_notify_scale(surface->scene->layer_surface->surface, surface->output->wlr_output->scale);
 
 	wl_list_remove(&surface->map.link);
 	wl_list_remove(&surface->unmap.link);

@@ -145,12 +145,43 @@ static void xdg_toplevel_unmap(struct wl_listener *listener, void *data) {
 	}
 }
 
+static void update_fractional_scale(struct wlr_surface *surface) {
+	float scale = 1;
+	struct wlr_surface_output *surface_output;
+	wl_list_for_each(surface_output, &surface->current_outputs, link) {
+		if (surface_output->output->scale > scale) {
+			scale = surface_output->output->scale;
+		}
+	}
+	wlr_fractional_scale_v1_notify_scale(surface, scale);
+	wlr_surface_set_preferred_buffer_scale(surface, (int) scale);
+}
+
+static void xdg_toplevel_commit(struct wl_listener *listener, void *data) {
+	struct wb_toplevel *toplevel = wl_container_of(listener, toplevel, commit);
+	struct wlr_xdg_surface *base = toplevel->xdg_toplevel->base;
+
+	struct wlr_output *output = get_active_output(toplevel);
+	wlr_surface_send_enter(base->surface, output);
+	update_fractional_scale(base->surface);
+
+	if (base->initial_commit) {
+		wlr_xdg_toplevel_set_size(toplevel->xdg_toplevel, 0, 0);
+	}
+}
+
 static void xdg_toplevel_destroy(struct wl_listener *listener, void *data) {
 	/* Called when the xdg_toplevel is destroyed and should never be shown again. */
 	struct wb_toplevel *toplevel = wl_container_of(listener, toplevel, destroy);
 
+	struct wlr_output *output = get_active_output(toplevel);
+	struct wlr_xdg_surface *base = toplevel->xdg_toplevel->base;
+	wlr_surface_send_leave(base->surface, output);
+	update_fractional_scale(base->surface);
+
 	wl_list_remove(&toplevel->map.link);
 	wl_list_remove(&toplevel->unmap.link);
+	wl_list_remove(&toplevel->commit.link);
 	wl_list_remove(&toplevel->destroy.link);
 	wl_list_remove(&toplevel->new_popup.link);
 
@@ -297,6 +328,25 @@ static void xdg_toplevel_request_resize(
 	begin_interactive(toplevel, WB_CURSOR_RESIZE, event->edges);
 }
 
+static void xdg_popup_commit(struct wl_listener *listener, void *data) {
+	struct wb_popup *popup = wl_container_of(listener, popup, commit);
+	struct wlr_xdg_surface *base = popup->xdg_popup->base;
+
+	if (base->initial_commit) {
+		update_fractional_scale(base->surface);
+		wlr_xdg_surface_schedule_configure(base);
+	}
+}
+
+static void xdg_popup_destroy(struct wl_listener *listener, void *data) {
+	struct wb_popup *popup = wl_container_of(listener, popup, destroy);
+	update_fractional_scale(popup->xdg_popup->base->surface);
+
+	wl_list_remove(&popup->commit.link);
+	wl_list_remove(&popup->destroy.link);
+	free(popup);
+}
+
 static void handle_new_popup(struct wl_listener *listener, void *data) {
 	struct wlr_xdg_popup *popup = data;
 	struct wb_toplevel *toplevel = wl_container_of(listener, toplevel, new_popup);
@@ -336,6 +386,17 @@ static void handle_new_xdg_popup(struct wl_listener *listener, void *data) {
 		xdg_popup->base->data = wlr_scene_xdg_surface_create(
 			parent_tree, xdg_popup->base);
 	}
+
+	struct wb_popup *popup = calloc(1, sizeof(struct wb_popup));
+	popup->commit.notify = xdg_popup_commit;
+	wl_signal_add(&xdg_popup->base->surface->events.commit, &popup->commit);
+
+	popup->destroy.notify = xdg_popup_destroy;
+#if WLR_CHECK_VERSION (0, 18, 0)
+	wl_signal_add(&xdg_popup->events.destroy, &popup->destroy);
+#else
+	wl_signal_add(&xdg_popup->base->events.destroy, &popup->destroy);
+#endif
 }
 
 static void handle_new_xdg_toplevel(struct wl_listener *listener, void *data) {
@@ -358,6 +419,8 @@ static void handle_new_xdg_toplevel(struct wl_listener *listener, void *data) {
 	wl_signal_add(&xdg_toplevel->base->surface->events.map, &toplevel->map);
 	toplevel->unmap.notify = xdg_toplevel_unmap;
 	wl_signal_add(&xdg_toplevel->base->surface->events.unmap, &toplevel->unmap);
+	toplevel->commit.notify = xdg_toplevel_commit;
+	wl_signal_add(&xdg_toplevel->base->surface->events.commit, &toplevel->commit);
 	toplevel->destroy.notify = xdg_toplevel_destroy;
 #if WLR_CHECK_VERSION (0, 18, 0)
 	wl_signal_add(&xdg_toplevel->events.destroy, &toplevel->destroy);
