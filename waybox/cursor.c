@@ -136,7 +136,11 @@ static void handle_cursor_button(struct wl_listener *listener, void *data) {
 	struct wlr_surface *surface = NULL;
 	struct wb_toplevel *toplevel = get_toplevel_at(cursor->server,
 			cursor->server->cursor->cursor->x, cursor->server->cursor->cursor->y, &surface, &sx, &sy);
+#if WLR_CHECK_VERSION(0, 18, 0)
+	if (event->state == WL_POINTER_BUTTON_STATE_RELEASED) {
+#else
 	if (event->state == WLR_BUTTON_RELEASED) {
+#endif
 		/* If you released any buttons, we exit interactive move/resize mode. */
 		reset_cursor_mode(cursor->server);
 	} else {

@@ -330,9 +330,10 @@ static void xdg_toplevel_request_resize(
 
 static void xdg_popup_commit(struct wl_listener *listener, void *data) {
 	struct wb_popup *popup = wl_container_of(listener, popup, commit);
+	if (!popup->xdg_popup) return;
 	struct wlr_xdg_surface *base = popup->xdg_popup->base;
 
-	if (base->initial_commit) {
+	if (base && base->initial_commit) {
 		update_fractional_scale(base->surface);
 		wlr_xdg_surface_schedule_configure(base);
 	}
@@ -340,7 +341,8 @@ static void xdg_popup_commit(struct wl_listener *listener, void *data) {
 
 static void xdg_popup_destroy(struct wl_listener *listener, void *data) {
 	struct wb_popup *popup = wl_container_of(listener, popup, destroy);
-	update_fractional_scale(popup->xdg_popup->base->surface);
+	if (popup->xdg_popup)
+		update_fractional_scale(popup->xdg_popup->base->surface);
 
 	wl_list_remove(&popup->commit.link);
 	wl_list_remove(&popup->destroy.link);

@@ -133,6 +133,9 @@ bool wb_terminate(struct wb_server* server) {
 	deinit_config(server->config);
 	wl_display_destroy_clients(server->wl_display);
 	wlr_output_layout_destroy(server->output_layout);
+	wlr_allocator_destroy(server->allocator);
+	wlr_renderer_destroy(server->renderer);
+	wlr_backend_destroy(server->backend);
 	wl_display_destroy(server->wl_display);
 	wb_seat_destroy(server->seat);
 	wlr_scene_node_destroy(&server->scene->tree.node);
