@@ -52,6 +52,7 @@ Because \*box-style compositors are minimalist, most functionality is left to ex
 * [wl-clipboard](https://wayland.emersion.fr/mako/): Access the clipboard in scripts (also used by [neovim](https://neovim.io/))
 * Screenshots: [grim](https://git.sr.ht/~emersion/grim) and [slurp](https://github.com/emersion/slurp)
 * Screen recording: [wf-recorder](https://github.com/ammen99/wf-recorder)
+* Menu support: [rofi-wayland](https://github.com/lbonn/rofi)
 
 ### Contact
 I can be found as wiz on Rizon and wizbright on Libera. 

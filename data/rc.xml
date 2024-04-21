@@ -69,6 +69,11 @@
         <execute>grim -g "$(slurp -d)" "$(xdg-user-dir PICTURES)/$(date +'%Y-%m-%d-%H%M%S_grim_sel.png')"</execute>
       </action>
     </keybind>
+    <keybind key="A-r">
+      <action name="Execute">
+        <execute>rofi -show menu:$WB_CONF_DIR/menu</execute>
+      </action>
+    </keybind>
     <keybind key="A-F2">
       <action name="Execute">
         <execute>obrun l</execute>

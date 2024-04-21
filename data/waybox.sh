@@ -72,6 +72,26 @@ then
     WB_XDG_AUTOSTART="@libexecdir@/openbox-autostart OPENBOX";
 fi
 
+if test -f $WB_USER_CONF_DIR/menu.xml;
+then
+    WB_MENU_XML=$WB_USER_CONF_DIR/menu.xml
+elif test -f $WB_SYS_CONF_DIR/menu.xml;
+then
+    WB_MENU_XML=$WB_SYS_CONF_DIR/menu.xml
+elif test -f $OB_USER_CONF_DIR/menu.xml;
+then
+    _ "WARNING: Using files from Openbox. These may not work correctly."
+    WB_MENU_XML=$OB_USER_CONF_DIR/menu.xml
+elif test -f $OB_SYS_CONF_DIR/menu.xml;
+then
+    _ "WARNING: Using files from Openbox. These may not work correctly."
+    WB_MENU_XML=$OB_SYS_CONF_DIR/menu.xml;
+else
+    _ "ERROR: No menu file found." >&2
+    exit 1
+fi
+export WB_MENU_XML
+
 if test -f $WB_USER_CONF_DIR/rc.xml;
 then
     WB_RC_XML=$WB_USER_CONF_DIR/rc.xml

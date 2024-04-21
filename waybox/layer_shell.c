@@ -310,6 +310,7 @@ void handle_layer_shell_surface(struct wl_listener *listener, void *data) {
 	if (layer_surface->output == NULL) {
 		struct wb_server *server =
 			wl_container_of(listener, server, new_layer_surface);
+		if (wl_list_length(&server->toplevels) == 0) return;
 		struct wb_toplevel *toplevel =
 			wl_container_of(server->toplevels.next, toplevel, link);
 		layer_surface->output = get_active_output(toplevel);

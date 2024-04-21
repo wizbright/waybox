@@ -16,6 +16,7 @@ configure_file(
 scripts = files(
   'autostart',
   'environment',
+  'menu',
   'xdg-autostart',
   )
 

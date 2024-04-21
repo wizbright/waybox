@@ -1,0 +1,44 @@
+#!/bin/env python
+
+import os, subprocess, sys
+import xml.dom.minidom as dom
+
+def get_waybox_pid(name='waybox'):
+    lines = subprocess.Popen(['pgrep', '-x', name], stdout=subprocess.PIPE).stdout.read().splitlines()
+    if lines:
+        return int(lines[0])
+    else:
+        return 0
+
+def get_menu_items(menu, indent):
+    print("%s⇢ %s\0nonselectable\x1ftrue\x1ficon\x1fgo-next-symbolic" % (indent, menu.getAttribute('label').replace('_', '') or menu.getAttribute('id')))
+    indent = indent + " "
+    children = menu.childNodes
+    for i in range(0, children.length):
+        if children[i].nodeType == dom.Node.ELEMENT_NODE and children[i].tagName == 'item':
+            action = children[i].getElementsByTagName('action')[0].getAttribute('name')
+            cmd = ""
+            icon = children[i].getAttribute('icon')
+            label = children[i].getAttribute('label').replace('_', '')
+            if action == 'Execute':
+                cmd = children[i].getElementsByTagName('execute')[0].firstChild.nodeValue
+            elif action == 'Exit':
+                cmd = "kill -s SIGTERM %d" % get_waybox_pid()
+            elif action == 'Reconfigure':
+                cmd = "kill -s SIGUSR2 %d" % get_waybox_pid()
+            print("%s  %s\0info\x1f%s\x1ficon\x1f%s" % (indent, label, cmd, icon))
+        elif children[i].nodeType == dom.Node.ELEMENT_NODE and children[i].tagName == 'menu':
+            get_menu_items(children[i], indent)
+
+menu_xml = os.getenv("WB_MENU_XML") or "menu.xml"
+# If ran as a rofi script (not possible with wofi)
+if not os.getenv('ROFI_RETV') is None:
+    import shlex
+    print("\0message\x1f%s" % os.path.abspath(menu_xml))
+    if not (info := os.getenv('ROFI_INFO')) is None:
+        subprocess.Popen(shlex.split(info), stdout=subprocess.PIPE)
+        sys.exit(0)
+
+document = dom.parse(menu_xml)
+root_menu = document.getElementsByTagName('menu')[0]
+get_menu_items(root_menu, "")
