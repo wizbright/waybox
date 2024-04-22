@@ -106,6 +106,11 @@ bool wb_start_server(struct wb_server* server) {
 	wlr_data_control_manager_v1_create(server->wl_display);
 	wlr_data_device_manager_create(server->wl_display);
 
+#if WLR_CHECK_VERSION(0, 18, 0)
+	server->foreign_toplevel_list =
+		wlr_ext_foreign_toplevel_list_v1_create(server->wl_display, 1);
+#endif
+
 	server->gamma_control_manager =
 		wlr_gamma_control_manager_v1_create(server->wl_display);
 	server->gamma_control_set_gamma.notify = handle_gamma_control_set_gamma;

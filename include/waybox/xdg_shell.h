@@ -18,6 +18,11 @@ struct wb_toplevel {
 
 	struct wlr_xdg_toplevel_decoration_v1 *decoration;
 
+#if WLR_CHECK_VERSION(0, 18, 0)
+	struct wlr_ext_foreign_toplevel_handle_v1 *foreign_toplevel_handle;
+	struct wlr_ext_foreign_toplevel_handle_v1_state foreign_toplevel_state;
+#endif
+
 	struct wl_listener map;
 	struct wl_listener unmap;
 	struct wl_listener commit;
@@ -28,6 +33,8 @@ struct wb_toplevel {
 	struct wl_listener request_minimize;
 	struct wl_listener request_move;
 	struct wl_listener request_resize;
+	struct wl_listener set_app_id;
+	struct wl_listener set_title;
 
 	struct wlr_box geometry;
 	struct wlr_box previous_geometry;

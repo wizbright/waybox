@@ -184,7 +184,9 @@ static void wb_layer_surface_destroy(struct wb_layer_surface *surface) {
 		return;
 	}
 
-	wlr_fractional_scale_v1_notify_scale(surface->scene->layer_surface->surface, surface->output->wlr_output->scale);
+	if (surface->scene->layer_surface->surface != NULL)
+		wlr_fractional_scale_v1_notify_scale(surface->scene->layer_surface->surface,
+				surface->output->wlr_output->scale);
 
 	wl_list_remove(&surface->map.link);
 	wl_list_remove(&surface->unmap.link);

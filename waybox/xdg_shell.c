@@ -178,6 +178,9 @@ static void xdg_toplevel_destroy(struct wl_listener *listener, void *data) {
 	struct wlr_xdg_surface *base = toplevel->xdg_toplevel->base;
 	wlr_surface_send_leave(base->surface, output);
 	update_fractional_scale(base->surface);
+#if WLR_CHECK_VERSION(0, 18, 0)
+	wlr_ext_foreign_toplevel_handle_v1_destroy(toplevel->foreign_toplevel_handle);
+#endif
 
 	wl_list_remove(&toplevel->map.link);
 	wl_list_remove(&toplevel->unmap.link);
@@ -190,9 +193,33 @@ static void xdg_toplevel_destroy(struct wl_listener *listener, void *data) {
 	wl_list_remove(&toplevel->request_maximize.link);
 	wl_list_remove(&toplevel->request_move.link);
 	wl_list_remove(&toplevel->request_resize.link);
+	wl_list_remove(&toplevel->set_app_id.link);
+	wl_list_remove(&toplevel->set_title.link);
 
 	wl_list_remove(&toplevel->link);
 	free(toplevel);
+}
+
+static void xdg_toplevel_set_app_id(
+		struct wl_listener *listener, void *data) {
+	struct wb_toplevel *toplevel =
+		wl_container_of(listener, toplevel, set_app_id);
+#if WLR_CHECK_VERSION(0, 18, 0)
+	toplevel->foreign_toplevel_state.app_id = toplevel->xdg_toplevel->app_id;
+	wlr_ext_foreign_toplevel_handle_v1_update_state(
+			toplevel->foreign_toplevel_handle, &toplevel->foreign_toplevel_state);
+#endif
+}
+
+static void xdg_toplevel_set_title(
+		struct wl_listener *listener, void *data) {
+	struct wb_toplevel *toplevel =
+		wl_container_of(listener, toplevel, set_title);
+#if WLR_CHECK_VERSION(0, 18, 0)
+	toplevel->foreign_toplevel_state.title = toplevel->xdg_toplevel->title;
+	wlr_ext_foreign_toplevel_handle_v1_update_state(
+			toplevel->foreign_toplevel_handle, &toplevel->foreign_toplevel_state);
+#endif
 }
 
 static void xdg_toplevel_request_fullscreen(
@@ -416,6 +443,11 @@ static void handle_new_xdg_toplevel(struct wl_listener *listener, void *data) {
 	toplevel->server = server;
 	toplevel->xdg_toplevel = xdg_toplevel;
 
+#if WLR_CHECK_VERSION(0, 18, 0)
+	toplevel->foreign_toplevel_handle = wlr_ext_foreign_toplevel_handle_v1_create(
+			server->foreign_toplevel_list, &toplevel->foreign_toplevel_state);
+#endif
+
 	/* Listen to the various events it can emit */
 	toplevel->map.notify = xdg_toplevel_map;
 	wl_signal_add(&xdg_toplevel->base->surface->events.map, &toplevel->map);
@@ -447,6 +479,10 @@ static void handle_new_xdg_toplevel(struct wl_listener *listener, void *data) {
 	wl_signal_add(&xdg_toplevel->events.request_move, &toplevel->request_move);
 	toplevel->request_resize.notify = xdg_toplevel_request_resize;
 	wl_signal_add(&xdg_toplevel->events.request_resize, &toplevel->request_resize);
+	toplevel->set_app_id.notify = xdg_toplevel_set_app_id;
+	wl_signal_add(&xdg_toplevel->events.set_app_id, &toplevel->set_app_id);
+	toplevel->set_title.notify = xdg_toplevel_set_title;
+	wl_signal_add(&xdg_toplevel->events.set_title, &toplevel->set_title);
 
 	wl_list_insert(&toplevel->server->toplevels, &toplevel->link);
 }
