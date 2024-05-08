@@ -117,6 +117,8 @@ then
     DBUS_LAUNCH="dbus-launch --exit-with-session"
 fi
 
+export PATH=@bindir@:$PATH
+
 # No need to export these to Waybox
 unset TEXTDOMAIN TEXTDOMAINDIR
 $DBUS_LAUNCH @libexecdir@/waybox --startup "${WB_AUTOSTART:-true}; ${WB_XDG_AUTOSTART:-true}" "$@"

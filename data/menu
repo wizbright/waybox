@@ -10,35 +10,50 @@ def get_waybox_pid(name='waybox'):
     else:
         return 0
 
-def get_menu_items(menu, indent):
-    print("%s⇢ %s\0nonselectable\x1ftrue\x1ficon\x1fgo-next-symbolic" % (indent, menu.getAttribute('label').replace('_', '') or menu.getAttribute('id')))
+def get_menu_items(menu, indent, expand):
+    menu_id = menu.getAttribute('id')
+    nonselectable = str(bool(menu_id == '')).lower()
+    print("%s%s ⇢\0info\x1f{\"menu\": \"%s\"}\x1fnonselectable\x1f%s" % (indent, menu.getAttribute('label').replace('_', '') or menu_id, menu_id, nonselectable))
     indent = indent + " "
     children = menu.childNodes
     for i in range(0, children.length):
-        if children[i].nodeType == dom.Node.ELEMENT_NODE and children[i].tagName == 'item':
-            action = children[i].getElementsByTagName('action')[0].getAttribute('name')
-            cmd = ""
-            icon = children[i].getAttribute('icon')
-            label = children[i].getAttribute('label').replace('_', '')
-            if action == 'Execute':
-                cmd = children[i].getElementsByTagName('execute')[0].firstChild.nodeValue
-            elif action == 'Exit':
-                cmd = "kill -s SIGTERM %d" % get_waybox_pid()
-            elif action == 'Reconfigure':
-                cmd = "kill -s SIGUSR2 %d" % get_waybox_pid()
-            print("%s  %s\0info\x1f%s\x1ficon\x1f%s" % (indent, label, cmd, icon))
-        elif children[i].nodeType == dom.Node.ELEMENT_NODE and children[i].tagName == 'menu':
-            get_menu_items(children[i], indent)
+        if expand:
+            if children[i].nodeType == dom.Node.ELEMENT_NODE and children[i].tagName == 'item':
+                action = children[i].getElementsByTagName('action')[0].getAttribute('name')
+                cmd = ""
+                icon = children[i].getAttribute('icon')
+                label = children[i].getAttribute('label').replace('_', '')
+                if action == 'Execute':
+                    cmd = children[i].getElementsByTagName('execute')[0].firstChild.nodeValue
+                elif action == 'Exit':
+                    cmd = "kill -s SIGTERM %d" % get_waybox_pid()
+                elif action == 'Reconfigure':
+                    cmd = "kill -s SIGUSR2 %d" % get_waybox_pid()
+                print("%s\0info\x1f{\"exec\": \"%s\"}\x1ficon\x1f%s\x1fdisplay\x1f%s %s" % (cmd, cmd.replace('"', '\\"'), icon, indent, label))
+            elif children[i].nodeType == dom.Node.ELEMENT_NODE and children[i].tagName == 'menu':
+                get_menu_items(children[i], indent, os.getenv('ROFI_RETV') is None)
 
 menu_xml = os.getenv("WB_MENU_XML") or "menu.xml"
-# If ran as a rofi script (not possible with wofi)
-if not os.getenv('ROFI_RETV') is None:
-    import shlex
-    print("\0message\x1f%s" % os.path.abspath(menu_xml))
-    if not (info := os.getenv('ROFI_INFO')) is None:
-        subprocess.Popen(shlex.split(info), stdout=subprocess.PIPE)
-        sys.exit(0)
-
 document = dom.parse(menu_xml)
+
+print("\0message\x1f%s" % os.path.abspath(menu_xml))
+if not (info := os.getenv('ROFI_INFO')) is None:
+    import json
+    obj = json.JSONDecoder().decode(s=info)
+    if 'exec' in info:
+        import shlex
+        subprocess.Popen(shlex.split(obj['exec']), stdout=subprocess.PIPE)
+        sys.exit(0)
+    elif 'menu' in obj:
+        # Eh document.getElementById() seems not to work
+        menus = document.getElementsByTagName('menu')
+        for i in range(0, menus.length):
+            if menus[i].getAttribute('id') == obj['menu']:
+                menu = menus[i]
+                break
+        if not menu is None:
+            get_menu_items(menu, "", True)
+            print("---\0nonselectable\x1ftrue")
+
 root_menu = document.getElementsByTagName('menu')[0]
-get_menu_items(root_menu, "")
+get_menu_items(root_menu, "", True)

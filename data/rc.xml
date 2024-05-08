@@ -71,7 +71,8 @@
     </keybind>
     <keybind key="A-r">
       <action name="Execute">
-        <execute>rofi -show menu:$WB_CONF_DIR/menu</execute>
+        <!-- If you'd prefer to use something like wmenu: `waybox-menu | wmenu | xargs env` -->
+        <execute>rofi -show waybox-menu</execute>
       </action>
     </keybind>
     <keybind key="A-F2">

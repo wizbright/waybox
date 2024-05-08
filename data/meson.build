@@ -1,4 +1,5 @@
 cfdata = configuration_data()
+cfdata.set('bindir', get_option('prefix') / get_option('bindir'))
 cfdata.set('libexecdir', get_option('prefix') / get_option('libexecdir'))
 cfdata.set('localedir', get_option('prefix') / get_option('localedir'))
 cfdata.set('sysconfdir', get_option('prefix') / get_option('sysconfdir'))
@@ -16,7 +17,6 @@ configure_file(
 scripts = files(
   'autostart',
   'environment',
-  'menu',
   'xdg-autostart',
   )
 
@@ -44,4 +44,11 @@ install_data(
   'waybox.desktop',
   install_dir: get_option('prefix') / get_option('datadir') + '/wayland-sessions',
   install_mode: 'rw-r--r--',
+  )
+
+install_data(
+  'menu',
+  install_dir: get_option('prefix') / get_option('bindir'),
+  install_mode: 'rwxr-xr-x',
+  rename: ['waybox-menu']
   )
