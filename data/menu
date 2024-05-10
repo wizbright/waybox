@@ -1,6 +1,7 @@
 #!/bin/env python
 
 import os, subprocess, sys
+import shlex
 import xml.dom.minidom as dom
 
 def get_waybox_pid(name='waybox'):
@@ -31,7 +32,19 @@ def get_menu_items(menu, indent, expand):
                     cmd = "kill -s SIGUSR2 %d" % get_waybox_pid()
                 print("%s\0info\x1f{\"exec\": \"%s\"}\x1ficon\x1f%s\x1fdisplay\x1f%s %s" % (cmd, cmd.replace('"', '\\"'), icon, indent, label))
             elif children[i].nodeType == dom.Node.ELEMENT_NODE and children[i].tagName == 'menu':
-                get_menu_items(children[i], indent, os.getenv('ROFI_RETV') is None)
+                if children[i].getAttribute('execute') == "":
+                    get_menu_items(children[i], indent, os.getenv('ROFI_RETV') is None)
+                else:
+                    try:
+                        import xml.parsers.expat
+                        lines = subprocess.Popen(shlex.split(children[i].getAttribute('execute')), stdout=subprocess.PIPE).stdout.read()
+                        pipe = dom.parseString(lines)
+                        pipes = pipe.getElementsByTagName('menu')
+                        for j in range(0, pipes.length):
+                            get_menu_items(pipes[j], indent, True)
+                    # If a script doesn't function correctly anymore, don't stop rendering the menu
+                    except xml.parsers.expat.ExpatError:
+                        pass
 
 menu_xml = os.getenv("WB_MENU_XML") or "menu.xml"
 document = dom.parse(menu_xml)
@@ -41,7 +54,6 @@ if not (info := os.getenv('ROFI_INFO')) is None:
     import json
     obj = json.JSONDecoder().decode(s=info)
     if 'exec' in info:
-        import shlex
         subprocess.Popen(shlex.split(obj['exec']), stdout=subprocess.PIPE)
         sys.exit(0)
     elif 'menu' in obj:
@@ -50,10 +62,10 @@ if not (info := os.getenv('ROFI_INFO')) is None:
         for i in range(0, menus.length):
             if menus[i].getAttribute('id') == obj['menu']:
                 menu = menus[i]
+                if not menu is None:
+                    get_menu_items(menu, "", True)
+                    print("---\0nonselectable\x1ftrue")
                 break
-        if not menu is None:
-            get_menu_items(menu, "", True)
-            print("---\0nonselectable\x1ftrue")
 
 root_menu = document.getElementsByTagName('menu')[0]
 get_menu_items(root_menu, "", True)
