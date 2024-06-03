@@ -3,7 +3,7 @@ project(
   'c',
   version: '0.2.3',
   license: 'MIT',
-  meson_version: '>=0.59.0',
+  meson_version: '>=0.60.0',
   default_options: [
     'c_std=c11',
     'warning_level=2',
@@ -31,7 +31,7 @@ libinput = dependency('libinput', version: '>=1.21.0')
 libxml2 = dependency('libxml-2.0')
 wayland_protos = dependency('wayland-protocols', version: '>=1.27')
 wayland_server = dependency('wayland-server', version: '>=1.15')
-wlroots = dependency('wlroots', version: '>=0.17.0')
+wlroots = dependency(['wlroots-0.18', 'wlroots'], version: '>=0.17.0')
 xkbcommon = dependency('xkbcommon')
 
 msgfmt = find_program('msgfmt', required: false)
