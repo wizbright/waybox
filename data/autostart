@@ -37,21 +37,26 @@ get_random_wallpaper()
 }
 
 load_wallpaper() {
-    if (which hyprpaper && which socat && which wayland-info) >/dev/null 2>&1; then
+    uses_wayland_info=0
+    if (which hyprpaper && which socat && (test "$uses_wayland_info" = "0" || which wayland-info)) >/dev/null 2>&1; then
         hyprpaper &
-        HYPRPAPER_SOCKET=/tmp/hypr/.hyprpaper.sock
+        HYPRPAPER_SOCKET="${XDG_RUNTIME_DIR:-"/run/user/$(id -u)"}"/hypr/.hyprpaper.sock
         # Change the wallpaper every hour
-        while test -S $HYPRPAPER_SOCKET; do
-            #current_output=$(wayland-info -i wl_output | \
-            #    grep 'name:' | tail -n 1 | cut -d : -f 2 | tr -d ' ')
+        while test -S "$HYPRPAPER_SOCKET"; do
+            if test "$uses_wayland_info" != "0";
+            then
+                current_output=$(wayland-info -i wl_output | \
+                    grep 'name:' | tail -n 1 | cut -d : -f 2 | tr -d ' ')
+            fi
             random_wallpaper="$(get_random_wallpaper)"
             for cmd in "preload $random_wallpaper" \
                 "wallpaper $current_output,$random_wallpaper" \
                 'unload all';
             do
-                printf "$cmd" | socat UNIX-CONNECT:$HYPRPAPER_SOCKET -
+                printf "$cmd" | socat UNIX-CONNECT:"$HYPRPAPER_SOCKET" -
             done
-            [ $? -eq 0 ] && sleep 60m
+            [ $? -ne 0 ] && rm -f $HYPRPAPER_SOCKET
+            sleep 60m
         done
     elif which swaybg >/dev/null 2>&1; then
         get_random_wallpaper | xargs swaybg -c '#303030' -m fill -i &
