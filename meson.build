@@ -26,12 +26,18 @@ cc = meson.get_compiler('c')
 # Adding include directory
 inc_dir = include_directories('include')
 
+if get_option('wlroots-version') != ''
+  wlroots_version = get_option('wlroots-version')
+else
+  wlroots_version = ['wlroots-0.19', 'wlroots-0.18', 'wlroots']
+endif
+
 libevdev = dependency('libevdev')
 libinput = dependency('libinput', version: '>=1.21.0')
 libxml2 = dependency('libxml-2.0')
 wayland_protos = dependency('wayland-protocols', version: '>=1.27')
 wayland_server = dependency('wayland-server', version: '>=1.15')
-wlroots = dependency(['wlroots-0.18', 'wlroots'], version: '>=0.17.0')
+wlroots = dependency(wlroots_version, version: '>=0.17.0')
 xkbcommon = dependency('xkbcommon')
 
 msgfmt = find_program('msgfmt', required: false)

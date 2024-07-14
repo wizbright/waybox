@@ -1,0 +1,1 @@
+option('wlroots-version', type: 'string', value: '', description: 'The version of wlroots with which to compile the compositor')
