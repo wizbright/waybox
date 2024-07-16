@@ -1,7 +1,13 @@
 #include <libevdev/libevdev.h>
 #include <unistd.h>
 
+#include <wlr/config.h>
+#if WLR_HAS_LIBINPUT_BACKEND && defined(HAS_LIBINPUT)
 #include <wlr/backend/libinput.h>
+#else
+#undef HAS_LIBINPUT
+#endif
+#include <wlr/backend/session.h>
 #include <wlr/types/wlr_primary_selection.h>
 #include <wlr/types/wlr_primary_selection_v1.h>
 
@@ -263,11 +269,14 @@ static void handle_new_keyboard(struct wb_server *server,
 	wl_list_insert(&server->seat->keyboards, &keyboard->link);
 }
 
+#ifdef HAS_LIBINPUT
 static bool libinput_config_get_enabled(char *config) {
 	return strcmp(config, "disabled") != 0;
 }
+#endif
 
 static void handle_new_pointer(struct wb_server *server, struct wlr_input_device *device) {
+#ifdef HAS_LIBINPUT
 	struct wb_config *config = server->config;
 	if (wlr_input_device_is_libinput(device) && config->libinput_config.use_config) {
 		struct libinput_device *libinput_handle =
@@ -362,6 +371,7 @@ static void handle_new_pointer(struct wb_server *server, struct wlr_input_device
 					libinput_config_get_enabled(config->libinput_config.tap_drag_lock));
 		};
 	}
+#endif
 
 	wlr_cursor_attach_input_device(server->cursor->cursor, device);
 }

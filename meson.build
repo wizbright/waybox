@@ -33,12 +33,16 @@ else
 endif
 
 libevdev = dependency('libevdev')
-libinput = dependency('libinput', version: '>=1.21.0')
+libinput = dependency('libinput', version: '>=1.21.0', required: false)
 libxml2 = dependency('libxml-2.0')
 wayland_protos = dependency('wayland-protocols', version: '>=1.27')
 wayland_server = dependency('wayland-server', version: '>=1.15')
 wlroots = dependency(wlroots_version, version: '>=0.17.0')
 xkbcommon = dependency('xkbcommon')
+
+if libinput.found()
+  add_project_arguments('-DHAS_LIBINPUT', language: 'c')
+endif
 
 msgfmt = find_program('msgfmt', required: false)
 if msgfmt.found()
