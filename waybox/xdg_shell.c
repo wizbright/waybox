@@ -101,9 +101,13 @@ static void xdg_toplevel_map(struct wl_listener *listener, void *data) {
 		return;
 
 	struct wb_config *config = toplevel->server->config;
-	struct wlr_box geo_box = {0};
 	struct wlr_box usable_area = get_usable_area(toplevel);
+#if WLR_CHECK_VERSION(0, 19, 0)
+	struct wlr_box geo_box = toplevel->xdg_toplevel->base->geometry;
+#else
+	struct wlr_box geo_box = {0};
 	wlr_xdg_surface_get_geometry(toplevel->xdg_toplevel->base, &geo_box);
+#endif
 
 	if (config) {
 		toplevel->geometry.height = MIN(geo_box.height,
@@ -318,8 +322,12 @@ static void begin_interactive(struct wb_toplevel *toplevel,
 		server->grab_x = server->cursor->cursor->x - toplevel->geometry.x;
 		server->grab_y = server->cursor->cursor->y - toplevel->geometry.y;
 	} else if (mode == WB_CURSOR_RESIZE) {
+#if WLR_CHECK_VERSION(0, 19, 0)
+		struct wlr_box geo_box = toplevel->xdg_toplevel->base->geometry;
+#else
 		struct wlr_box geo_box;
 		wlr_xdg_surface_get_geometry(toplevel->xdg_toplevel->base, &geo_box);
+#endif
 
 		double border_x = (toplevel->geometry.x + geo_box.x) +
 			((edges & WLR_EDGE_RIGHT) ? geo_box.width : 0);

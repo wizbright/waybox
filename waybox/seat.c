@@ -123,8 +123,12 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 			if (key_binding->action & ACTION_SHADE) {
 				struct wb_toplevel *toplevel = wl_container_of(server->toplevels.next, toplevel, link);
 				if (toplevel->scene_tree->node.enabled) {
+#if WLR_CHECK_VERSION(0, 19, 0)
+					struct wlr_box geo_box = toplevel->xdg_toplevel->base->geometry;
+#else
 					struct wlr_box geo_box;
 					wlr_xdg_surface_get_geometry(toplevel->xdg_toplevel->base, &geo_box);
+#endif
 					int decoration_height = MAX(geo_box.y - toplevel->geometry.y, TITLEBAR_HEIGHT);
 
 					toplevel->previous_geometry = toplevel->geometry;

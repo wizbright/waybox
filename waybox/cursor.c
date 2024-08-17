@@ -50,8 +50,12 @@ static void process_cursor_resize(struct wb_server *server) {
 		}
 	}
 
+#if WLR_CHECK_VERSION(0, 19, 0)
+	struct wlr_box geo_box = toplevel->xdg_toplevel->base->geometry;
+#else
 	struct wlr_box geo_box;
 	wlr_xdg_surface_get_geometry(toplevel->xdg_toplevel->base, &geo_box);
+#endif
 	toplevel->geometry.x = new_left - geo_box.x;
 	toplevel->geometry.y = new_top - geo_box.y;
 		wlr_scene_node_set_position(&toplevel->scene_tree->node,
