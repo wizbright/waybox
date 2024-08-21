@@ -66,6 +66,8 @@ do
                     then
                         show_in=0
                         break 2
+                    else
+                        show_in=1
                     fi
                 done
             done
@@ -88,7 +90,7 @@ do
         then
             # Don't run the Exec key if a non-empty TryExec command can't be found
             TRY_EXEC=$(cat "$f" | grep '^TryExec\s*=\s*\S' | sed -e 's/^TryExec\s*=\s*//g');
-            if test -n "$TRY_EXEC" && ! which $TRY_EXEC;
+            if test -n "$TRY_EXEC" && ! command -v $TRY_EXEC >/dev/null 2>&1;
             then
                 continue
             fi
