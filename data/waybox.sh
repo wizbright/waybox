@@ -60,7 +60,12 @@ then
 fi
 
 # And the XDG autostart script
-if test -x $WB_USER_CONF_DIR/xdg-autostart;
+if command -v xdg-autostart >/dev/null 2>&1;
+then
+    # Probably what you want instead of my simple shell script.
+    # https://gitlab.com/somini/xdg-autostart/
+    WB_XDG_AUTOSTART="xdg-autostart"
+elif test -x $WB_USER_CONF_DIR/xdg-autostart;
 then
     WB_XDG_AUTOSTART=$WB_USER_CONF_DIR/xdg-autostart;
 elif test -x $WB_SYS_CONF_DIR/xdg-autostart;

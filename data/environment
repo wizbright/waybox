@@ -30,17 +30,25 @@ if test -n "$DISPLAY" && test -d /etc/X11/xinit/xinitrc.d;
 then
     for f in /etc/X11/xinit/xinitrc.d/*.sh;
     do
-        test -f "$f" && . "$f"
+        test -r "$f" && . "$f"
     done
 fi
 
-# Get the preferred terminal from GNOME (if you use mostly GTK apps)
-TERMINAL=$(gsettings get org.gnome.desktop.default-applications.terminal exec | tr -d \')
+# Emerging standard, used by i.a. modern GTK versions instead of the obsolete
+# org.gnome.default-applications.terminal.exec gsetting (which is now ignored)
+# https://github.com/Vladimir-csp/xdg-terminal-exec (or create a symlink to
+# your preferred terminal emulator)
+TERMINAL=xdg-terminal-exec
 # Get the preferred terminal from KDE (if you use mostly Qt apps)
 #TERMINAL=$(kreadconfig5 --file kdeglobals --group General --key TerminalApplication --default "konsole")
 # Or just set it hard:
 #TERMINAL=kitty
 export TERMINAL
 
-# Use autostart scripts for these environments
-export WB_AUTOSTART_ENVIRONMENT=GNOME:KDE
+if command -v xdg-autostart >/dev/null 2>&1;
+then
+    export XDG_CURRENT_DESTKOP=OPENBOX
+else
+    # Use autostart scripts for these environments
+    export WB_AUTOSTART_ENVIRONMENT=GNOME:KDE:OPENBOX
+fi
