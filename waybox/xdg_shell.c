@@ -309,12 +309,6 @@ static void begin_interactive(struct wb_toplevel *toplevel,
 	 * compositor stops propagating pointer events to clients and instead
 	 * consumes them itself, to move or resize windows. */
 	struct wb_server *server = toplevel->server;
-	struct wlr_surface *focused_surface =
-		server->seat->seat->pointer_state.focused_surface;
-	if (toplevel->xdg_toplevel->base->surface != wlr_surface_get_root_surface(focused_surface)) {
-		/* Deny move/resize requests from unfocused clients. */
-		return;
-	}
 	server->grabbed_toplevel = toplevel;
 	server->cursor->cursor_mode = mode;
 
