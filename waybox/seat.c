@@ -30,7 +30,7 @@ static void cycle_toplevels(struct wb_server *server) {
 	struct wb_toplevel *current_toplevel = wl_container_of(
 		server->toplevels.prev, current_toplevel, link);
 	deiconify_toplevel(current_toplevel);
-	focus_toplevel(current_toplevel, current_toplevel->xdg_toplevel->base->surface);
+	focus_toplevel(current_toplevel);
 
 	/* Move the current toplevel to the beginning of the list */
 	wl_list_remove(&current_toplevel->link);
@@ -48,7 +48,7 @@ static void cycle_toplevels_reverse(struct wb_server *server) {
 	struct wb_toplevel *next_toplevel = wl_container_of(
 		current_toplevel->link.next, next_toplevel, link);
 	deiconify_toplevel(next_toplevel);
-	focus_toplevel(next_toplevel, next_toplevel->xdg_toplevel->base->surface);
+	focus_toplevel(next_toplevel);
 
 	/* Move the current toplevel to after the previous toplevel in the list */
 	wl_list_remove(&current_toplevel->link);

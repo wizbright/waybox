@@ -175,7 +175,7 @@ static void handle_unmap(struct wl_listener *listener, void *data) {
 
 	struct wb_toplevel *toplevel = wl_container_of(surface->server->toplevels.next, toplevel, link);
 	if (toplevel && toplevel->scene_tree && toplevel->scene_tree->node.enabled) {
-		focus_toplevel(toplevel, toplevel->xdg_toplevel->base->surface);
+		focus_toplevel(toplevel);
 	}
 }
 

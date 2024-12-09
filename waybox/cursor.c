@@ -149,7 +149,7 @@ static void handle_cursor_button(struct wl_listener *listener, void *data) {
 		reset_cursor_mode(cursor->server);
 	} else {
 		/* Focus that client if the button was _pressed_ */
-		focus_toplevel(toplevel, surface);
+		focus_toplevel(toplevel);
 	}
 
 	wlr_idle_notifier_v1_notify_activity(cursor->server->idle_notifier, cursor->server->seat->seat);

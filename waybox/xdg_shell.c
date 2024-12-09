@@ -29,12 +29,13 @@ struct wb_toplevel *get_toplevel_at(
 	return tree->node.data;
 }
 
-void focus_toplevel(struct wb_toplevel *toplevel, struct wlr_surface *surface) {
+void focus_toplevel(struct wb_toplevel *toplevel) {
 	/* Note: this function only deals with keyboard focus. */
 	if (toplevel == NULL || toplevel->xdg_toplevel->base->role != WLR_XDG_SURFACE_ROLE_TOPLEVEL) {
 		return;
 	}
 
+	struct wlr_surface *surface = toplevel->xdg_toplevel->base->surface;
 	struct wlr_xdg_surface *xdg_surface = wlr_xdg_surface_try_from_wlr_surface(surface);
 	if (xdg_surface != NULL)
 		wlr_log(WLR_INFO, "%s: %s", _("Keyboard focus is now on surface"),
@@ -74,7 +75,7 @@ void focus_toplevel(struct wb_toplevel *toplevel, struct wlr_surface *surface) {
 	 * track of this and automatically send key events to the appropriate
 	 * clients without additional work on your part.
 	 */
-	seat_focus_surface(server->seat, toplevel->xdg_toplevel->base->surface);
+	seat_focus_surface(server->seat, surface);
 }
 
 struct wlr_output *get_active_output(struct wb_toplevel *toplevel) {
@@ -125,7 +126,7 @@ static void xdg_toplevel_map(struct wl_listener *listener, void *data) {
 
 	wlr_xdg_toplevel_set_size(toplevel->xdg_toplevel,
 			toplevel->geometry.width, toplevel->geometry.height);
-	focus_toplevel(toplevel, toplevel->xdg_toplevel->base->surface);
+	focus_toplevel(toplevel);
 
 	wlr_scene_node_set_position(&toplevel->scene_tree->node,
 			toplevel->geometry.x, toplevel->geometry.y);
@@ -144,7 +145,7 @@ static void xdg_toplevel_unmap(struct wl_listener *listener, void *data) {
 		if (next_toplevel && next_toplevel->xdg_toplevel && next_toplevel->scene_tree && next_toplevel->scene_tree->node.enabled) {
 			wlr_log(WLR_INFO, "%s: %s", _("Focusing next toplevel"),
 					next_toplevel->xdg_toplevel->app_id);
-			focus_toplevel(next_toplevel, next_toplevel->xdg_toplevel->base->surface);
+			focus_toplevel(next_toplevel);
 		}
 	}
 }
@@ -292,9 +293,9 @@ static void xdg_toplevel_request_minimize(struct wl_listener *listener, void *da
 
 		struct wb_toplevel *next_toplevel = wl_container_of(toplevel->link.next, next_toplevel, link);
 		if (wl_list_length(&toplevel->link) > 1)
-			focus_toplevel(next_toplevel, next_toplevel->xdg_toplevel->base->surface);
+			focus_toplevel(next_toplevel);
 		else
-			focus_toplevel(toplevel, toplevel->xdg_toplevel->base->surface);
+			focus_toplevel(toplevel);
 	} else {
 		toplevel->geometry = toplevel->previous_geometry;
 	}
