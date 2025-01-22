@@ -145,6 +145,13 @@ bool wb_terminate(struct wb_server* server) {
 	wlr_backend_destroy(server->backend);
 	wl_display_destroy(server->wl_display);
 	wb_seat_destroy(server->seat);
+
+	wl_list_remove(&server->new_xdg_toplevel.link);
+	wl_list_remove(&server->new_xdg_popup.link);
+
+	wl_list_remove(&server->new_input.link);
+	wl_list_remove(&server->new_output.link);
+
 	wlr_scene_node_destroy(&server->scene->tree.node);
 
 	wlr_log(WLR_INFO, "%s", _("Display destroyed"));
