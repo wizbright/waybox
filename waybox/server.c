@@ -146,6 +146,15 @@ bool wb_terminate(struct wb_server* server) {
 	wl_display_destroy(server->wl_display);
 	wb_seat_destroy(server->seat);
 
+	wl_list_remove(&server->gamma_control_set_gamma.link);
+	wl_list_remove(&server->new_layer_surface.link);
+	wl_list_remove(&server->new_xdg_decoration.link);
+
+	wl_list_remove(&server->destroy_inhibit_manager.link);
+	wl_list_remove(&server->destroy_inhibitor.link);
+	wl_list_remove(&server->new_inhibitor.link);
+	wl_list_remove(&server->inhibitors);
+
 	wl_list_remove(&server->new_xdg_toplevel.link);
 	wl_list_remove(&server->new_xdg_popup.link);
 
