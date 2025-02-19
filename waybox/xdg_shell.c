@@ -411,12 +411,14 @@ static void handle_new_xdg_popup(struct wl_listener *listener, void *data) {
 	 * we always set the user data field of xdg_surfaces to the corresponding
 	 * scene node. */
 	struct wlr_xdg_popup *xdg_popup = data;
-	struct wlr_xdg_surface *parent = wlr_xdg_surface_try_from_wlr_surface(
-		xdg_popup->parent);
-	if (parent != NULL) {
-		struct wlr_scene_tree *parent_tree = parent->data;
-		xdg_popup->base->data = wlr_scene_xdg_surface_create(
-			parent_tree, xdg_popup->base);
+	if (xdg_popup->parent) {
+		struct wlr_xdg_surface *parent = wlr_xdg_surface_try_from_wlr_surface(
+			xdg_popup->parent);
+		if (parent != NULL) {
+			struct wlr_scene_tree *parent_tree = parent->data;
+			xdg_popup->base->data = wlr_scene_xdg_surface_create(
+				parent_tree, xdg_popup->base);
+		}
 	}
 
 	struct wb_popup *popup = calloc(1, sizeof(struct wb_popup));
