@@ -240,6 +240,14 @@ void wb_cursor_destroy(struct wb_cursor *cursor) {
 		return;
 	}
 
+	wl_list_remove(&cursor->request_cursor.link);
+	wl_list_remove(&cursor->cursor_motion.link);
+	wl_list_remove(&cursor->cursor_motion_absolute.link);
+
+	wl_list_remove(&cursor->cursor_button.link);
+	wl_list_remove(&cursor->cursor_axis.link);
+	wl_list_remove(&cursor->cursor_frame.link);
+
 	wlr_xcursor_manager_destroy(cursor->xcursor_manager);
 	wlr_cursor_destroy(cursor->cursor);
 	free(cursor);

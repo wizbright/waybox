@@ -4,6 +4,7 @@
 
 static void idle_inhibit_manager_destroy(struct wl_listener *listener, void *data) {
 	struct wb_server *server = wl_container_of(listener, server, destroy_inhibit_manager);
+	wl_list_remove(&server->new_inhibitor.link);
 	wl_list_remove(&server->inhibitors);
 }
 
@@ -11,6 +12,7 @@ static void idle_inhibitor_destroy(struct wl_listener *listener, void *data) {
 	struct wb_server *server = wl_container_of(listener, server, destroy_inhibitor);
 	/* wlroots will destroy the inhibitor after this callback, so this number will be 1 if the
 	 * last inhibitor is being destroyed. */
+	wl_list_remove(&server->destroy_inhibitor.link);
 	wlr_idle_notifier_v1_set_inhibited(server->idle_notifier,
 			wl_list_length(&server->inhibitors) > 1);
 }

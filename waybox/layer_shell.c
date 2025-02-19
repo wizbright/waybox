@@ -204,6 +204,7 @@ static void handle_destroy(struct wl_listener *listener, void *data) {
 		arrange_layers(surface->output);
 	}
 
+	wl_list_remove(&surface->new_popup.link);
 	wb_layer_surface_destroy(surface);
 }
 

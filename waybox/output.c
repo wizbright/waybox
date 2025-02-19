@@ -55,6 +55,10 @@ void output_configuration_applied(struct wl_listener *listener, void *data) {
 	wlr_output_configuration_v1_send_succeeded(configuration);
 }
 
+void output_configuration_tested(struct wl_listener *listener, void *data) {
+	output_configuration_applied(listener, data);
+}
+
 void output_request_state_notify(struct wl_listener *listener, void *data) {
 	struct wb_output *output = wl_container_of(listener, output, request_state);
 	const struct wlr_output_event_request_state *event = data;
@@ -175,5 +179,5 @@ void init_output(struct wb_server *server) {
 	server->wlr_output_manager = wlr_output_manager_v1_create(server->wl_display);
 	server->output_configuration_applied.notify = output_configuration_applied;
 	wl_signal_add(&server->wlr_output_manager->events.apply, &server->output_configuration_applied);
-	wl_signal_add(&server->wlr_output_manager->events.test, &server->output_configuration_applied);
+	wl_signal_add(&server->wlr_output_manager->events.test, &server->output_configuration_tested);
 }

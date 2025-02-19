@@ -142,25 +142,27 @@ bool wb_terminate(struct wb_server* server) {
 	wlr_output_layout_destroy(server->output_layout);
 	wlr_allocator_destroy(server->allocator);
 	wlr_renderer_destroy(server->renderer);
-	wlr_backend_destroy(server->backend);
-	wl_display_destroy(server->wl_display);
-	wb_seat_destroy(server->seat);
-
-	wl_list_remove(&server->gamma_control_set_gamma.link);
-	wl_list_remove(&server->new_layer_surface.link);
-	wl_list_remove(&server->new_xdg_decoration.link);
-
-	wl_list_remove(&server->destroy_inhibit_manager.link);
-	wl_list_remove(&server->destroy_inhibitor.link);
-	wl_list_remove(&server->new_inhibitor.link);
-	wl_list_remove(&server->inhibitors);
-
-	wl_list_remove(&server->new_xdg_toplevel.link);
-	wl_list_remove(&server->new_xdg_popup.link);
 
 	wl_list_remove(&server->new_input.link);
 	wl_list_remove(&server->new_output.link);
+	wl_list_remove(&server->output_configuration_applied.link);
+	wl_list_remove(&server->output_configuration_tested.link);
+	wl_list_remove(&server->new_inhibitor.link);
+	wl_list_remove(&server->inhibitors);
+	wl_list_remove(&server->destroy_inhibit_manager.link);
+	wl_list_remove(&server->gamma_control_set_gamma.link);
+	wl_list_remove(&server->new_layer_surface.link);
 
+#if WLR_CHECK_VERSION(0, 18, 0)
+	wl_list_remove(&server->new_xdg_toplevel.link);
+	wl_list_remove(&server->new_xdg_popup.link);
+#else
+	wl_list_remove(&server->new_xdg_surface.link);
+#endif
+
+	wlr_backend_destroy(server->backend);
+	wb_seat_destroy(server->seat);
+	wl_display_destroy(server->wl_display);
 	wlr_scene_node_destroy(&server->scene->tree.node);
 
 	wlr_log(WLR_INFO, "%s", _("Display destroyed"));

@@ -97,6 +97,7 @@ struct wb_server {
 	struct wl_listener new_input;
 	struct wl_listener new_output;
 	struct wl_listener output_configuration_applied;
+	struct wl_listener output_configuration_tested;
 	struct wl_list outputs; /* wb_output::link */
 };
 
