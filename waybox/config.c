@@ -152,6 +152,7 @@ bool init_config(struct wb_server *server) {
 
 	doc = xmlReadFile(rc_file, NULL, XML_PARSE_RECOVER);
 	wlr_log(WLR_INFO, "Using config file %s", rc_file);
+	setenv("WAYBOX_CONFIG_FILE", rc_file, true);
 	free(rc_file);
 	if (doc == NULL) {
 		wlr_log(WLR_ERROR, "%s", _("Unable to parse the configuration file. Consult stderr for more information."));
