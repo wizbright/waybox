@@ -16,7 +16,8 @@ static void handle_xdg_decoration_mode(struct wl_listener *listener, void *data)
 	struct wlr_xdg_toplevel_decoration_v1 *toplevel_decoration = data;
 	struct wb_decoration *decoration = wl_container_of(listener, decoration, request_mode);
 	struct wb_toplevel *toplevel = wl_container_of(decoration->server->toplevels.next, toplevel, link);
-	wlr_xdg_toplevel_decoration_v1_set_mode(toplevel_decoration, WLR_XDG_TOPLEVEL_DECORATION_V1_MODE_CLIENT_SIDE);
+	if (toplevel->xdg_toplevel->base->initialized)
+		wlr_xdg_toplevel_decoration_v1_set_mode(toplevel_decoration, WLR_XDG_TOPLEVEL_DECORATION_V1_MODE_CLIENT_SIDE);
 	toplevel->decoration = toplevel_decoration;
 }
 
