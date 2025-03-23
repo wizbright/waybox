@@ -172,6 +172,8 @@ static void xdg_toplevel_commit(struct wl_listener *listener, void *data) {
 
 	if (base->initial_commit) {
 		wlr_xdg_toplevel_set_size(toplevel->xdg_toplevel, 0, 0);
+		if (toplevel->decoration != NULL)
+			wl_signal_emit(&toplevel->decoration->events.request_mode, toplevel->decoration);
 	}
 }
 
