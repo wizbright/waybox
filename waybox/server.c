@@ -1,5 +1,6 @@
 #include <wlr/types/wlr_data_control_v1.h>
 #include <wlr/types/wlr_fractional_scale_v1.h>
+#include <wlr/types/wlr_viewporter.h>
 
 #include "idle.h"
 #include "waybox/server.h"
@@ -130,6 +131,7 @@ bool wb_start_server(struct wb_server* server) {
 	init_xdg_shell(server);
 
 	wlr_fractional_scale_manager_v1_create(server->wl_display, 1);
+	wlr_viewporter_create(server->wl_display);
 
 	return true;
 }

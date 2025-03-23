@@ -159,7 +159,7 @@ static void update_fractional_scale(struct wlr_surface *surface) {
 		}
 	}
 	wlr_fractional_scale_v1_notify_scale(surface, scale);
-	wlr_surface_set_preferred_buffer_scale(surface, (int) scale);
+	wlr_surface_set_preferred_buffer_scale(surface, ceil(scale));
 }
 
 static void xdg_toplevel_commit(struct wl_listener *listener, void *data) {
