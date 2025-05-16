@@ -32,10 +32,6 @@ static void handle_new_xdg_toplevel_decoration(struct wl_listener *listener, voi
 	wl_signal_add(&toplevel_decoration->events.request_mode, &decoration->request_mode);
 	decoration->mode_destroy.notify = free_xdg_decoration_mode;
 	wl_signal_add(&toplevel_decoration->events.destroy, &decoration->mode_destroy);
-#if !WLR_CHECK_VERSION (0, 18, 0)
-	/* In older versions, this had to be explicitly called for some window decorations to work. */
-	handle_xdg_decoration_mode(&decoration->request_mode, toplevel_decoration);
-#endif
 }
 
 void init_xdg_decoration(struct wb_server *server) {

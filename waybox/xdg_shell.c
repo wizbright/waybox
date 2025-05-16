@@ -185,9 +185,7 @@ static void xdg_toplevel_destroy(struct wl_listener *listener, void *data) {
 	struct wlr_xdg_surface *base = toplevel->xdg_toplevel->base;
 	wlr_surface_send_leave(base->surface, output);
 	update_fractional_scale(base->surface);
-#if WLR_CHECK_VERSION(0, 18, 0)
 	wlr_ext_foreign_toplevel_handle_v1_destroy(toplevel->foreign_toplevel_handle);
-#endif
 
 	wl_list_remove(&toplevel->map.link);
 	wl_list_remove(&toplevel->unmap.link);
@@ -211,22 +209,18 @@ static void xdg_toplevel_set_app_id(
 		struct wl_listener *listener, void *data) {
 	struct wb_toplevel *toplevel =
 		wl_container_of(listener, toplevel, set_app_id);
-#if WLR_CHECK_VERSION(0, 18, 0)
 	toplevel->foreign_toplevel_state.app_id = toplevel->xdg_toplevel->app_id;
 	wlr_ext_foreign_toplevel_handle_v1_update_state(
 			toplevel->foreign_toplevel_handle, &toplevel->foreign_toplevel_state);
-#endif
 }
 
 static void xdg_toplevel_set_title(
 		struct wl_listener *listener, void *data) {
 	struct wb_toplevel *toplevel =
 		wl_container_of(listener, toplevel, set_title);
-#if WLR_CHECK_VERSION(0, 18, 0)
 	toplevel->foreign_toplevel_state.title = toplevel->xdg_toplevel->title;
 	wlr_ext_foreign_toplevel_handle_v1_update_state(
 			toplevel->foreign_toplevel_handle, &toplevel->foreign_toplevel_state);
-#endif
 }
 
 static void xdg_toplevel_request_fullscreen(
@@ -428,20 +422,12 @@ static void handle_new_xdg_popup(struct wl_listener *listener, void *data) {
 	wl_signal_add(&xdg_popup->base->surface->events.commit, &popup->commit);
 
 	popup->destroy.notify = xdg_popup_destroy;
-#if WLR_CHECK_VERSION (0, 18, 0)
 	wl_signal_add(&xdg_popup->events.destroy, &popup->destroy);
-#else
-	wl_signal_add(&xdg_popup->base->events.destroy, &popup->destroy);
-#endif
 }
 
 static void handle_new_xdg_toplevel(struct wl_listener *listener, void *data) {
 	struct wb_server *server =
-#if WLR_CHECK_VERSION (0, 18,0)
 		wl_container_of(listener, server, new_xdg_toplevel);
-#else
-		wl_container_of(listener, server, new_xdg_surface);
-#endif
 	struct wlr_xdg_toplevel *xdg_toplevel = data;
 
 	/* Allocate a wb_toplevel for this toplevel */
@@ -450,10 +436,8 @@ static void handle_new_xdg_toplevel(struct wl_listener *listener, void *data) {
 	toplevel->server = server;
 	toplevel->xdg_toplevel = xdg_toplevel;
 
-#if WLR_CHECK_VERSION(0, 18, 0)
 	toplevel->foreign_toplevel_handle = wlr_ext_foreign_toplevel_handle_v1_create(
 			server->foreign_toplevel_list, &toplevel->foreign_toplevel_state);
-#endif
 
 	/* Listen to the various events it can emit */
 	toplevel->map.notify = xdg_toplevel_map;
@@ -463,11 +447,7 @@ static void handle_new_xdg_toplevel(struct wl_listener *listener, void *data) {
 	toplevel->commit.notify = xdg_toplevel_commit;
 	wl_signal_add(&xdg_toplevel->base->surface->events.commit, &toplevel->commit);
 	toplevel->destroy.notify = xdg_toplevel_destroy;
-#if WLR_CHECK_VERSION (0, 18, 0)
 	wl_signal_add(&xdg_toplevel->events.destroy, &toplevel->destroy);
-#else
-	wl_signal_add(&xdg_toplevel->base->events.destroy, &toplevel->destroy);
-#endif
 	toplevel->new_popup.notify = handle_new_popup;
 	wl_signal_add(&xdg_toplevel->base->events.new_popup, &toplevel->new_popup);
 
@@ -494,29 +474,11 @@ static void handle_new_xdg_toplevel(struct wl_listener *listener, void *data) {
 	wl_list_insert(&toplevel->server->toplevels, &toplevel->link);
 }
 
-#if !WLR_CHECK_VERSION(0, 18, 0)
-static void handle_new_xdg_surface(struct wl_listener *listener, void *data) {
-	struct wlr_xdg_surface *xdg_surface = data;
-
-	if (xdg_surface->role == WLR_XDG_SURFACE_ROLE_POPUP) {
-		handle_new_xdg_popup(listener, xdg_surface->popup);
-	}
-	if (xdg_surface->role == WLR_XDG_SURFACE_ROLE_TOPLEVEL) {
-		handle_new_xdg_toplevel(listener, xdg_surface->toplevel);
-	}
-}
-#endif
-
 void init_xdg_shell(struct wb_server *server) {
 	/* xdg-shell version 3 */
 	server->xdg_shell = wlr_xdg_shell_create(server->wl_display, 3);
-#if WLR_CHECK_VERSION (0, 18, 0)
 	server->new_xdg_popup.notify = handle_new_xdg_popup;
 	wl_signal_add(&server->xdg_shell->events.new_popup, &server->new_xdg_popup);
 	server->new_xdg_toplevel.notify = handle_new_xdg_toplevel;
 	wl_signal_add(&server->xdg_shell->events.new_toplevel, &server->new_xdg_toplevel);
-#else
-	server->new_xdg_surface.notify = handle_new_xdg_surface;
-	wl_signal_add(&server->xdg_shell->events.new_surface, &server->new_xdg_surface);
-#endif
 }

@@ -10,11 +10,6 @@ void output_frame_notify(struct wl_listener *listener, void *data) {
 
 	wlr_output_layout_get_box(output->server->output_layout,
 			output->wlr_output, &output->geometry);
-#if ! WLR_CHECK_VERSION(0, 18, 0)
-	/* Update the background for the current output size. */
-	wlr_scene_rect_set_size(output->background,
-			output->geometry.width, output->geometry.height);
-#endif
 
 	if (output->gamma_lut_changed) {
 		output->gamma_lut_changed = false;
@@ -122,13 +117,6 @@ void new_output_notify(struct wl_listener *listener, void *data) {
 	output->server = server;
 	output->wlr_output = wlr_output;
 	wlr_output->data = output;
-
-#if ! WLR_CHECK_VERSION(0, 18, 0)
-	/* Set the background color */
-	float color[4] = {0.1875, 0.1875, 0.1875, 1.0};
-	output->background = wlr_scene_rect_create(&server->scene->tree, 0, 0, color);
-	wlr_scene_node_lower_to_bottom(&output->background->node);
-#endif
 
 	/* Initializes the layers */
 	size_t num_layers = sizeof(output->layers) / sizeof(struct wlr_scene_node *);

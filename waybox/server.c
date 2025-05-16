@@ -5,6 +5,9 @@
 #include "idle.h"
 #include "waybox/server.h"
 #include "waybox/xdg_shell.h"
+#if WLR_CHECK_VERSION(0, 19, 0)
+#	include <wlr/types/wlr_xdg_toplevel_icon_v1.h>
+#endif
 
 bool wb_create_backend(struct wb_server* server) {
 	/* The Wayland display is managed by libwayland. It handles accepting
@@ -25,11 +28,7 @@ bool wb_create_backend(struct wb_server* server) {
 	 * output hardware. The autocreate option will choose the most suitable
 	 * backend based on the current environment, such as opening an X11 window
 	 * if an X11 server is running. */
-#if WLR_CHECK_VERSION(0, 18, 0)
 	server->backend = wlr_backend_autocreate(server->wl_event_loop, &server->session);
-#else
-	server->backend = wlr_backend_autocreate(server->wl_display, &server->session);
-#endif
 	if (server->backend == NULL) {
 		wlr_log(WLR_ERROR, "%s", _("Failed to create backend"));
 		return false;
@@ -60,11 +59,7 @@ bool wb_create_backend(struct wb_server* server) {
 	server->compositor =
 		wlr_compositor_create(server->wl_display, 5, server->renderer);
 	server->subcompositor = wlr_subcompositor_create(server->wl_display);
-#if WLR_CHECK_VERSION(0, 18, 0)
 	server->output_layout = wlr_output_layout_create(server->wl_display);
-#else
-	server->output_layout = wlr_output_layout_create();
-#endif
 	server->seat = wb_seat_create(server);
 	server->cursor = wb_cursor_create(server);
 
@@ -107,10 +102,8 @@ bool wb_start_server(struct wb_server* server) {
 	wlr_data_control_manager_v1_create(server->wl_display);
 	wlr_data_device_manager_create(server->wl_display);
 
-#if WLR_CHECK_VERSION(0, 18, 0)
 	server->foreign_toplevel_list =
 		wlr_ext_foreign_toplevel_list_v1_create(server->wl_display, 1);
-#endif
 
 	server->gamma_control_manager =
 		wlr_gamma_control_manager_v1_create(server->wl_display);
@@ -132,6 +125,11 @@ bool wb_start_server(struct wb_server* server) {
 
 	wlr_fractional_scale_manager_v1_create(server->wl_display, 1);
 	wlr_viewporter_create(server->wl_display);
+#if WLR_CHECK_VERSION(0, 19, 0)
+	struct wlr_xdg_toplevel_icon_manager_v1 * icon_manager = wlr_xdg_toplevel_icon_manager_v1_create(server->wl_display, 1);
+	int sizes[] = {16, 24, 32, 48, 64};
+	wlr_xdg_toplevel_icon_manager_v1_set_sizes(icon_manager, (int *) sizes, 5);
+#endif
 
 	return true;
 }
@@ -155,12 +153,8 @@ bool wb_terminate(struct wb_server* server) {
 	wl_list_remove(&server->gamma_control_set_gamma.link);
 	wl_list_remove(&server->new_layer_surface.link);
 
-#if WLR_CHECK_VERSION(0, 18, 0)
 	wl_list_remove(&server->new_xdg_toplevel.link);
 	wl_list_remove(&server->new_xdg_popup.link);
-#else
-	wl_list_remove(&server->new_xdg_surface.link);
-#endif
 
 	wlr_backend_destroy(server->backend);
 	wb_seat_destroy(server->seat);

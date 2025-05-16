@@ -12,9 +12,7 @@
 #include <wlr/render/wlr_renderer.h>
 #include <wlr/types/wlr_compositor.h>
 #include <wlr/types/wlr_data_device.h>
-#if WLR_CHECK_VERSION(0, 18, 0)
 #include <wlr/types/wlr_ext_foreign_toplevel_list_v1.h>
-#endif
 #include <wlr/types/wlr_gamma_control_v1.h>
 #include <wlr/types/wlr_idle_notify_v1.h>
 #include <wlr/types/wlr_output_layout.h>
@@ -71,9 +69,7 @@ struct wb_server {
 	struct wlr_box grab_geo_box;
 	double grab_x, grab_y;
 	uint32_t resize_edges;
-#if WLR_CHECK_VERSION(0, 18, 0)
 	struct wlr_ext_foreign_toplevel_list_v1 *foreign_toplevel_list;
-#endif
 	struct wl_list toplevels;
 
 	struct wlr_layer_shell_v1 *layer_shell;
@@ -82,12 +78,8 @@ struct wb_server {
 	struct wl_listener gamma_control_set_gamma;
 	struct wl_listener new_layer_surface;
 	struct wl_listener new_xdg_decoration;
-#if WLR_CHECK_VERSION(0, 18, 0)
 	struct wl_listener new_xdg_popup;
 	struct wl_listener new_xdg_toplevel;
-#else
-	struct wl_listener new_xdg_surface;
-#endif
 
 	struct wl_listener destroy_inhibit_manager;
 	struct wl_listener destroy_inhibitor;

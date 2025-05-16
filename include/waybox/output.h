@@ -18,10 +18,6 @@ struct wb_output {
 		struct wlr_scene_tree *shell_top;
 	} layers;
 
-#if ! WLR_CHECK_VERSION(0, 18, 0)
-	/* DEPRECATED: Use a tool like swaybg or hyprpaper instead */
-	struct wlr_scene_rect *background;
-#endif
 	bool gamma_lut_changed;
 	struct wlr_box geometry;
 
