@@ -53,6 +53,7 @@ static void arrange_surface(struct wb_output *output, struct wlr_box *full_area,
 
 		if (desc->type == WB_SCENE_DESC_LAYER_SHELL) {
 			struct wb_layer_surface *surface = desc->data;
+			surface->scene->layer_surface->initialized = true;
 			wlr_scene_layer_surface_v1_configure(surface->scene,
 					full_area, usable_area);
 		}

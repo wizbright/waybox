@@ -138,7 +138,7 @@ static bool handle_keybinding(struct wb_server *server, xkb_keysym_t sym, uint32
 			}
 			if (key_binding->action & ACTION_UNSHADE) {
 				struct wb_toplevel *toplevel = wl_container_of(server->toplevels.next, toplevel, link);
-				if (toplevel->scene_tree->node.enabled) {
+				if (toplevel->previous_geometry.height > 0 && toplevel->previous_geometry.width > 0 && toplevel->scene_tree->node.enabled) {
 					wlr_xdg_toplevel_set_size(toplevel->xdg_toplevel,
 							toplevel->previous_geometry.width, toplevel->previous_geometry.height);
 				}
@@ -423,7 +423,7 @@ void seat_set_focus_layer(struct wb_seat *seat, struct wlr_layer_surface_v1 *lay
 		return;
 	}
 	seat_focus_surface(seat, layer->surface);
-	if (layer->current.layer >= ZWLR_LAYER_SHELL_V1_LAYER_TOP) {
+	if (layer->current.layer > ZWLR_LAYER_SHELL_V1_LAYER_TOP) {
 		seat->focused_layer = layer;
 	}
 }
