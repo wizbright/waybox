@@ -3,6 +3,7 @@ Name=Waybox
 Comment=An Openbox-like compositor for Wayland
 Comment[de]=Ein Wayland-Compositor ähnlich zu Openbox
 Comment[eo]=Komponilo de Wayland, kiu similas je Openbox
+Comment[zh_CN]=类 Openbox 的 Wayland 合成器
 Exec=waybox
 Icon=waybox
 Type=Application
