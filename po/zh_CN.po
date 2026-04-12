@@ -9,44 +9,45 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Waybox 0.0.1\n"
 "Report-Msgid-Bugs-To: https://github.com/wizbright/waybox/issues\n"
-"POT-Creation-Date: 2022-12-06 22:27-0500\n"
-"PO-Revision-Date: 2020-03-10 14:10-0400\n"
-"Last-Translator: zhou sf <sxzzsf@gmail.com>\n"
+"POT-Creation-Date: 2024-01-25 21:21-0500\n"
+"PO-Revision-Date: 2026-04-12 14:47+0800\n"
+"Last-Translator: 玉堂白鹤 <yjwork@qq.com>\n"
 "Language-Team: Simplified Chinese\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n == 1 ? 0 : 1;\n"
+"X-Generator: Poedit 3.4.4\n"
 
 msgid "WARNING: Using files from Openbox. These may not work correctly."
-msgstr ""
+msgstr "警告：使用来自 Openbox 的文件。这些文件可能无法正常工作。"
 
 msgid "ERROR: No configuration file found."
-msgstr ""
+msgstr "错误：未找到配置文件。"
 
 msgid "Unable to evaluate expression"
-msgstr ""
+msgstr "无法评估表达式"
 
 msgid "No nodesetval"
-msgstr ""
+msgstr "无 nodesetval"
 
 msgid "No nodeset"
-msgstr ""
+msgstr "无 nodeset"
 
 msgid ""
 "Unable to parse the configuration file. Consult stderr for more information."
-msgstr ""
+msgstr "无法解析配置文件。请查看标准错误以获取更多信息。"
 
 msgid "Couldn't create new context!"
-msgstr ""
+msgstr "无法创建新上下文！"
 
 msgid "Couldn't register the namespace"
-msgstr ""
+msgstr "无法注册命名空间"
 
-#, fuzzy, c-format
+#, c-format
 msgid "Syntax: %s [options]\n"
-msgstr "用法: % [选项]\n"
+msgstr "语法: %s [选项]\n"
 
 #, c-format
 msgid ""
@@ -76,6 +77,8 @@ msgstr "  --sm-disable        禁止连接到会话管理器\n"
 #, c-format
 msgid "  --startup CMD       Run CMD after starting\n"
 msgstr ""
+"  --startup CMD       启动后运行 CMD\n"
+"。\n"
 
 #, c-format
 msgid "  --debug             Display debugging output\n"
@@ -87,6 +90,8 @@ msgid ""
 "Other Openbox options aren't accepted, mostly due to them being nonsensical "
 "on Wayland.\n"
 msgstr ""
+"\n"
+"其他 Openbox 选项不被接受，主要是因为它们在 Wayland 上没有意义。\n"
 
 #, c-format
 msgid "%s requires an argument\n"
@@ -94,58 +99,61 @@ msgstr "%s 需要一个参数\n"
 
 #, c-format
 msgid "%s hasn't been implemented yet.\n"
-msgstr ""
+msgstr "%s 尚未实施。\n"
 
 msgid "Successfully created backend"
-msgstr ""
+msgstr "成功创建后端"
 
 msgid "Failed to create backend"
-msgstr ""
+msgstr "创建后端失败"
 
 msgid "Successfully started server"
-msgstr ""
+msgstr "服务已成功启动"
 
 msgid "Failed to start server"
-msgstr ""
+msgstr "未能启动服务"
 
 msgid "New output device detected"
-msgstr ""
+msgstr "检测到新的输出设备"
 
-msgid "Couldn't commit pending frame to output"
-msgstr ""
+msgid "Could not add an output layout."
+msgstr "无法添加输出布局。"
 
 msgid "New keyboard detected"
-msgstr ""
+msgstr "检测到新键盘"
 
 msgid "New pointer detected"
-msgstr ""
+msgstr "检测到新指针"
 
 msgid "Unsupported input device detected"
-msgstr ""
+msgstr "检测到不支持的输入设备"
 
 msgid "Failed to connect to a Wayland display"
-msgstr ""
+msgstr "无法连接到 Wayland 显示器"
+
+msgid "Failed to get an event loop"
+msgstr "获取事件循环失败"
 
 msgid "Failed to create renderer"
-msgstr ""
+msgstr "创建渲染器失败"
 
 msgid "Failed to create allocator"
-msgstr ""
+msgstr "创建分配器失败"
 
 msgid "Failed to start backend"
-msgstr ""
+msgstr "未能启动后端"
 
 msgid "Running Wayland compositor on Wayland display"
-msgstr ""
+msgstr "在 Wayland 显示上运行 Wayland 合成器"
 
 msgid "Display destroyed"
-msgstr ""
+msgstr "显示已损坏"
 
 msgid "Keyboard focus is now on surface"
-msgstr ""
+msgstr "键盘焦点现在在表面上"
 
-msgid "Focusing next view"
-msgstr ""
+msgid "Focusing next toplevel"
+msgstr "聚焦下一个顶级窗口"
 
 #, c-format
 #~ msgid "Invalid action \"%s\" requested. No such action exists."
